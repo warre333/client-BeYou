@@ -9,10 +9,11 @@ import {
 
 import './styles/index.css';
 import './styles/posts.css';
-
+import './styles/colors.css';
 
 import Homepage from './pages/Homepage'
-
+import Explore from './pages/Explore';
+import Friends from './pages/Friends';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -22,8 +23,8 @@ root.render(
       <Route path="/" element={<Homepage />} />
       <Route path="/:@username" element={<Homepage />} />
 
-      <Route path="/explore" element={<Homepage />} />
-      <Route path="/friends" element={<Homepage />} />
+      <Route path="/explore" element={<Explore />} />
+      <Route path="/friends" element={<Friends />} />
       <Route path="/messages" element={<Homepage />} />
 
       <Route path="/profile" element={<Homepage />} />
