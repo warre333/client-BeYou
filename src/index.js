@@ -14,6 +14,8 @@ import './styles/colors.css';
 import Homepage from './pages/Homepage'
 import Explore from './pages/Explore';
 import Friends from './pages/Friends';
+import Messages from './pages/Messages';
+import Profile from './pages/Profile';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -25,9 +27,9 @@ root.render(
 
       <Route path="/explore" element={<Explore />} />
       <Route path="/friends" element={<Friends />} />
-      <Route path="/messages" element={<Homepage />} />
+      <Route path="/messages" element={<Messages />} />
 
-      <Route path="/profile" element={<Homepage />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="/create" element={<Homepage />} />
       <Route path="/settings" element={<Homepage />} />  
     </Routes>

@@ -1,5 +1,25 @@
 import React from 'react'
 
+const styles = {
+    image: {
+        objectFit: "contain",
+    },
+    
+    button: {    
+      background: "none",
+      color: "inherit",
+      border: "none",
+      padding: 0,
+      font: "inherit",
+      cursor: "pointer",
+      outline: "inherit",
+    },
+  
+    postComment: {
+      height: "4vh",
+    },
+}
+
 function Friend(props) {
   return (
     <div>
@@ -10,7 +30,7 @@ function Friend(props) {
                         <tr>
                             <td>
                                 <svg width="50" height="50" className='rounded-circle m-2'>
-                                <image href={props.user_image} height="50" width="50"/>
+                                <image href={props.user_image} style={styles.image} height="50" width="50" />
                                 </svg>
                             </td>  
 
@@ -22,14 +42,14 @@ function Friend(props) {
                 </div>
                 
                 <div className="col">
-                    <table>
+                    <table className="h-100">
                         <tr>
                             <td>
                                 <a className="btn btn-primary align-middle" href={"/profile/" + "1"}>profile</a>
                             </td>
                             
-                            <td>
-
+                            <td>   
+                                <a className="btn btn-primary align-middle" href={"/message/"}>message</a>
                             </td>
                         </tr>
                     </table>

@@ -4,7 +4,7 @@ const styles = {
   image: {
     maxHeight: "80vh",
     maxWidth: "100%",
-    objectFit: "contain",
+    objectFit: "cover",
   },
   
   button: {    
