@@ -6,7 +6,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-
+ 
 import './styles/index.css';
 import './styles/posts.css';
 import './styles/colors.css';
