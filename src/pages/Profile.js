@@ -83,8 +83,7 @@ function Profile() {
                                     <h2 className="text-start ">{userInfo.username}</h2>
                                 </td>
                             </tr>
-                        </tbody>
-                        
+                        </tbody>                        
                     </table>
                 </div>
             </div>
