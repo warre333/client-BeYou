@@ -1,7 +1,7 @@
 module.exports = {
-    API_URL: "https://localhost:4000/",
-    AUTH: "https://localhost:4000/auth/",
-    EMAIL: "https://localhost:4000/email/",
-    POSTS: "https://localhost:4000/posts/",
-    USERS: "https://localhost:4000/users/",
+    API_URL: "http://localhost:4000/",
+    AUTH: "http://localhost:4000/auth/",
+    EMAIL: "http://localhost:4000/email/",
+    POSTS: "http://localhost:4000/posts/",
+    USERS: "http://localhost:4000/users/",
 }

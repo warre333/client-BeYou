@@ -37,18 +37,20 @@ function Login(props) {
         console.log(password)
         if(username){
             if(password){
-                axios.post(AUTH + "login", {
+                const data = {                    
                     username: username,
-                    password: password
-                })
+                    password: password,
+                };
+
+                axios.post(AUTH + "login", {data})
                     .then((response) => {
                         console.log(response)
                     })
             } else {
-                setError("You should enter an password")
+                setError("You should enter a password")
             }
         } else {
-            setError("You should enter an username")
+            setError("You should enter a username")
         }
     }
 
