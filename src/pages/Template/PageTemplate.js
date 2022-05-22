@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react'
-import Cookies from 'universal-cookie'
+import React, {useEffect, useState} from 'react'
 import axios from 'axios'
+import Cookies from "universal-cookie"
 
 import Header from '../components/header'
-import FriendsList from '../components/friends/FriendsList'
 
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
@@ -13,9 +12,9 @@ import Register from '../components/auth/Register'
 
 import { AUTH } from '../config/api.config'
 
-function Explore() {
-  const cookies = new Cookies()
-  
+const cookies = new Cookies();
+
+function Page() {
   const [user, setUser] = useState()
   const [popup, setPopup] = useState()
   
@@ -49,6 +48,7 @@ function Explore() {
 
     isAuthenticated()
   }, [])
+  
 
   return (
     <div>
@@ -59,8 +59,13 @@ function Explore() {
         { success && ( <Success changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <FriendsList />
 
+        {/* 
+        
+            Page content
+
+        */}
+        
 
         {/* Login & register popups */}
         { popup === "login" && (
@@ -75,4 +80,4 @@ function Explore() {
   )
 }
 
-export default Explore
+export default Page

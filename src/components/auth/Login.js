@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import sha256 from 'js-sha256'
 import axios from 'axios'
 import Cookies from 'universal-cookie'
@@ -8,6 +8,7 @@ import { AUTH } from '../../config/api.config'
 import Error from '../states/Error'
 import Success from '../states/Success'
 import Loading from '../states/Loading'
+import useWindowDimensions from '../../hooks/useWindowDimensions'
 
 const styles = {
     opacityBackground: {
@@ -23,6 +24,10 @@ const styles = {
         top: "25%",
         left: "25%",        
         borderRadius: "10px",
+    },
+
+    centerWhiteCardMobile: {
+        top: "25%",     
     },
 
     marginLeft25: {
@@ -45,13 +50,11 @@ function Login(props) {
 
         if(username){
             if(password){
-                console.log(password)
                 axios.post(AUTH + "login", {           
                     username: username,
                     password: password,
                 })
                     .then((response) => {
-                        console.log(response)
                         const success = response.data.auth
 
                         if(success){
@@ -74,11 +77,23 @@ function Login(props) {
         }
     }
 
+    // Screen sizing
+    const { width } = useWindowDimensions();
+    const [isOnMobile, setIsOnMobile] = useState(false)
+
+    useEffect(() => {
+        if(width < 768){
+            setIsOnMobile(true)
+        } else {
+            setIsOnMobile(false)
+        }
+    })
+
 
   return (
     <div className='vw-100 vh-100 top-0 position-fixed' style={styles.opacityBackground}>
         {/* Darkend background */}
-        <div className="w-50 h-50 top-25 left-25 position-fixed bg-light" style={styles.centerWhiteCard}>
+        <div className={isOnMobile ? "w-100 h-50 top-25 position-fixed bg-light" : "w-50 h-50 top-25 left-25 position-fixed bg-light"} style={isOnMobile ? styles.centerWhiteCardMobile : styles.centerWhiteCard}>
 
             {/* centered white space */}
             <div className="h-100 text-center">
@@ -120,11 +135,11 @@ function Login(props) {
                         </div>
 
                         <div className="row mt-3">
-                            <div className="col">
+                            <div className="col-12 col-md-6 my-1 my-md-0 ">
                                 <button className="btn btn-primary w-100" onClick={login}>Login</button>
                             </div>
 
-                            <div className="col">
+                            <div className="col-12 col-md-6">
                                 <button className="btn btn-secondary w-100" onClick={() => { props.setPopup("register") }}>Register</button>
                             </div>
                         </div>  

@@ -1,6 +1,13 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import Cookies from "universal-cookie"
+
+import { AUTH, USERS } from '../config/api.config';
 
 import Logo from "../images/logo.png"
+import NOT_FOUND from "../images/NOT_FOUND.png"
+import Login from './auth/Login';
+import Register from './auth/Register';
 
 const styles = {
     header_container: {
@@ -15,10 +22,92 @@ const styles = {
     }
 };
 
-function header() {
+function Header() {
+    const cookies = new Cookies()
+
+    const [user, setUser] = useState()
+    const [popup, setPopup] = useState()
+
     function logout(){
         // Log out
+        cookies.remove("user", {path: "/"})
+        setUser("")
     }
+
+    /*
+
+        Make function that checks if it got a prop for setPosts, if it has and the person has been logged in, change setPosts to 0
+
+    */
+
+    useEffect(() => {
+        const cookie = cookies.get("user")
+    
+        if(cookies){
+          axios.get(AUTH,
+            {
+              headers: {
+                "x-access-token": cookie
+              },
+            },
+          )
+            .then((response) => {
+                console.log(response)
+
+                if(response.data.auth){
+                    axios.get(USERS + "user?user_id=" + response.data.user_id).then((response) => {
+                        console.log(response)
+
+                        if(response.data.success){
+                            setUser(response.data.data)
+                        }
+                    }) 
+                }             
+            })
+        } 
+        
+        
+    }, [])
+    
+    function getCookie(){
+      if(cookies.get('user')){
+        return cookies.get('user')
+      }
+    }  
+  
+    useEffect(() => {
+      function isAuthenticated(){
+        const cookie = cookies.get("user")
+    
+        if(cookies){
+          axios.get(AUTH,
+            {
+              headers: {
+                "x-access-token": cookie
+              },
+            },
+          )
+            .then((response) => {
+                console.log(response)
+
+                if(response.data.auth){
+                    axios.get(USERS + "user?user_id=" + response.data.user_id).then((response) => {
+                        console.log(response)
+
+                        if(response.data.success){
+                            setUser(response.data.data)
+                        }
+                    }) 
+                }             
+            })
+        } else { 
+          setUser(0)
+          setPopup("login")
+        }
+      }
+  
+      isAuthenticated()
+    }, [])
 
   return (
         <header className="p-3 mb-3 border-bottom bg-light">
@@ -41,7 +130,8 @@ function header() {
 
                     <div className="dropdown text-end">
                         <a href="/" className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" className="rounded-circle" />
+                            {user && ( user.profile_image == "http://localhost:3000/images/NOT_FOUNG.png" && ( <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
+                            {user && ( user.profile_image != "http://localhost:3000/images/NOT_FOUNG.png" && ( <img src={user.profile_image} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
                         </a>
                         <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                             <li><a className="dropdown-item" href="/profile/">Profile</a></li>
@@ -54,8 +144,17 @@ function header() {
                     </div>
                 </div>
             </div>
+
+            {/* Login & register popups */}
+            { popup === "login" && (
+            <Login setPopup={setPopup} />
+            )}
+
+            { popup === "register" && (
+            <Register setPopup={setPopup} />
+            )}
         </header>
   )
 }
 
-export default header
+export default Header

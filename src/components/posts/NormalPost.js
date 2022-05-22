@@ -1,4 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import Cookies from "universal-cookie"
+
+import { POSTS, USERS } from '../../config/api.config';
+
+import NOT_FOUND from "../../images/NOT_FOUND.png"
 
 const styles = {
   image: {
@@ -27,6 +33,7 @@ function Normal(props) {
   const [liked, setLiked] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [share, setShare] = useState(false)
+  const [poster, setPoster] = useState(false)
 
 
   function likePost(){
@@ -38,6 +45,7 @@ function Normal(props) {
       setLiked(true)
 
       // Add like to database
+      axios.post(POSTS + "like")
     }
   }
 
@@ -52,6 +60,18 @@ function Normal(props) {
     // Add new post to the list
   }
 
+  function getPosterInfo(){
+    axios.get(USERS + "user?user_id=" + props.user_id).then((response) => {
+      if(response.data.success){
+        setPoster(response.data.data)
+      }
+    })
+  }
+
+  useEffect(() => {
+    getPosterInfo()
+  }, [])
+  
   return (
     <div className='mt-5'>
       <div className="bg-light border rounded-3">
@@ -62,11 +82,18 @@ function Normal(props) {
               <tr>
                 <td>
                   <svg width="50" height="50" className='rounded-circle m-2'>
-                    <image href={props.user_image} height="50" width="50"/>
+                    {poster.profile_image && ( poster.profile_image == "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+                      <image href={NOT_FOUND} height="50" width="50"/>
+                    ))}
+
+                    {poster.profile_image && ( poster.profile_image != "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+                      <image href={poster.profile_image} height="50" width="50"/>
+                    ))}
+                    
                   </svg>
                 </td>
                 <td>
-                  <h4 className="font-weight-normal small align-middle">{props.username}</h4>
+                  <h4 className="font-weight-normal small align-middle">{poster.username}</h4>
                 </td>
               </tr>
             </tbody>
@@ -78,13 +105,19 @@ function Normal(props) {
           {/* Image div (black background, image/video is scaling within it) */}
           <div className="bg-image-post max-image-size text-center" >
               {/* Scaled image within the parent with object-fit: contain */}
-              <img 
-                // Change src to image from db
-                src={props.image} 
-                alt="post" 
-                className=''
-                style={styles.image}
-              />
+              {props.image && ( props.image != "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+                <img 
+                  // Change src to image from db
+                  src={props.image} 
+                  alt="post" 
+                  className=''
+                  style={styles.image}
+                />
+              ))}
+
+              {props.image && ( props.image == "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+                <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" /> 
+              ))}
           </div>
 
           {/* Lower div with caption etc */}
@@ -133,7 +166,7 @@ function Normal(props) {
               <table className='ms-2 mt-2'>
                 <tbody>
                   <tr>
-                    <td className='pe-1'>@{props.username}: </td>
+                    <td className='pe-1'>{poster.username}: </td>
                     <td>{props.caption}</td>
                   </tr>
                 </tbody>

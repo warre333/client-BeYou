@@ -11,12 +11,13 @@ import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 
-import { AUTH } from '../config/api.config'
+import { AUTH, POSTS } from '../config/api.config'
 
 const cookies = new Cookies();
 
 function Explore() {
   const [user, setUser] = useState()
+  const [posts, setPosts] = useState()
   const [popup, setPopup] = useState()
   
   const [error, setError] = useState()
@@ -31,18 +32,40 @@ function Explore() {
 
   useEffect(() => {
     function isAuthenticated(){
-      const cookies = getCookie()
+      const cookie = cookies.get("user")
   
       if(cookies){
         axios.get(AUTH,
           {
             headers: {
-              "x-access-token": cookies
+              "x-access-token": cookie
             },
           },
-        )
+        ).then((response) => {
+          if(response.data.auth){
+            setUser(response.data.user_id)
+
+            axios.get(POSTS + "trending",
+              {
+                headers: {
+                  "x-access-token": cookies
+                },
+              },
+            ).then((response) => {
+              console.log(response.data)
+              if(response.data.success){
+                setPosts(response.data.data)
+              } else {
+                setError("An unkown error has occurred.")
+              }              
+            })
+          } else {            
+            setUser(0)
+            setPopup("login")
+          }          
+        })
       } else { 
-        setUser("none")
+        setUser(0)
         setPopup("login")
       }
     }
@@ -60,7 +83,7 @@ function Explore() {
         { success && ( <Success changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <PostList />
+        <PostList posts={posts} />
 
 
         {/* Login & register popups */}
