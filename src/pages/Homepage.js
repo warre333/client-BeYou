@@ -82,7 +82,7 @@ function Homepage() {
         { success && ( <Success changeMessage={setSuccess} /> )}
         { loading && ( <Loading /> )}
         
-        <PostList posts={posts}/>  
+        <PostList posts={posts} setError={setError} />  
         
         {/* Login & register popups */}
         { popup === "login" && (

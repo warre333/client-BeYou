@@ -4,7 +4,9 @@ import Cookies from "universal-cookie"
 
 import { POSTS, USERS } from '../../config/api.config';
 
-import NOT_FOUND from "../../images/NOT_FOUND.png"
+import NOT_FOUND from "../../images/NOT_FOUND.jpg"
+
+import "../../styles/like_animation.css"
 
 const styles = {
   image: {
@@ -29,23 +31,69 @@ const styles = {
 }
 
 function Normal(props) {
+  const cookies = new Cookies()
+
   // Functions
   const [liked, setLiked] = useState(false);
+  const [likeAnimation, setLikeAnimation] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [comment, setComment] = useState("");
   const [share, setShare] = useState(false)
   const [poster, setPoster] = useState(false)
 
+  
+  function getCookie(){
+    if(cookies.get('user')){
+      return cookies.get('user')
+    }
+  } 
 
   function likePost(){
+    setLikeAnimation(true)
+
+
     if(liked){
       setLiked(false)
 
+      const cookie = getCookie()
+
       // Remove like from database
+      axios.delete(POSTS + "like?post_id=" + props.post_id, 
+        // headers
+        {
+          headers: {
+            "x-access-token": cookie
+          },
+        },
+      )
+        .then((response) => {
+          if(!response.data.success){
+            props.setError("There has an error occurred.")
+          }
+        })
     } else {
       setLiked(true)
 
+      const cookie = getCookie()
+
       // Add like to database
-      axios.post(POSTS + "like")
+      axios.post(POSTS + "like", 
+        // body
+        {
+          "post_id": props.post_id,
+        },
+        // headers
+        {
+          headers: {
+            "x-access-token": cookie
+          },
+        },
+      )
+        .then((response) => {
+          if(!response.data.success){
+            props.setError("There has an error occurred.")
+          }
+        })
     }
   }
 
@@ -55,9 +103,10 @@ function Normal(props) {
     
   }
 
-  async function comment(){
+  async function placeComment(){
     // Post to DB
     // Add new post to the list
+    axios.post(POSTS + "comment")
   }
 
   function getPosterInfo(){
@@ -82,11 +131,11 @@ function Normal(props) {
               <tr>
                 <td>
                   <svg width="50" height="50" className='rounded-circle m-2'>
-                    {poster.profile_image && ( poster.profile_image == "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+                    {poster.profile_image && ( poster.profile_image == "http://localhost:3000/images/NOT_FOUNG.jpg" && ( 
                       <image href={NOT_FOUND} height="50" width="50"/>
                     ))}
 
-                    {poster.profile_image && ( poster.profile_image != "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+                    {poster.profile_image && ( poster.profile_image != "http://localhost:3000/images/NOT_FOUNG.jpg" && ( 
                       <image href={poster.profile_image} height="50" width="50"/>
                     ))}
                     
@@ -125,8 +174,8 @@ function Normal(props) {
               {/* Like / Comment / ... */}
               <div className="row text-center py-2 border-bottom">
                 <div className="col">
-                  <button style={styles.button} onClick={likePost}>
-                    <svg width="24" height="24" fill={liked ? "red " : "currentColor"} className="bi bi-heart-fill" viewBox="0 0 16 16">
+                  <button style={styles.button} onClick={likePost} onAnimationEnd={() => setLikeAnimation(false)} >
+                    <svg width="24" height="24" fill={liked ? "red " : "currentColor"} className={likeAnimation ? "bi bi-heart-fill zoom-in-out-box" : "bi bi-heart-fill"} viewBox="0 0 16 16">
                       <path fillRule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                     </svg>
                   </button>                  

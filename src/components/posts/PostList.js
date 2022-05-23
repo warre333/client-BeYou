@@ -11,7 +11,7 @@ function PostList(props) {
         <div className="posts__container">
           { posts && (
             posts.map((post, index) => {
-              return <NormalPost image={post.media_link} key={index} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} />
+              return <NormalPost image={post.media_link} key={index} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} setError={props.setError} />
             })
           )}
         </div>

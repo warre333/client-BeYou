@@ -62,6 +62,7 @@ function Register(props) {
                                 setError("")
                                 cookies.set("user", response.data.token, { path: '/' })
                                 props.setPopup("none")
+                                window.location.reload(false);
                             } else {
                                 setLoading(false)
                                 setError(response.data.message)
