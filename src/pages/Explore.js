@@ -52,7 +52,6 @@ function Explore() {
                 },
               },
             ).then((response) => {
-              console.log(response.data)
               if(response.data.success){
                 setPosts(response.data.data)
               } else {

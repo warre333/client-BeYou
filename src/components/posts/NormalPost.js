@@ -106,7 +106,30 @@ function Normal(props) {
   async function placeComment(){
     // Post to DB
     // Add new post to the list
-    axios.post(POSTS + "comment")
+    axios.post(POSTS + "comment", {
+
+    }, )
+  }
+
+  async function isLiked(){
+    const cookie = getCookie()
+    axios.get(POSTS + "like?post_id=" + props.post_id,
+      {
+        headers: {
+          "x-access-token": cookie
+        },
+      },
+    ).then((response) => {
+      // Check if liked
+    })
+  }
+
+  function openComments(){
+    if(commentsOpen){
+      setCommentsOpen(false)
+    } else {
+      setCommentsOpen(true)
+    }
   }
 
   function getPosterInfo(){
@@ -182,7 +205,7 @@ function Normal(props) {
                 </div>
 
                 <div className="col">
-                  <button style={styles.button} onClick={() => { setCommentsOpen(true) }}>
+                  <button style={styles.button} onClick={openComments}>
                     <svg width="24" height="24" fill="currentColor" className="bi bi-chat-fill" viewBox="0 0 16 16">
                       <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/>
                     </svg>
@@ -223,14 +246,14 @@ function Normal(props) {
 
               {/* Comments */}
               {!commentsOpen && (
-                <button onClick={() => { setCommentsOpen(true) }} style={styles.button} className="ms-2">
+                <button onClick={openComments} style={styles.button} className="ms-2">
                   <h5 className="font-weight-normal small text-muted">View all comments</h5>
                 </button>
               )}
 
               {commentsOpen && (
                 <div className="">
-                  <button onClick={() => { setCommentsOpen(false) }} style={styles.button} className="ms-2">
+                  <button onClick={openComments} style={styles.button} className="ms-2">
                     <h5 className="font-weight-normal small text-muted">Close all comments</h5>
                   </button>
 
