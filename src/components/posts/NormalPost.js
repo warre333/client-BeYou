@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
 
-import { POSTS, USERS } from '../../config/api.config';
+import { AUTH, POSTS, USERS } from '../../config/api.config';
 
 import NOT_FOUND from "../../images/NOT_FOUND.jpg"
 
 import "../../styles/like_animation.css"
+
+import Error from "../../components/states/Error"
 
 const styles = {
   image: {
@@ -28,16 +30,25 @@ const styles = {
   postComment: {
     height: "4vh",
   },
+
+  deleteButtonDiv: {
+    marginRight: "2vw",
+  }
 }
 
 function Normal(props) {
   const cookies = new Cookies()
 
   // Functions
+  const [error, setError] = useState()
   const [liked, setLiked] = useState(false);
   const [likeAnimation, setLikeAnimation] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState();
+  const [user, setUser] = useState();
+  const [userId, setUserId] = useState();
+  const [commentsSuccess, setCommentsSuccess] = useState(false);
   const [share, setShare] = useState(false)
   const [poster, setPoster] = useState(false)
 
@@ -104,11 +115,53 @@ function Normal(props) {
   }
 
   async function placeComment(){
+    const cookie = getCookie()
+    
     // Post to DB
     // Add new post to the list
-    axios.post(POSTS + "comment", {
+    if(comment != ""){
+      axios.post(POSTS + "comment", {
+        post_id: props.post_id,
+        comment: comment,
+      }, 
+      {
+        headers: {
+          "x-access-token": cookie
+        },
+      }).then((response) => {
+        if(response.data.success){
+          const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, username: user.username}
+          const newCommentSection = [newComment, ...comments]
 
-    }, )
+          setComments(newCommentSection)
+        } else {
+          setError("There occurred an error while commenting.")
+        }
+      })
+    } else {
+      setError("No message was entered")
+    }    
+  }
+
+  async function placeComment(){
+    
+  }
+
+  async function getComments(){
+    const cookie = getCookie()
+
+    axios.get(POSTS + "comments?post_id=" + props.post_id, {
+      headers: {
+        "x-access-token": cookie
+      },
+    }).then((response) => {
+      if(response.data.success){
+        setCommentsSuccess(true)
+        setComments(response.data.data)
+      } else {
+        setCommentsSuccess(false)
+      }
+    })
   }
 
   async function isLiked(){
@@ -121,6 +174,9 @@ function Normal(props) {
       },
     ).then((response) => {
       // Check if liked
+      if(response.data.liked){
+        setLiked(true)
+      }
     })
   }
 
@@ -140,9 +196,44 @@ function Normal(props) {
     })
   }
 
+  async function getUserInfo(){
+    
+    if(userId){
+      axios.get(USERS + "user?user_id=" + userId).then((response) => {
+        setUser(response.data.data)
+      })
+    }
+  }
+
+  async function isAuthenticated(){
+    const cookie = cookies.get("user")
+
+    if(cookies){
+      axios.get(AUTH,
+        {
+          headers: {
+            "x-access-token": cookie
+          },
+        },
+      ).then((response) => {
+        if(response.data.auth){
+          setUserId(response.data.user_id)
+        }       
+      })
+    }
+  }
+
   useEffect(() => {
     getPosterInfo()
+    isLiked()
+    
+    getComments()
   }, [])
+
+  useEffect(() => {
+    isAuthenticated()    
+    getUserInfo()
+  })
   
   return (
     <div className='mt-5'>
@@ -154,11 +245,11 @@ function Normal(props) {
               <tr>
                 <td>
                   <svg width="50" height="50" className='rounded-circle m-2'>
-                    {poster.profile_image && ( poster.profile_image == "http://localhost:3000/images/NOT_FOUNG.jpg" && ( 
+                    {poster.profile_image && ( poster.profile_image == "None" && ( 
                       <image href={NOT_FOUND} height="50" width="50"/>
                     ))}
 
-                    {poster.profile_image && ( poster.profile_image != "http://localhost:3000/images/NOT_FOUNG.jpg" && ( 
+                    {poster.profile_image && ( poster.profile_image != "None" && ( 
                       <image href={poster.profile_image} height="50" width="50"/>
                     ))}
                     
@@ -177,7 +268,7 @@ function Normal(props) {
           {/* Image div (black background, image/video is scaling within it) */}
           <div className="bg-image-post max-image-size text-center" >
               {/* Scaled image within the parent with object-fit: contain */}
-              {props.image && ( props.image != "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+              {props.image && ( props.image != "None" && ( 
                 <img 
                   // Change src to image from db
                   src={props.image} 
@@ -187,7 +278,7 @@ function Normal(props) {
                 />
               ))}
 
-              {props.image && ( props.image == "http://localhost:3000/images/NOT_FOUNG.png" && ( 
+              {props.image && ( props.image == "None" && ( 
                 <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" /> 
               ))}
           </div>
@@ -234,6 +325,10 @@ function Normal(props) {
                 </div>
               } 
 
+              {error && (
+                <Error changeMessage={setError} />
+              )} 
+
               {/* @username: caption */}
               <table className='ms-2 mt-2'>
                 <tbody>
@@ -260,44 +355,62 @@ function Normal(props) {
                   <div className="container" id="comments">
                     <div className="row" style={styles.postComment}>
                       <div className="col h-100">
-                        <textarea className="form-control h-100" aria-label="With textarea"></textarea>
+                        <textarea className="form-control h-100" aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }}></textarea>
                       </div>
 
                       <div className="col h-100">
-                        <button type="submit" className="btn btn-primary h-100" onClick={comment}>post</button>
+                        <button type="submit" className="btn btn-primary h-100" onClick={placeComment}>post</button>
                       </div>
                     </div>
                     
+                    { comments && ( 
+                      comments.map((item, index) => {
+                         return (
+                          <div id="comment" key={index}>                  
+                            <table className='ms-2 mt-2 w-100'>
+                              <tbody>
+                                <tr>
+                                  <td>
+                                    <div className="">
+                                      <td className='pe-1'>
+                                        {item.profile_image && ( item.profile_image != "None" && (
+                                          <img
+                                            src={item.profile_image}
+                                            alt="post"
+                                            className=''
+                                            style={styles.image}
+                                          />
+                                        ))}
+                                        {item.profile_image && ( item.profile_image == "None" && (
+                                          <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" />
+                                        ))}
+                                      </td>
+                                      <td className='pe-1'>{item.username}: </td>
+                                      <td>{item.comment}</td>
+                                    </div>
+                                  </td>
 
-                    <div id="comment">                  
-                      <table className='ms-2 mt-2'>
-                        <tbody>
-                          <tr>
-                            <td className='pe-1'>@{props.username}: </td>
-                            <td>{props.caption}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div id="comment">                  
-                      <table className='ms-2 mt-2'>
-                        <tbody>
-                          <tr>
-                            <td className='pe-1'>@{props.username}: </td>
-                            <td>{props.caption}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                                  <td>
+                                    <div className="float-end" style={styles.deleteButtonDiv}>
+                                      <button className="text-danger" style={styles.button} onClick={deleteComment}>delete</button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        )
+                      })
+                    )}
+
                   </div>
                 </div>
               )}
 
-      
+            </div>
           </div>
         </div>        
       </div>  
-    </div>
   )
 }
 

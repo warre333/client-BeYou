@@ -122,8 +122,8 @@ function Header() {
 
                     <div className="dropdown text-end">
                         <a href="/" className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            {user && ( user.profile_image == "http://localhost:3000/images/NOT_FOUNG.jpg" && ( <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
-                            {user && ( user.profile_image != "http://localhost:3000/images/NOT_FOUNG.jpg" && ( <img src={user.profile_image} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
+                            {user && ( user.profile_image == "None" && ( <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
+                            {user && ( user.profile_image != "None" && ( <img src={user.profile_image} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
                         </a>
                         <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1">
                             <li><a className="dropdown-item" href="/profile/">Profile</a></li>
