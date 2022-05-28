@@ -52,7 +52,7 @@ function Header() {
               },
             },
           )
-            .then((response) => {
+            .then((response) => {  
                 if(response.data.auth){
                     axios.get(USERS + "user?user_id=" + response.data.user_id).then((response) => {
                         if(response.data.success){

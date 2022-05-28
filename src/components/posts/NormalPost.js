@@ -143,8 +143,22 @@ function Normal(props) {
     }    
   }
 
-  async function placeComment(){
+  async function deleteComment(value){
+    const cookie = getCookie()
+
+    console.log(value)
+
+    // !!!
+    // This should be fixed, the values isn't the right value
+    // !!!
     
+    axios.delete(POSTS + "comment?comment_id=" + value, {
+      headers: {
+        "x-access-token": cookie
+      },
+    }).then((response) => {
+      console.log(response)
+    })
   }
 
   async function getComments(){
@@ -377,8 +391,10 @@ function Normal(props) {
                                           <img
                                             src={item.profile_image}
                                             alt="post"
-                                            className=''
                                             style={styles.image}
+                                            width="32" 
+                                            height="32" 
+                                            className="rounded-circle"
                                           />
                                         ))}
                                         {item.profile_image && ( item.profile_image == "None" && (
@@ -392,7 +408,8 @@ function Normal(props) {
 
                                   <td>
                                     <div className="float-end" style={styles.deleteButtonDiv}>
-                                      <button className="text-danger" style={styles.button} onClick={deleteComment}>delete</button>
+                                      <input type="hidden" name="comment_id"  />
+                                      <button className="text-danger" style={styles.button} value={index} onClick={deleteComment}>delete</button>
                                     </div>
                                   </td>
                                 </tr>
