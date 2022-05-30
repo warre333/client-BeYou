@@ -23,13 +23,12 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Homepage />} />
-      <Route path="/:@username" element={<Homepage />} />
 
       <Route path="/explore" element={<Explore />} />
       <Route path="/friends" element={<Friends />} />
       <Route path="/messages" element={<Messages />} />
 
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/profile/:username" element={<Profile />} />
       <Route path="/create" element={<Homepage />} />
       <Route path="/settings" element={<Homepage />} />  
     </Routes>

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
+import { useParams } from "react-router-dom"
 
 import useWindowDimensions from '../hooks/useWindowDimensions'
 
@@ -11,8 +12,9 @@ import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
+import NOT_FOUND from "../images/NOT_FOUND.jpg"
 
-import { AUTH } from '../config/api.config'
+import { AUTH, USERS } from '../config/api.config'
 
 const styles = {
     profileImage: {
@@ -37,9 +39,14 @@ function Profile() {
     const [success, setSuccess] = useState()
     const [loading, setLoading] = useState()
   
-    const [userInfo, setUserInfo] = useState({"user_id": 1, "username": "@warre002", "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquam congue fringilla. Phasellus aliquet porttitor placerat. Cras ligula odio, fringilla sit amet turpis in, semper lobortis metus. Phasellus id est odio. Morbi hendrerit enim et dui malesuada, a vulputate velit aliquam. Donec ut tortor dapibus, vulputate nulla rutrum, tristique ipsum.", "profile_image": "https://pbs.twimg.com/media/CmUPSBuUMAEvfoh.jpg", "verified": 0})
-    const [userPosts, setUserPosts] = useState({"image": "https://cdn.discordapp.com/attachments/504315373969997835/975313956937801748/unknown.png", "caption": "tes caption"})
+    // {"user_id": 1, "username": "@warre002", "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquam congue fringilla. Phasellus aliquet porttitor placerat. Cras ligula odio, fringilla sit amet turpis in, semper lobortis metus. Phasellus id est odio. Morbi hendrerit enim et dui malesuada, a vulputate velit aliquam. Donec ut tortor dapibus, vulputate nulla rutrum, tristique ipsum.", "profile_image": "https://pbs.twimg.com/media/CmUPSBuUMAEvfoh.jpg", "verified": 0}
+    const [profileInfo, setProfileInfo] = useState()
+    // {"image": "https://cdn.discordapp.com/attachments/504315373969997835/975313956937801748/unknown.png", "caption": "tes caption"}
+    const [profilePosts, setProfilePosts] = useState()
     
+    const params = useParams()
+    const profileUsername = params.username
+
     function getCookie(){
       if(cookies.get('user')){
         return cookies.get('user')
@@ -47,25 +54,27 @@ function Profile() {
     }  
   
     useEffect(() => {
-      function isAuthenticated(){
-        const cookies = getCookie()
+      const cookie = getCookie()
     
-        if(cookies){
-          axios.get(AUTH,
-            {
-              headers: {
-                "x-access-token": cookies
-              },
+      if(cookie){
+        axios.get(AUTH,
+          {
+            headers: {
+              "x-access-token": cookie
             },
-          )
-        } else { 
-          setUser("none")
-          setPopup("login")
-        }
+          },
+        ).then((response) => {
+          if(response.data.auth){
+           setUser(response.data.user_id)
+          } else {
+            setPopup("login")
+            cookies.remove('abc', { path: '/' });
+          }
+        })
+      } else { 
+        setPopup("login")
       }
-  
-      isAuthenticated()
-    }, [])
+    }, [user])
 
     // Screen sizing
     const { width, height } = useWindowDimensions();
@@ -79,33 +88,29 @@ function Profile() {
         }
     })
 
-    async function getUser(){
-        // Get userid from auth 
-    }
-
     async function getUserInfo(){
-        // Get user info from api with userid
-        // put in userinfo
+      // Get user info from api with userid
+      // put in userinfo
 
-        // Info, profile_image, bio, total followers, total posts
+      // Info, profile_image, bio, total followers, total posts
+      axios.get(USERS + "profile?username=" + profileUsername).then((response) => {
+        console.log(response)
+        if(response.data.success){
+          setProfileInfo(response.data.data.userInfo)
+          setProfilePosts(response.data.data.posts)
+        } else {
+          setError(response.data.message)
+        }
+      })
     } 
 
-    async function getUserPosts(){
-        // Get user posts from api with userid
-        // put in userposts
-    }
-
     useEffect(() => {
-        if(!user){
-            getUser()
-
-        } else if(user && !userInfo){
-            getUserInfo()
-
-        } else if(user && !userPosts){
-            getUserPosts()
-
-        }
+      if(!profileInfo || !profilePosts){
+        getUserInfo()
+        setLoading(true)
+      } else {
+        setLoading(false)
+      }
     })
 
   return (
@@ -122,7 +127,8 @@ function Profile() {
             {/* Image + username */}
             <div className="row">
                 <div className="col-4 col-md-auto text-end">
-                    <img src={"https://pbs.twimg.com/media/CmUPSBuUMAEvfoh.jpg"} className="rounded-circle" style={isOnMobile ? styles.profileImage : styles.profileImageDesktop} alt="user profile" />
+                  {profileInfo && ( profileInfo.profile_image == "None" && ( <img src={NOT_FOUND} alt="profile_image" style={isOnMobile ? styles.profileImage : styles.profileImageDesktop} className="rounded-circle" /> ))}
+                  {profileInfo && ( profileInfo.profile_image != "None" && ( <img src={profileInfo.profile_image} alt="profile_image" style={isOnMobile ? styles.profileImage : styles.profileImageDesktop} className="rounded-circle" /> ))}
                 </div>
 
                 <div className="col ms-md-3">
@@ -130,7 +136,7 @@ function Profile() {
                         <tbody>
                             <tr>
                                 <td className="align-middle">
-                                    <h2 className="text-start ">{userInfo.username}</h2>
+                                  {profileInfo && <h2 className="text-start ">{profileInfo.username}</h2>}
                                 </td>
                             </tr>
                         </tbody>                        
@@ -141,7 +147,7 @@ function Profile() {
 
             {/* bio + edit */}
             <div className="">
-                {userInfo.bio}
+              {profileInfo && <p>{profileInfo.bio}</p> } 
             </div>
 
 

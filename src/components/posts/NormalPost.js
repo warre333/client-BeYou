@@ -143,21 +143,16 @@ function Normal(props) {
     }    
   }
 
-  async function deleteComment(value){
+  async function deleteComment(e){
     const cookie = getCookie()
-
-    console.log(value)
-
-    // !!!
-    // This should be fixed, the values isn't the right value
-    // !!!
     
-    axios.delete(POSTS + "comment?comment_id=" + value, {
+    axios.delete(POSTS + "comment?comment_id=" + e.target.value, {
       headers: {
         "x-access-token": cookie
       },
-    }).then((response) => {
-      console.log(response)
+    }).then(() => {
+      comments.splice(e.target.id, 1);
+      getComments()
     })
   }
 
@@ -198,6 +193,7 @@ function Normal(props) {
     if(commentsOpen){
       setCommentsOpen(false)
     } else {
+      getComments()
       setCommentsOpen(true)
     }
   }
@@ -240,8 +236,6 @@ function Normal(props) {
   useEffect(() => {
     getPosterInfo()
     isLiked()
-    
-    getComments()
   }, [])
 
   useEffect(() => {
@@ -257,21 +251,23 @@ function Normal(props) {
           <table>
             <tbody>
               <tr>
-                <td>
-                  <svg width="50" height="50" className='rounded-circle m-2'>
-                    {poster.profile_image && ( poster.profile_image == "None" && ( 
-                      <image href={NOT_FOUND} height="50" width="50"/>
-                    ))}
+                <a href={"/profile/" + poster.username}>
+                  <td>
+                    <svg width="50" height="50" className='rounded-circle m-2'>
+                      {poster.profile_image && ( poster.profile_image == "None" && ( 
+                        <image href={NOT_FOUND} height="50" width="50"/>
+                      ))}
 
-                    {poster.profile_image && ( poster.profile_image != "None" && ( 
-                      <image href={poster.profile_image} height="50" width="50"/>
-                    ))}
-                    
-                  </svg>
-                </td>
-                <td>
-                  <h4 className="font-weight-normal small align-middle">{poster.username}</h4>
-                </td>
+                      {poster.profile_image && ( poster.profile_image != "None" && ( 
+                        <image href={poster.profile_image} height="50" width="50"/>
+                      ))}
+                      
+                    </svg>
+                  </td>
+                  <td>
+                    <h4 className="font-weight-normal small align-middle">{poster.username}</h4>
+                  </td>
+                </a>
               </tr>
             </tbody>
           </table> 
@@ -385,7 +381,7 @@ function Normal(props) {
                               <tbody>
                                 <tr>
                                   <td>
-                                    <div className="">
+                                    <div className="pe-1">
                                       <td className='pe-1'>
                                         {item.profile_image && ( item.profile_image != "None" && (
                                           <img
@@ -401,15 +397,21 @@ function Normal(props) {
                                           <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" />
                                         ))}
                                       </td>
-                                      <td className='pe-1'>{item.username}: </td>
-                                      <td>{item.comment}</td>
+
+                                      <td className='pe-1'>
+                                        {item.username}: 
+                                      </td>
+
+                                      <td>
+                                        {item.comment}
+                                      </td>
                                     </div>
                                   </td>
 
                                   <td>
                                     <div className="float-end" style={styles.deleteButtonDiv}>
                                       <input type="hidden" name="comment_id"  />
-                                      <button className="text-danger" style={styles.button} value={index} onClick={deleteComment}>delete</button>
+                                      <button className="text-danger" style={styles.button} id={index} value={item.comment_id} onClick={deleteComment}>delete</button>
                                     </div>
                                   </td>
                                 </tr>

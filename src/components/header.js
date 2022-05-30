@@ -126,7 +126,7 @@ function Header() {
                             {user && ( user.profile_image != "None" && ( <img src={user.profile_image} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
                         </a>
                         <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                            <li><a className="dropdown-item" href="/profile/">Profile</a></li>
+                            {user && ( <li><a className="dropdown-item" href={"/profile/" + user.username}>Profile</a></li> )}
                             <li><a className="dropdown-item" href="/create">Create Post</a></li>
                             <li><a className="dropdown-item" href="/settings">Settings</a></li>
 
