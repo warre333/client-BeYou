@@ -33,7 +33,12 @@ const styles = {
 
   deleteButtonDiv: {
     marginRight: "2vw",
-  }
+  },
+
+  noDecorationLink: {
+    color: "#000000",
+    textDecoration: "none",
+  },
 }
 
 function Normal(props) {
@@ -251,7 +256,7 @@ function Normal(props) {
           <table>
             <tbody>
               <tr>
-                <a href={"/profile/" + poster.username}>
+                <a href={"/profile/" + poster.username} style={styles.noDecorationLink}>
                   <td>
                     <svg width="50" height="50" className='rounded-circle m-2'>
                       {poster.profile_image && ( poster.profile_image == "None" && ( 

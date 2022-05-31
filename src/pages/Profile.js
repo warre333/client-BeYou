@@ -15,6 +15,7 @@ import Register from '../components/auth/Register'
 import NOT_FOUND from "../images/NOT_FOUND.jpg"
 
 import { AUTH, USERS } from '../config/api.config'
+import Edit from '../components/profile/Edit'
 
 const styles = {
     profileImage: {
@@ -146,9 +147,19 @@ function Profile() {
 
 
             {/* bio + edit */}
-            <div className="">
+            <div className="m-2">
               {profileInfo && <p>{profileInfo.bio}</p> } 
             </div>
+
+            <div className="m-2">
+               {user && profileInfo && user == profileInfo.user_id && ( 
+                 <div className="">
+                   <button className="btn btn-secondary w-100">Edit profile</button>
+                 </div>
+               )}
+            </div>
+
+            <Edit />
 
 
 
