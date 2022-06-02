@@ -159,7 +159,7 @@ function Profile() {
                )}
             </div>
 
-            <Edit />
+            {profileInfo && <Edit profile={profileInfo} />}
 
 
 
