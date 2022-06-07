@@ -16,6 +16,7 @@ import NOT_FOUND from "../images/NOT_FOUND.jpg"
 
 import { AUTH, USERS } from '../config/api.config'
 import Edit from '../components/profile/Edit'
+import PreviewPost from '../components/posts/PreviewPost'
 
 const styles = {
     profileImage: {
@@ -154,16 +155,31 @@ function Profile() {
             <div className="m-2">
                {user && profileInfo && user == profileInfo.user_id && ( 
                  <div className="">
-                   <button className="btn btn-secondary w-100">Edit profile</button>
+                   <button className="btn bg-light rounded-3 border w-100" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
                  </div>
                )}
             </div>
 
-            {profileInfo && <Edit profile={profileInfo} />}
+            {popup && popup == "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} />}
 
 
 
             {/* Posts grid */}
+            <div className="container my-5">
+              <div className="row g-3">
+                <PreviewPost image={"https://img.nieuwsblad.be/beKRVsmubpqgw1KgvetFLzGjJT4=/960x640/smart/https%3A%2F%2Fstatic.nieuwsblad.be%2FAssets%2FImages_Upload%2F2020%2F08%2F11%2Fdc59c00e-dbf1-11ea-8ffb-9e26f69cae24.jpg"} />
+                <PreviewPost image={"https://fsb.zobj.net/crop.php?r=hC68QUGN0CGJtuj1wCMjEQ9INPNRkL9bcQfWi8PV9ht6m7ZMLKNF3aXrXU4AB5fmPkW-ulpa7ptLmDC1Y3Lg8RPppMJcPEloujNuL1e8IGYcmRIrmf4FZIYlptLgf4yYoJesJO21GT2DXt06VNDKgEni2r7E2UVooVTo20LDLOb2W8HXSS8UrBGuRrhPGVX3a-71Ci9VmoASeApq"} />
+                <PreviewPost />
+                <PreviewPost />
+                <PreviewPost />
+                <PreviewPost />
+                <PreviewPost />
+                <PreviewPost />
+                <PreviewPost />
+                <PreviewPost />
+              </div>
+              
+            </div>
         </div>
         
         {/* Login & register popups */}
