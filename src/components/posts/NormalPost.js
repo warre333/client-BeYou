@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
 
@@ -9,6 +9,7 @@ import NOT_FOUND from "../../images/NOT_FOUND.jpg"
 import "../../styles/like_animation.css"
 
 import Error from "../../components/states/Error"
+import isOnScreen from "../../hooks/isOnScreen"
 
 const styles = {
   image: {
@@ -48,6 +49,7 @@ function Normal(props) {
   const [error, setError] = useState()
   const [liked, setLiked] = useState(false);
   const [likeAnimation, setLikeAnimation] = useState(false);
+  const [viewed, setViewed] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
@@ -56,6 +58,28 @@ function Normal(props) {
   const [commentsSuccess, setCommentsSuccess] = useState(false);
   const [share, setShare] = useState(false)
   const [poster, setPoster] = useState(false)
+
+  const ref = useRef()
+  const isVisible = isOnScreen(ref)
+
+  useEffect(() => {
+
+    if(isVisible && !viewed){
+      const cookie = getCookie()
+
+      // Send viewed to API
+      axios.post(POSTS + "view", {
+        post_id: props.post_id
+      }, {
+        headers: {
+          "x-access-token": cookie
+        },
+      },).then((response) => {
+        console.log(response)
+        setViewed(true)
+      })
+    }
+  })
 
   
   function getCookie(){
@@ -249,7 +273,7 @@ function Normal(props) {
   })
   
   return (
-    <div className='mt-5'>
+    <div className='mt-5' id={props.post_id} ref={ref}>
       <div className="bg-light border rounded-3">
         {/* User image + username */}
         <div className="border-bottom">

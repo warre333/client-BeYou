@@ -162,21 +162,24 @@ function Profile() {
 
             {popup && popup == "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} />}
 
+            <div className="border-bottom mt-4"></div>
+
 
 
             {/* Posts grid */}
             <div className="container my-5">
               <div className="row g-3">
-                <PreviewPost image={"https://img.nieuwsblad.be/beKRVsmubpqgw1KgvetFLzGjJT4=/960x640/smart/https%3A%2F%2Fstatic.nieuwsblad.be%2FAssets%2FImages_Upload%2F2020%2F08%2F11%2Fdc59c00e-dbf1-11ea-8ffb-9e26f69cae24.jpg"} />
-                <PreviewPost image={"https://fsb.zobj.net/crop.php?r=hC68QUGN0CGJtuj1wCMjEQ9INPNRkL9bcQfWi8PV9ht6m7ZMLKNF3aXrXU4AB5fmPkW-ulpa7ptLmDC1Y3Lg8RPppMJcPEloujNuL1e8IGYcmRIrmf4FZIYlptLgf4yYoJesJO21GT2DXt06VNDKgEni2r7E2UVooVTo20LDLOb2W8HXSS8UrBGuRrhPGVX3a-71Ci9VmoASeApq"} />
-                <PreviewPost />
-                <PreviewPost />
-                <PreviewPost />
-                <PreviewPost />
-                <PreviewPost />
-                <PreviewPost />
-                <PreviewPost />
-                <PreviewPost />
+
+                {profilePosts && profilePosts.length > 0 && (
+                  profilePosts.map((post, key) => {
+                    return <PreviewPost image={post.media_link} post_id={post.post_id} key={key} />
+                  })
+                )}
+
+                {profilePosts && profilePosts.length == 0 && (
+                  <h4 className="w-100 text-center">No posts are found...</h4>
+                )}
+
               </div>
               
             </div>
