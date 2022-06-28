@@ -4,6 +4,7 @@ module.exports = {
     EMAIL: "http://localhost:4000/email/",
     POSTS: "http://localhost:4000/posts/",
     USERS: "http://localhost:4000/users/",
+    IMAGES: "http://localhost:4000/images/",
 
     WEBSITE_URL: "http://localhost:3000/"
 }

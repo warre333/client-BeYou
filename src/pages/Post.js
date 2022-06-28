@@ -3,7 +3,6 @@ import axios from 'axios'
 import Cookies from "universal-cookie"
 
 import Header from '../components/header'
-import PostList from '../components/posts/PostList'
 
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
@@ -11,14 +10,17 @@ import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
 
-import { AUTH, POSTS } from '../config/api.config'
+import { IMAGES, AUTH, POSTS } from '../config/api.config'
+import { useParams } from 'react-router-dom'
 
 const cookies = new Cookies();
 
-function Homepage() {
+function Page() {
+  const params = useParams()
   const [user, setUser] = useState()
-  const [posts, setPosts] = useState()
-  const [popup, setPopup] = useState("none")
+  const [post, setPost] = useState()
+  const [postMedia, setPostMedia] = useState()
+  const [popup, setPopup] = useState()
   
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
@@ -41,38 +43,24 @@ function Homepage() {
               "x-access-token": cookies
             },
           },
-        ).then((response) => {
-          if(response.data.auth){
-            setUser(response.data.user_id)
-
-            axios.get(POSTS + "feed",
-              {
-                headers: {
-                  "x-access-token": cookies
-                },
-              },
-            ).then((response) => {
-              if(response.data.success){
-                setPosts(response.data.data)
-              } else {
-                setError("An unkown error has occurred.")
-              }              
-            })
-          } else {            
-            setUser(0)
-            setPopup("login")
-          }          
-        })
+        )
       } else { 
-        setUser(0)
-        setPopup("login")
+        setUser("none")
       }
     }
 
     isAuthenticated()
   }, [])
+
+  useEffect(() => {
+    axios.get(POSTS + "post?post_id=" + params.post).then((response) => {
+      setPost(response.data.data)
+      const media_link = IMAGES + "posts/" + response.data.data.media_link
+      setPostMedia(media_link)
+    })
+  }, [])
   
-  
+
   return (
     <div>
         <Header />
@@ -80,10 +68,19 @@ function Homepage() {
         {/* States */}
         { error && ( <Error changeMessage={setError} /> )}
         { success && ( <Success changeMessage={setSuccess} /> )}
-        { loading && ( <Loading /> )}
+        { loading && ( <Loading changeMessage={setLoading} /> )}
+
+
+        {/* 
         
-        <PostList posts={posts} setError={setError} />  
+            Page content
+
+        */}
+
+        {post && (postMedia && (<img src={postMedia} alt="user post" />))}
         
+        
+
         {/* Login & register popups */}
         { popup === "login" && (
           <Login setPopup={setPopup} setError={setError} setSuccess={setSuccess} setLoading={setLoading} />
@@ -92,9 +89,9 @@ function Homepage() {
         { popup === "register" && (
           <Register setPopup={setPopup} setError={setError} setSuccess={setSuccess} setLoading={setLoading}  />
         )}
-      
+        
     </div>
   )
 }
 
-export default Homepage
+export default Page

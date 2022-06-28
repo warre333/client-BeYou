@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
 
-import { AUTH, POSTS, USERS } from '../../config/api.config';
+import { AUTH, IMAGES, POSTS, USERS } from '../../config/api.config';
 
 import NOT_FOUND from "../../images/NOT_FOUND.jpg"
 
@@ -293,8 +293,8 @@ function Normal(props) {
                       
                     </svg>
                   </td>
-                  <td>
-                    <h4 className="font-weight-normal small align-middle">{poster.username}</h4>
+                  <td className=''>
+                    <h4 className="font-weight-normal small align-middle h-100">{poster.username}</h4>
                   </td>
                 </a>
               </tr>
@@ -310,9 +310,9 @@ function Normal(props) {
               {props.image && ( props.image != "None" && ( 
                 <img 
                   // Change src to image from db
-                  src={props.image} 
+                  src={IMAGES + "posts/" + props.image} 
                   alt="post" 
-                  className=''
+                  className='ms-auto me-auto'
                   style={styles.image}
                 />
               ))}
@@ -392,7 +392,7 @@ function Normal(props) {
                   </button>
 
                   <div className="container" id="comments">
-                    <div className="row" style={styles.postComment}>
+                    <div className="row mt-3 mb-3" style={styles.postComment}>
                       <div className="col h-100">
                         <textarea className="form-control h-100" aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }}></textarea>
                       </div>

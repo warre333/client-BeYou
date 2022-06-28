@@ -121,7 +121,7 @@ function Header() {
                     </form>
 
                     <div className="dropdown text-end">
-                        <a href="/" className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="/" className="d-block link-dark text-decoration-none" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                             {user && ( user.profile_image == "None" && ( <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
                             {user && ( user.profile_image != "None" && ( <img src={user.profile_image} alt="profile_image" width="32" height="32" className="rounded-circle" /> ))}
                         </a>

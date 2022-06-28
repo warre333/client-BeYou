@@ -138,7 +138,7 @@ function Profile() {
                         <tbody>
                             <tr>
                                 <td className="align-middle">
-                                  {profileInfo && <h2 className="text-start ">{profileInfo.username}</h2>}
+                                  {profileInfo && <h2 className="text-start ml-10">{profileInfo.username}</h2>}
                                 </td>
                             </tr>
                         </tbody>                        

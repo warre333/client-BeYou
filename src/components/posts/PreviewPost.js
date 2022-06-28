@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { IMAGES } from '../../config/api.config';
 
 const styles = {
     bg: {
@@ -42,7 +43,7 @@ function PreviewPost(props) {
           <table style={styles.keepRatio}>
             <tbody style={styles.keepRatio}>
               <tr style={styles.keepRatio}>
-                <td style={styles.keepRatio}><img src={props.image} alt="user post" className="" style={styles.image} /></td>
+                <td style={styles.keepRatio}><img src={IMAGES + "posts/" + props.image} alt="user post" className="" style={styles.image} /></td>
               </tr>
             </tbody>
           </table>

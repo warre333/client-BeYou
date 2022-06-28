@@ -1,3 +1,5 @@
+import React from "react";
+
 import "../../styles/loading_animation.css"
 
 function Loading() {

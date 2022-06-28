@@ -16,6 +16,8 @@ import Explore from './pages/Explore';
 import Friends from './pages/Friends';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
+import Post from './pages/Post';
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -30,7 +32,9 @@ root.render(
 
       <Route path="/profile/:username" element={<Profile />} />
       <Route path="/create" element={<Homepage />} />
-      <Route path="/settings" element={<Homepage />} />  
+      <Route path="/settings" element={<Homepage />} />
+
+      <Route path="/post/:post" element={<Post />} />
     </Routes>
   </BrowserRouter>
 );
