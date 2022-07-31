@@ -42,7 +42,7 @@ function Homepage() {
             },
           },
         ).then((response) => {
-          if(response.data.auth){
+          if(response.data.success){
             setUser(response.data.user_id)
 
             axios.get(POSTS + "feed",
@@ -61,6 +61,7 @@ function Homepage() {
           } else {            
             setUser(0)
             setPopup("login")
+            cookies.remove('user', { path: '/' });
           }          
         })
       } else { 
@@ -78,8 +79,8 @@ function Homepage() {
         <Header />
 
         {/* States */}
-        { error && ( <Error changeMessage={setError} /> )}
-        { success && ( <Success changeMessage={setSuccess} /> )}
+        { error && ( <Error message={error} changeMessage={setError} /> )}
+        { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading /> )}
         
         <PostList posts={posts} setError={setError} />  

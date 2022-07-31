@@ -32,7 +32,7 @@ const styles = {
 }
 
 function Register(props) {
-    const cookies = new Cookies()
+    const newCookies = new Cookies()
 
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
@@ -55,12 +55,12 @@ function Register(props) {
                     })
                         .then((response) => {
                             console.log(response)
-                            const success = response.data.auth
+                            const success = response.data.success
 
                             if(success){
                                 setLoading(false)
                                 setError("")
-                                cookies.set("user", response.data.token, { path: '/' })
+                                newCookies.set("user", response.data.token, { path: '/' })
                                 props.setPopup("none")
                                 window.location.reload(false);
                             } else {
@@ -83,7 +83,7 @@ function Register(props) {
     }
 
   return (
-    <div className='vw-100 vh-100 top-0 position-fixed' style={styles.opacityBackground}>
+    <div className='vw-100 vh-100 top-0 start-0 position-fixed' style={styles.opacityBackground}>
         {/* Darkend background */}
         <div className="w-50 h-50 top-25 left-25 position-fixed bg-light" style={styles.centerWhiteCard}>
 

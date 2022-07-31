@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react'
-import { USERS } from '../../config/api.config';
+import { PROFILE_IMAGE, USERS } from '../../config/api.config';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import Cookies from "universal-cookie"
+import { useNavigate } from "react-router-dom";
 
-import NOT_FOUND from "../../images/NOT_FOUND.jpg"
 // import "../../styles/colors.css"
 
 const styles = {
@@ -49,7 +49,9 @@ function Edit(props) {
     // Screen sizing
     const { width } = useWindowDimensions();
     const [isOnMobile, setIsOnMobile] = useState(false)
-    const cookies = new Cookies()
+
+    const newCookies = new Cookies()
+    const navigate = useNavigate();
 
     useEffect(() => {
         if(width < 768){
@@ -60,37 +62,68 @@ function Edit(props) {
     })
     
     function getCookie(){
-        if(cookies.get('user')){
-          return cookies.get('user')
+        if(newCookies.get('user')){
+          return newCookies.get('user')
         }
     } 
 
     const profile = props.profile
-    const [profileImage, setProfileImage] = useState(profile.profile_image)
+    const [profileImage, setProfileImage] = useState()
     const [fileName, setFileName] = useState("");
     const [username, setUsername] = useState(profile.username.substring(1))
     const [bio, setBio] = useState(profile.bio)
-    
-    function changeProfileImage(){
-
-    }
 
     async function saveData(){
-        const cookie = getCookie()
-        const formData = new FormData()
-        formData.append('profileImage', profileImage)
-        console.log(formData)
-        // formData.append("profileImageName", fileName);
-        // console.log(formData)
+        const cookies = getCookie()
 
-        axios.patch(USERS + "profile", formData, {
-            headers: {
-              "x-access-token": cookie,
-              'Content-Type': 'multipart/form-data; boundary=XXX'
-            },
-          }).then((response) => {
-            console.log(response)
-        })
+        if(profileImage){
+            const formData = new FormData()
+            formData.append('profileImage', profileImage)
+    
+            axios.patch(USERS + "profile-image", formData, {
+                headers: {
+                  "x-access-token": cookies,
+                  'Content-Type': 'multipart/form-data'
+                },
+            }).then((response) => {
+                if(!response.data.success){
+                    console.log("error:", response.data)
+                }
+            })
+
+            axios.patch(USERS + "profile", {
+                username: username,
+                bio: bio
+            }, {
+                headers: {
+                  "x-access-token": cookies,
+                },
+            }).then((response) => {
+                if(response.data.success){
+                    navigate("/profile/@" + username)
+                    props.setPopup("none")
+                } else {
+                    console.log("error:", response.data)
+                }
+            })
+        } else {            
+            axios.patch(USERS + "profile", {
+                username: username,
+                bio: bio
+            }, {
+                headers: {
+                  "x-access-token": cookies,
+                },
+            }).then((response) => {
+                if(response.data.success){
+                    navigate("/profile/@" + username)
+                    props.setPopup("none")
+                } else {
+                    console.log("error:", response.data)
+                }
+            })
+        }
+        
     }
 
   return (
@@ -125,18 +158,24 @@ function Edit(props) {
                 <div className="">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="100" className="rounded-circle" height="100">
-                            {profile.profile_image && ( profile.profile_image == "None" && (
-                                <image href={NOT_FOUND} width="100" height="100" />
-                            ))}
-                            {profile.profile_image && ( profile.profile_image != "None" && (
-                                <image href={profile.profile_image} width="100" height="100"/>
-                            ))}
+                            {profile.profile_image &&  (
+                                <image href={PROFILE_IMAGE + profile.profile_image} width="100" height="100" />
+                            )}
                         </svg>
                     </div>
 
                     <div className="w-50 mt-3" style={styles.centerInputs}> 
                         <label htmlFor="" className="w-100 text-center">Change profile image</label>
-                        <input type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} className="text-primary mt-1 mb-3" style={styles.button} />
+                        <div className="row">
+                            <div className="col-12 col-md-6">
+                                <label htmlFor="" className="w-100 text-center">Open files</label>
+                                <input type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} className="form-control" />
+                            </div>
+                            <div className="col-12 col-md-6">
+                                <label htmlFor="" className="w-100 text-center">Open camera</label>
+                                <input type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} accept="image/*" capture="camera" className="form-control" data-classButton="btn btn-secundary" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
+                            </div>
+                        </div>
                     </div>
                 </div>
 

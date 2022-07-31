@@ -2,9 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
 
-import { AUTH, IMAGES, POSTS, USERS } from '../../config/api.config';
-
-import NOT_FOUND from "../../images/NOT_FOUND.jpg"
+import { AUTH, IMAGES, POSTS, POST_IMAGE, PROFILE_IMAGE, USERS } from '../../config/api.config';
 
 import "../../styles/like_animation.css"
 
@@ -43,13 +41,14 @@ const styles = {
 }
 
 function Normal(props) {
-  const cookies = new Cookies()
+  const newCookies = new Cookies()
 
   // Functions
   const [error, setError] = useState()
   const [liked, setLiked] = useState(false);
   const [likeAnimation, setLikeAnimation] = useState(false);
   const [viewed, setViewed] = useState(false);
+  // const [viewSend, setViewed] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
@@ -57,22 +56,22 @@ function Normal(props) {
   const [userId, setUserId] = useState();
   const [commentsSuccess, setCommentsSuccess] = useState(false);
   const [share, setShare] = useState(false)
-  const [poster, setPoster] = useState(false)
+  const [poster, setPoster] = useState()
 
   const ref = useRef()
   const isVisible = isOnScreen(ref)
 
   useEffect(() => {
-
+    // console.log(isVisible, viewed)
     if(isVisible && !viewed){
-      const cookie = getCookie()
+      const cookies = getCookie()
 
       // Send viewed to API
       axios.post(POSTS + "view", {
         post_id: props.post_id
       }, {
         headers: {
-          "x-access-token": cookie
+          "x-access-token": cookies
         },
       },).then((response) => {
         console.log(response)
@@ -83,114 +82,125 @@ function Normal(props) {
 
   
   function getCookie(){
-    if(cookies.get('user')){
-      return cookies.get('user')
+    if(newCookies.get('user')){
+      return newCookies.get('user')
     }
   } 
 
   function likePost(){
-    setLikeAnimation(true)
+    const cookies = getCookie()
 
+    if(cookies){
+      setLikeAnimation(true)
 
-    if(liked){
-      setLiked(false)
+      if(liked){
+        setLiked(false)
 
-      const cookie = getCookie()
-
-      // Remove like from database
-      axios.delete(POSTS + "like?post_id=" + props.post_id, 
-        // headers
-        {
-          headers: {
-            "x-access-token": cookie
+        // Remove like from database
+        axios.delete(POSTS + "like?post_id=" + props.post_id, 
+          // headers
+          {
+            headers: {
+              "x-access-token": cookies
+            },
           },
-        },
-      )
-        .then((response) => {
-          if(!response.data.success){
-            props.setError("There has an error occurred.")
-          }
-        })
+        )
+          .then((response) => {
+            if(!response.data.success){
+              setError("There has an error occurred.")
+            }
+          })
+      } else {
+        setLiked(true)
+
+
+        // Add like to database
+        axios.post(POSTS + "like", 
+          // body
+          {
+            "post_id": props.post_id,
+          },
+          // headers
+          {
+            headers: {
+              "x-access-token": cookies
+            },
+          },
+        )
+          .then((response) => {
+            if(!response.data.success){
+              setError("There has an error occurred.")
+            }
+          })
+      }
     } else {
-      setLiked(true)
-
-      const cookie = getCookie()
-
-      // Add like to database
-      axios.post(POSTS + "like", 
-        // body
-        {
-          "post_id": props.post_id,
-        },
-        // headers
-        {
-          headers: {
-            "x-access-token": cookie
-          },
-        },
-      )
-        .then((response) => {
-          if(!response.data.success){
-            props.setError("There has an error occurred.")
-          }
-        })
+      setError("You need to logged in to like this post")
     }
   }
 
   function copyLink(){
-    navigator.clipboard.writeText(props.share_link)
-    setShare(true)
-    
+    // Works only with HTTPS or on localhost
+    navigator.clipboard.writeText(props.share_link).then(() => {
+      setShare(true)   
+    })
   }
 
   async function placeComment(){
-    const cookie = getCookie()
+    const cookies = getCookie()
     
     // Post to DB
     // Add new post to the list
-    if(comment != ""){
-      axios.post(POSTS + "comment", {
-        post_id: props.post_id,
-        comment: comment,
-      }, 
-      {
-        headers: {
-          "x-access-token": cookie
-        },
-      }).then((response) => {
-        if(response.data.success){
-          const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, username: user.username}
-          const newCommentSection = [newComment, ...comments]
+    if(cookies){
+      if(comment != ""){
+        axios.post(POSTS + "comment", {
+          post_id: props.post_id,
+          comment: comment,
+        }, 
+        {
+          headers: {
+            "x-access-token": cookies
+          },
+        }).then((response) => {
+          if(response.data.success){
+            const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, username: user.username}
+            const newCommentSection = [newComment, ...comments]
 
-          setComments(newCommentSection)
-        } else {
-          setError("There occurred an error while commenting.")
-        }
-      })
+            setComments(newCommentSection)
+          } else {
+            setError("There occurred an error while commenting.")
+          }
+        })
+      } else {
+        setError("No message was entered")
+      }   
     } else {
-      setError("No message was entered")
-    }    
+      setError("You need to be logged in to comment.")
+    } 
   }
 
   async function deleteComment(e){
-    const cookie = getCookie()
+    const cookies = getCookie()
     
     axios.delete(POSTS + "comment?comment_id=" + e.target.value, {
       headers: {
-        "x-access-token": cookie
+        "x-access-token": cookies
       },
-    }).then(() => {
-      comments.splice(e.target.id, 1);
-      getComments()
+    }).then((response) => {
+      if(response.data.success){
+        comments.splice(e.target.id, 1);
+        getComments()
+      } else {
+        setError(response.data.message)
+      }      
     })
   }
 
   async function getComments(){
-    const cookie = getCookie()
+    const cookies = getCookie()
 
     axios.get(POSTS + "comments?post_id=" + props.post_id, {
       headers: {
-        "x-access-token": cookie
+        "x-access-token": cookies
       },
     }).then((response) => {
       if(response.data.success){
@@ -203,11 +213,11 @@ function Normal(props) {
   }
 
   async function isLiked(){
-    const cookie = getCookie()
+    const cookies = getCookie()
     axios.get(POSTS + "like?post_id=" + props.post_id,
       {
         headers: {
-          "x-access-token": cookie
+          "x-access-token": cookies
         },
       },
     ).then((response) => {
@@ -245,17 +255,17 @@ function Normal(props) {
   }
 
   async function isAuthenticated(){
-    const cookie = cookies.get("user")
+    const cookies = getCookie()
 
     if(cookies){
       axios.get(AUTH,
         {
           headers: {
-            "x-access-token": cookie
+            "x-access-token": cookies
           },
         },
       ).then((response) => {
-        if(response.data.auth){
+        if(response.data.success){
           setUserId(response.data.user_id)
         }       
       })
@@ -280,23 +290,17 @@ function Normal(props) {
           <table>
             <tbody>
               <tr>
-                <a href={"/profile/" + poster.username} style={styles.noDecorationLink}>
-                  <td>
-                    <svg width="50" height="50" className='rounded-circle m-2'>
-                      {poster.profile_image && ( poster.profile_image == "None" && ( 
-                        <image href={NOT_FOUND} height="50" width="50"/>
-                      ))}
-
-                      {poster.profile_image && ( poster.profile_image != "None" && ( 
-                        <image href={poster.profile_image} height="50" width="50"/>
-                      ))}
-                      
-                    </svg>
-                  </td>
-                  <td className=''>
-                    <h4 className="font-weight-normal small align-middle h-100">{poster.username}</h4>
-                  </td>
-                </a>
+                {poster && (                
+                  <a href={"/profile/" + poster.username} style={styles.noDecorationLink}>
+                    <td>
+                      {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
+                      {poster.profile_image && ( <img src={PROFILE_IMAGE + poster.profile_image} alt="post" height="50" width="50" className="rounded-circle" style={styles.image} /> )}
+                    </td>
+                    <td className=''>
+                      <h4 className="font-weight-normal small align-middle h-100">{poster.username}</h4>
+                    </td>
+                  </a>
+                )}
               </tr>
             </tbody>
           </table> 
@@ -306,20 +310,9 @@ function Normal(props) {
         <div className="border-top">
           {/* Image div (black background, image/video is scaling within it) */}
           <div className="bg-image-post max-image-size text-center" >
-              {/* Scaled image within the parent with object-fit: contain */}
-              {props.image && ( props.image != "None" && ( 
-                <img 
-                  // Change src to image from db
-                  src={IMAGES + "posts/" + props.image} 
-                  alt="post" 
-                  className='ms-auto me-auto'
-                  style={styles.image}
-                />
-              ))}
-
-              {props.image && ( props.image == "None" && ( 
-                <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" /> 
-              ))}
+              {/* Scaled image within the parent with object-fit: contain */}  
+              {props.image && props.image.slice(-3) != "mp4" && props.image.slice(-3) != "mkv" && ( <img src={POST_IMAGE + props.image} alt="post" className='ms-auto me-auto' style={styles.image} /> )}
+              {props.image && props.image.slice(-3) == "mp4" && ( <video style={styles.image} controls ><source src={POST_IMAGE + props.image} type="video/mp4" alt="post" className='ms-auto me-auto' style={styles.image} /></video> )}
           </div>
 
           {/* Lower div with caption etc */}
@@ -365,14 +358,14 @@ function Normal(props) {
               } 
 
               {error && (
-                <Error changeMessage={setError} />
+                <Error changeMessage={setError} message={error} />
               )} 
 
               {/* @username: caption */}
               <table className='ms-2 mt-2'>
                 <tbody>
                   <tr>
-                    <td className='pe-1'>{poster.username}: </td>
+                    {poster && (<td className='pe-1'>{poster.username}: </td>)}
                     <td>{props.caption}</td>
                   </tr>
                 </tbody>
@@ -411,20 +404,8 @@ function Normal(props) {
                                 <tr>
                                   <td>
                                     <div className="pe-1">
-                                      <td className='pe-1'>
-                                        {item.profile_image && ( item.profile_image != "None" && (
-                                          <img
-                                            src={item.profile_image}
-                                            alt="post"
-                                            style={styles.image}
-                                            width="32" 
-                                            height="32" 
-                                            className="rounded-circle"
-                                          />
-                                        ))}
-                                        {item.profile_image && ( item.profile_image == "None" && (
-                                          <img src={NOT_FOUND} alt="profile_image" width="32" height="32" className="rounded-circle" />
-                                        ))}
+                                      <td className='pe-1'>                        
+                                        {item.profile_image && ( <img src={PROFILE_IMAGE + item.profile_image} style={styles.image} alt="profile_image" width="32" height="32" className="rounded-circle" /> )}
                                       </td>
 
                                       <td className='pe-1'>
@@ -458,7 +439,7 @@ function Normal(props) {
             </div>
           </div>
         </div>        
-      </div>  
+    </div>  
   )
 }
 

@@ -12,7 +12,7 @@ import Register from '../components/auth/Register'
 
 import { AUTH } from '../config/api.config'
 
-const cookies = new Cookies();
+const Cookies = new Cookies();
 
 function Page() {
   const [user, setUser] = useState()
@@ -23,8 +23,8 @@ function Page() {
   const [loading, setLoading] = useState()
 
   function getCookie(){
-    if(cookies.get('user')){
-      return cookies.get('user')
+    if(Cookies.get('user')){
+      return Cookies.get('user')
     }
   }  
 
@@ -39,7 +39,15 @@ function Page() {
               "x-access-token": cookies
             },
           },
-        )
+        ).then((response) => {
+          if(response.data.success){
+            setUser(response.data.user_id)
+          }  else {
+            setUser("none")
+            setPopup("login")
+            cookies.remove('user', { path: '/' });
+          }
+        })
       } else { 
         setUser("none")
         setPopup("login")
@@ -55,8 +63,8 @@ function Page() {
         <Header />
 
         {/* States */}
-        { error && ( <Error changeMessage={setError} /> )}
-        { success && ( <Success changeMessage={setSuccess} /> )}
+        { error && ( <Error message={error} changeMessage={setError} /> )}
+        { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
 

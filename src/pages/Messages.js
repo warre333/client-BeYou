@@ -40,7 +40,15 @@ function Messages() {
               "x-access-token": cookies
             },
           },
-        )
+        ).then((response) => {
+          if(response.data.success){
+            setUser(response.data.user_id)
+          }  else {
+            setUser("none")
+            setPopup("login")
+            cookies.remove('user', { path: '/' });
+          }
+        })
       } else { 
         setUser("none")
         setPopup("login")
@@ -55,8 +63,8 @@ function Messages() {
         <Header />
 
         {/* States */}
-        { error && ( <Error changeMessage={setError} /> )}
-        { success && ( <Success changeMessage={setSuccess} /> )}
+        { error && ( <Error message={error} changeMessage={setError} /> )}
+        { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
         <ChatList />

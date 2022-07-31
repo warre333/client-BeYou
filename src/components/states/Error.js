@@ -6,7 +6,7 @@ function Error(props) {
 
     return (
         <div className="alert alert-danger alert-dismissible fade show">
-            <h4 style={{margin: "0"}}>{props.message}</h4>
+            <p style={{margin: "0"}}>{props.message}</p>
             <button type="button" data-bs-dismiss="alert" className="btn-close " aria-label="Close" style={{float: 'right'}} onClick={changeMessageState}/>
         </div>     
     );

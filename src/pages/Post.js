@@ -9,8 +9,9 @@ import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
+import NormalPost from '../components/posts/NormalPost'
 
-import { IMAGES, AUTH, POSTS } from '../config/api.config'
+import { IMAGES, AUTH, POSTS, WEBSITE_URL } from '../config/api.config'
 import { useParams } from 'react-router-dom'
 
 const cookies = new Cookies();
@@ -43,7 +44,15 @@ function Page() {
               "x-access-token": cookies
             },
           },
-        )
+        ).then((response) => {
+          if(response.data.success){
+            setUser(response.data.user_id)
+          }  else {
+            setUser("none")
+            setPopup("login")
+            cookies.remove('user', { path: '/' });
+          }
+        })
       } else { 
         setUser("none")
       }
@@ -66,8 +75,8 @@ function Page() {
         <Header />
 
         {/* States */}
-        { error && ( <Error changeMessage={setError} /> )}
-        { success && ( <Success changeMessage={setSuccess} /> )}
+        { error && ( <Error message={error} changeMessage={setError} /> )}
+        { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
 
@@ -77,7 +86,7 @@ function Page() {
 
         */}
 
-        {post && (postMedia && (<img src={postMedia} alt="user post" />))}
+        {post && (<div className="posts__container"><NormalPost image={post.media_link} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} setError={setError} /></div>)}
         
         
 

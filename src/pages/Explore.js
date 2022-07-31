@@ -32,20 +32,20 @@ function Explore() {
 
   useEffect(() => {
     function isAuthenticated(){
-      const cookie = cookies.get("user")
+      const cookies = getCookie()
   
       if(cookies){
         axios.get(AUTH,
           {
             headers: {
-              "x-access-token": cookie
+              "x-access-token": cookies
             },
           },
         ).then((response) => {
-          if(response.data.auth){
+          if(response.data.success){
             setUser(response.data.user_id)
 
-            axios.get(POSTS + "trending",
+            axios.get(POSTS + "trending", 
               {
                 headers: {
                   "x-access-token": cookies
@@ -61,6 +61,7 @@ function Explore() {
           } else {            
             setUser(0)
             setPopup("login")
+            cookies.remove('user', { path: '/' });
           }          
         })
       } else { 
@@ -78,8 +79,8 @@ function Explore() {
         <Header />
 
         {/* States */}
-        { error && ( <Error changeMessage={setError} /> )}
-        { success && ( <Success changeMessage={setSuccess} /> )}
+        { error && ( <Error changeMessage={setError} message={error} /> )}
+        { success && ( <Success changeMessage={setSuccess} message={success} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
         <PostList posts={posts} />

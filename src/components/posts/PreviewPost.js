@@ -5,7 +5,7 @@ import { IMAGES } from '../../config/api.config';
 const styles = {
     bg: {
         maxWidth: "100%",
-        maxHeight: "20v",
+        // maxHeight: "20vh",
         aspectRatio: "1 / 1",
         background: "radial-gradient(circle, rgba(69,69,69,1) 0%, rgba(20,20,20,1) 80%)",
     },
@@ -38,7 +38,7 @@ const styles = {
 function PreviewPost(props) {
   return (
     <div className="col-4 text-center rounded-3"  >
-      <Link to={"/posts/" + props.post_id}>
+      <Link to={"/post/" + props.post_id}>
         <div className="bg-light border justify-content-center text-center align-middle" style={styles.bg}>
           <table style={styles.keepRatio}>
             <tbody style={styles.keepRatio}>
