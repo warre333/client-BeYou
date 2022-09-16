@@ -30,13 +30,13 @@ function Page() {
 
   useEffect(() => {
     function isAuthenticated(){
-      const cookies = getCookie()
+      const user = getCookie()
   
-      if(cookies){
+      if(user){
         axios.get(AUTH,
           {
             headers: {
-              "x-access-token": cookies
+              "x-access-token": user
             },
           },
         ).then((response) => {

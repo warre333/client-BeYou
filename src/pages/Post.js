@@ -62,11 +62,17 @@ function Page() {
   }, [])
 
   useEffect(() => {
-    axios.get(POSTS + "post?post_id=" + params.post).then((response) => {
-      setPost(response.data.data)
-      const media_link = IMAGES + "posts/" + response.data.data.media_link
-      setPostMedia(media_link)
-    })
+    axios.get(POSTS + "?post_id=" + params.post)
+      .then((response) => {
+        if(response.data.success){
+          setPost(response.data.data)
+          const media_link = IMAGES + "posts/" + response.data.data.media_link
+          setPostMedia(media_link)
+        } else {          
+          setPost({post_id: 0, user_id: 0, media_link: "NOT_FOUND.PNG", caption: "", time_placed: "0"})
+          setPostMedia("NOT_FOUND.PNG")
+        }
+      })
   }, [])
   
 

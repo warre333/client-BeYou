@@ -198,7 +198,7 @@ function Normal(props) {
   async function getComments(){
     const cookies = getCookie()
 
-    axios.get(POSTS + "comments?post_id=" + props.post_id, {
+    axios.get(POSTS + "comment/all?post_id=" + props.post_id, {
       headers: {
         "x-access-token": cookies
       },
@@ -238,7 +238,7 @@ function Normal(props) {
   }
 
   function getPosterInfo(){
-    axios.get(USERS + "user?user_id=" + props.user_id).then((response) => {
+    axios.get(USERS + "?user_id=" + props.user_id).then((response) => {
       if(response.data.success){
         setPoster(response.data.data)
       }
@@ -248,7 +248,7 @@ function Normal(props) {
   async function getUserInfo(){
     
     if(userId){
-      axios.get(USERS + "user?user_id=" + userId).then((response) => {
+      axios.get(USERS + "?user_id=" + userId).then((response) => {
         setUser(response.data.data)
       })
     }
@@ -291,13 +291,24 @@ function Normal(props) {
             <tbody>
               <tr>
                 {poster && (                
-                  <a href={"/profile/" + poster.username} style={styles.noDecorationLink}>
+                  <a href={"/u/" + poster.username} style={styles.noDecorationLink}>
                     <td>
                       {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
                       {poster.profile_image && ( <img src={PROFILE_IMAGE + poster.profile_image} alt="post" height="50" width="50" className="rounded-circle" style={styles.image} /> )}
                     </td>
                     <td className=''>
                       <h4 className="font-weight-normal small align-middle h-100">{poster.username}</h4>
+                    </td>
+                  </a>
+                )}
+                {!poster && (              
+                  <a href={""} style={styles.noDecorationLink}>
+                    <td>
+                      {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
+                      <img src={PROFILE_IMAGE + "NOT_FOUND.jpg"} alt="post" height="50" width="50" className="rounded-circle" style={styles.image} /> 
+                    </td>
+                    <td className=''>
+                      <h4 className="font-weight-normal small align-middle h-100">USER NOT FOUND</h4>
                     </td>
                   </a>
                 )}
@@ -419,10 +430,12 @@ function Normal(props) {
                                   </td>
 
                                   <td>
-                                    <div className="float-end" style={styles.deleteButtonDiv}>
-                                      <input type="hidden" name="comment_id"  />
-                                      <button className="text-danger" style={styles.button} id={index} value={item.comment_id} onClick={deleteComment}>delete</button>
-                                    </div>
+                                    {userId == item.user_id && (
+                                      <div className="float-end" style={styles.deleteButtonDiv}>
+                                        <input type="hidden" name="comment_id"  />
+                                        <button className="text-danger" style={styles.button} id={index} value={item.comment_id} onClick={deleteComment}>delete</button>
+                                      </div>
+                                    )}
                                   </td>
                                 </tr>
                               </tbody>

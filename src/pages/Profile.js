@@ -41,7 +41,12 @@ function Profile() {
     const [loading, setLoading] = useState()
   
     const [profileInfo, setProfileInfo] = useState()
+    const [profileTotalFollowers, setProfileTotalFollowers] = useState()
+    const [profileTotalLikes, setProfileTotalLikes] = useState()
+    const [profileTotalPosts, setProfileTotalPosts] = useState()
+    const [verified, setVerified] = useState()
     const [profilePosts, setProfilePosts] = useState()
+    const [isUserFollowing, setIsUserFollowing] = useState()
     
     const params = useParams()
     const profileUsername = params.username
@@ -84,20 +89,90 @@ function Profile() {
         }
     })
 
-    async function getUserInfo(){
+    function getUserInfo(){
       // Get user info from api with userid
       // put in userinfo
 
       // Info, profile_image, bio, total followers, total posts
-      axios.get(USERS + "profile?username=" + profileUsername).then((response) => {
-        if(response.data.success){
-          setProfileInfo(response.data.data.user_info[0])
-          setProfilePosts(response.data.data.posts)
-        } else {
-          setError(response.data.message)
-        }
-      })
+      axios.get(USERS + "profile?username=" + profileUsername)
+        .then((response) => {
+          console.log(response.data);
+          if(response.data.success){
+            setProfileInfo(response.data.data.user_info[0])
+            setProfilePosts(response.data.data.posts)
+            setProfileTotalFollowers(response.data.data.total_followers)
+            setProfileTotalLikes(response.data.data.total_likes)
+            setProfileTotalPosts(response.data.data.total_posts)
+            if(response.data.data.user_info[0].verified == 1){
+              setVerified(true)
+            } else {
+              setVerified(false)
+            }
+
+            amIFollowingThisUser(response.data.data.user_info[0].user_id)
+          } else {
+            setError(response.data.message)
+          }
+        })
     } 
+
+    function amIFollowingThisUser(user_id){
+      const cookies = getCookie()
+
+      axios.get(USERS + "friends/is-following?user_id=" + user_id,{
+        headers: {
+          "x-access-token": cookies
+        },
+      },)
+        .then((response) => {
+          if(response.data.success){
+            if(response.data.is_following){
+              setIsUserFollowing(true)
+            } else {
+              setIsUserFollowing(false)
+            }
+          }
+        })
+    }
+
+    function handleFollow(){
+      const cookies = getCookie()
+
+      axios.post(USERS + "friends", {
+        user_id: profileInfo.user_id
+      },{
+        headers: {
+          "x-access-token": cookies
+        },
+      },)
+        .then((response) => {
+          if(response.data.success){
+            setIsUserFollowing(true)
+            setProfileTotalFollowers(profileTotalFollowers + 1)
+          } else {
+            setIsUserFollowing(false)
+          }
+        })
+    }
+
+    function handleUnfollow(){
+      const cookies = getCookie()
+
+      axios.delete(USERS + "friends?user_id=" + profileInfo.user_id, {
+        headers: {
+          "x-access-token": cookies
+        },
+      },)
+        .then((response) => {
+          if(response.data.success){
+            setIsUserFollowing(false)
+            setProfileTotalFollowers(profileTotalFollowers - 1)
+          } else {
+            setIsUserFollowing(true)
+          }
+        })
+      
+    }
 
     useEffect(() => {
       if(!profileInfo || !profilePosts){
@@ -126,33 +201,66 @@ function Profile() {
                 </div>
 
                 <div className="col ms-md-3">
-                    <table className="h-100">
+                    <table className="h-50">
                         <tbody>
                             <tr>
                                 <td className="align-middle">
-                                  {profileInfo && <h2 className="text-start ml-10">{profileInfo.username}</h2>}
+                                  {profileInfo && (<h2 className="text-start ml-10">{profileInfo.username}</h2>)}
+                                </td>
+                                <td className="align-middle">                         
+                                  {verified && (
+                                    <div className="pl-2">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="green" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+                                        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+                                      </svg>
+                                    </div>
+                                  )}
                                 </td>
                             </tr>
                         </tbody>                        
                     </table>
+                      <div className="row h-25 text-center w-100">
+                        <div className="col align-middle">                                  
+                          <p className="">Followers</p>
+                          {profileTotalFollowers && (<p className="">{profileTotalFollowers}</p>)}
+                        </div>
+                        <div className="col align-middle">                                  
+                          <p className="">Posts</p>
+                          {profileTotalPosts && (<p className="">{profileTotalPosts}</p>)}
+                        </div>
+                        <div className="col align-middle">                                  
+                          <p className="">Likes</p>
+                          {profileTotalLikes && (<p className="">{profileTotalLikes}</p>)}
+                        </div>
+                      </div>
                 </div>
             </div>
 
 
             {/* bio + edit */}
             <div className="m-2">
-              {profileInfo && <p>{profileInfo.bio}</p> } 
+              {profileInfo && (<p>{profileInfo.bio}</p>) } 
             </div>
 
             <div className="m-2">
-               {user && profileInfo && user == profileInfo.user_id && ( 
+               {user && profileInfo && user === profileInfo.user_id && ( 
                  <div className="">
                    <button className="btn bg-light rounded-3 border w-100" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
                  </div>
                )}
+               {user && profileInfo && user !== profileInfo.user_id && !isUserFollowing && ( 
+                 <div className="">
+                   <button className="btn btn-primary rounded-3 border w-100" onClick={handleFollow} >Follow</button>
+                 </div> 
+               )}
+               {user && profileInfo && user !== profileInfo.user_id && isUserFollowing && ( 
+                 <div className="">
+                   <button className="btn btn-light rounded-3 border w-100" onClick={handleUnfollow} >Unfollow</button>
+                 </div>
+               )}
             </div>
 
-            {popup && popup == "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} />}
+            {popup && popup == "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} changeProfile={setProfileInfo} />}
 
             <div className="border-bottom mt-4"></div>
 

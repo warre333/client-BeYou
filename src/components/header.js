@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import Cookies from "universal-cookie"
 
 import { AUTH, PROFILE_IMAGE, USERS } from '../config/api.config';
@@ -16,21 +17,25 @@ const styles = {
 
     logo: {
         height: '80%',
-        width: '50px',
+        width: '60px',
         objectFit: 'cover',
     }
 };
 
 function Header() {
     const newCookies = new Cookies()
+    const navigate = useNavigate()
 
     const [user, setUser] = useState()
     const [popup, setPopup] = useState()
+
+    const [search, setSearch] = useState()
 
     function logout(){
         // Log out
         newCookies.remove("user", {path: "/"})
         setUser("")
+        navigate("/")
         window.location.reload(false);
     }
 
@@ -54,13 +59,19 @@ function Header() {
           )
             .then((response) => {
                 if(response.data.success){
-                    axios.get(USERS + "user?user_id=" + response.data.user_id).then((response) => {
+                    axios.get(USERS + "?user_id=" + response.data.user_id).then((response) => {
                         if(response.data.success){
                             setUser(response.data.data)
+                        } else {                          
+                          setUser("")
                         }
                     }) 
-                }             
+                } else {
+                  setUser("")
+                }         
             })
+        } else {
+          setUser("")
         }
       }
   
@@ -71,8 +82,14 @@ function Header() {
       setPopup("login")
     }
 
+    function handleEnterSearch(e){
+      if (e.code == "Enter") {
+        navigate('/search?keywords=' + search + '&page=1')
+      }
+    }
+
   return (
-        <header className="p-3 mb-3 border-bottom bg-light">
+        <header className="p-1 mb-3 border-bottom bg-light">
             <div className="container">
                 <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
                     <a href="/" className="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
@@ -86,9 +103,9 @@ function Header() {
                         {/* Shopping page */}
                     </ul>
 
-                    <form className="col-auto mb-0 me-3 ms-3 ms-lg-0">
-                        <input type="search" className="form-control" placeholder="Search..." aria-label="Search" />
-                    </form>
+                    <div className='col-auto mb-0 me-3 ms-3 ms-lg-0'>
+                        <input className="form-control" type="search" onKeyPress={handleEnterSearch} onChange={(e) => { setSearch(e.target.value) }} placeholder="Search..." aria-label="Search" />
+                    </div>
 
                     {user && (
                       <div className="dropdown text-end">
@@ -96,7 +113,7 @@ function Header() {
                             <img src={PROFILE_IMAGE + user.profile_image} alt="profile_image" width="32" height="32" className="rounded-circle" />
                           </a>
                           <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                              <li><a className="dropdown-item" href={"/profile/" + user.username}>Profile</a></li> 
+                              <li><a className="dropdown-item" href={"/u/" + user.username}>Profile</a></li> 
                               <li><a className="dropdown-item" href="/create">Create Post</a></li>
                               <li><a className="dropdown-item" href="/settings">Settings</a></li>
 

@@ -80,13 +80,22 @@ function Edit(props) {
             const formData = new FormData()
             formData.append('profileImage', profileImage)
     
-            axios.patch(USERS + "profile-image", formData, {
+            axios.patch(USERS + "profile/image", formData, {
                 headers: {
                   "x-access-token": cookies,
                   'Content-Type': 'multipart/form-data'
                 },
             }).then((response) => {
-                if(!response.data.success){
+                console.log(response.data.data.new_media_link)
+                if(response.data.success){
+                    props.changeProfile({
+                        bio: profile.bio,
+                        profile_image: response.data.data.new_media_link,
+                        user_id: profile.user_id,
+                        username: profile.username,
+                        verified: profile.verified
+                    })
+                } else {
                     console.log("error:", response.data)
                 }
             })
@@ -102,6 +111,14 @@ function Edit(props) {
                 if(response.data.success){
                     navigate("/profile/@" + username)
                     props.setPopup("none")
+                    
+                    props.changeProfile({
+                        bio: response.data.data.bio,
+                        profile_image: profile.profile_image,
+                        user_id: profile.user_id,
+                        username: response.data.data.username,
+                        verified: profile.verified
+                    })
                 } else {
                     console.log("error:", response.data)
                 }
@@ -118,6 +135,14 @@ function Edit(props) {
                 if(response.data.success){
                     navigate("/profile/@" + username)
                     props.setPopup("none")
+                    
+                    props.changeProfile({
+                        bio: response.data.data.bio,
+                        profile_image: profile.profile_image,
+                        user_id: profile.user_id,
+                        username: response.data.data.username,
+                        verified: profile.verified
+                    })
                 } else {
                     console.log("error:", response.data)
                 }

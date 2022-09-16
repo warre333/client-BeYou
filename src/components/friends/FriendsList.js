@@ -1,14 +1,16 @@
 import React from 'react'
 import Friend from './Friend'
 
-function FriendsList() {
+function FriendsList({ friendsList }) {
   return (
     <div>        
       <div className="container">
         <h1 className="text-center mb-3">Friends</h1>
 
         {/* Mapping of friends list */}
-        <Friend username={"MILF"} user_image={"https://pbs.twimg.com/media/CmUPSBuUMAEvfoh.jpg"}  />
+        {friendsList && friendsList.map((friend, key) => {
+          return <Friend key={key} username={friend.username} user_image={friend.profile_image} user_id={friend.user_id}  />
+        })}
       </div>
     </div>
   )

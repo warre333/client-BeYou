@@ -14,6 +14,8 @@ function PostList(props) {
               return <NormalPost image={post.media_link} key={index} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} setError={props.setError} />
             })
           )}
+
+          <p className="text-center p-10">You've seen all your posts from your feed.</p>
         </div>
     </div>
   )

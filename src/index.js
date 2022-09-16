@@ -18,6 +18,8 @@ import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
+import Settings from './pages/Settings';
+import Search from './pages/Search';
 
 
 
@@ -30,10 +32,11 @@ root.render(
       <Route path="/explore" element={<Explore />} />
       <Route path="/friends" element={<Friends />} />
       <Route path="/messages" element={<Messages />} />
+      <Route path="/search" element={<Search />} />
 
-      <Route path="/profile/:username" element={<Profile />} />
+      <Route path="/u/:username" element={<Profile />} />
       <Route path="/create" element={<CreatePost />} />
-      <Route path="/settings" element={<Homepage />} />
+      <Route path="/settings" element={<Settings />} />
 
       <Route path="/post/:post" element={<Post />} />
     </Routes>

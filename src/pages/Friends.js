@@ -11,13 +11,15 @@ import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
 
-import { AUTH } from '../config/api.config'
+import { AUTH, USERS } from '../config/api.config'
 
 function Explore() {
   const cookies = new Cookies()
   
   const [user, setUser] = useState()
   const [popup, setPopup] = useState()
+
+  const [friendsList, setFriendsList] = useState()
   
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
@@ -31,18 +33,19 @@ function Explore() {
 
   useEffect(() => {
     function isAuthenticated(){
-      const cookies = getCookie()
+      const user = getCookie()
   
-      if(cookies){
+      if(user){
         axios.get(AUTH,
           {
             headers: {
-              "x-access-token": cookies
+              "x-access-token": user
             },
           },
         ).then((response) => {
           if(response.data.success){
             setUser(response.data.user_id)
+            getFriends()
           }  else {
             setUser("none")
             setPopup("login")
@@ -58,6 +61,30 @@ function Explore() {
     isAuthenticated()
   }, [])
 
+  function getFriends(){
+    const user = getCookie()
+
+    if(user){
+      axios.get(USERS + "friends", 
+      {
+        headers: {
+          "x-access-token": user
+        },
+      })
+        .then((response) => {
+          console.log(response.data);
+
+          if(response.data.success){
+            setFriendsList(response.data.data)
+          } else {
+            setError(response.data.message)
+          }
+        })
+    } else {
+      setError("You should be logged in to see your friend list.")
+    }    
+  }
+
   return (
     <div>
         <Header />
@@ -67,7 +94,7 @@ function Explore() {
         { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <FriendsList />
+        <FriendsList friendsList={friendsList} />
 
 
         {/* Login & register popups */}

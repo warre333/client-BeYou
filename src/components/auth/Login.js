@@ -50,12 +50,14 @@ function Login(props) {
 
         if(username){
             if(password){
+                console.log(username, password)
                 axios.post(AUTH + "login", {           
                     username: username,
                     password: password,
                 })
                     .then((response) => {
                         const success = response.data.success
+                        console.log(response)
 
                         if(success){
                             setLoading(false)
@@ -67,6 +69,9 @@ function Login(props) {
                             setLoading(false)
                             setError(response.data.message)
                         }
+                    })
+                    .catch((err) => {
+                        console.log(err)
                     })
             } else {
                 setLoading(false)

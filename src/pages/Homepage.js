@@ -32,13 +32,13 @@ function Homepage() {
 
   useEffect(() => {
     function isAuthenticated(){
-      const cookies = getCookie()
+      const user = getCookie()
   
-      if(cookies){
+      if(user){
         axios.get(AUTH,
           {
             headers: {
-              "x-access-token": cookies
+              "x-access-token": user
             },
           },
         ).then((response) => {
@@ -48,7 +48,7 @@ function Homepage() {
             axios.get(POSTS + "feed",
               {
                 headers: {
-                  "x-access-token": cookies
+                  "x-access-token": user
                 },
               },
             ).then((response) => {

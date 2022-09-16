@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import sha256 from 'js-sha256'
 import axios from 'axios'
 import Cookies from 'universal-cookie'
-
+import validator from "validator";
 
 import { AUTH } from '../../config/api.config'
 
@@ -46,7 +46,7 @@ function Register(props) {
         setLoading(true)
 
         if(username){
-            if(email){
+            if(email && validator.isEmail(email)){
                 if(password){
                     axios.post(AUTH + "register", {           
                         username: username,

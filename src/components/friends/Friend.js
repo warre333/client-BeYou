@@ -1,4 +1,5 @@
 import React from 'react'
+import { PROFILE_IMAGE } from '../../config/api.config'
 
 const styles = {
     image: {
@@ -22,7 +23,7 @@ const styles = {
 
 function Friend(props) {
   return (
-    <div>
+    <div className='my-1'>
         <div className="bg-light border rounded-4">
             <div className="row">
                 <div className="col-8">
@@ -31,7 +32,7 @@ function Friend(props) {
                             <tr>
                                 <td>
                                     <svg width="50" height="50" className='rounded-circle m-2'>
-                                    <image href={props.user_image} style={styles.image} height="50" width="50" />
+                                        <image href={PROFILE_IMAGE + props.user_image} style={styles.image} height="50" width="50" />
                                     </svg>
                                 </td>  
 
@@ -49,7 +50,7 @@ function Friend(props) {
                         <tbody>
                             <tr>
                                 <td>
-                                    <a className="btn btn-primary align-middle" href={"/profile/" + "1"}>profile</a>
+                                    <a className="btn btn-primary align-middle" href={"/u/" + props.username}>profile</a>
                                 </td>
                             
                                 <td>
