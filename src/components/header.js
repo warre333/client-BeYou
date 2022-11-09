@@ -91,7 +91,7 @@ function Header() {
   return (
         <header className="p-1 mb-3 border-bottom bg-light">
             <div className="container">
-                <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
+                <div className="d-flex flex flex-row flex-wrap align-items-center justify-content-lg-start">
                     <a href="/" className="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
                         <img src={Logo} alt="logo" style={styles.logo}/>
                     </a>
@@ -130,6 +130,8 @@ function Header() {
                 </div>
             </div>
 
+
+
             {/* Login & register popups */}
             { popup === "login" && (
             <Login setPopup={setPopup} />
@@ -139,6 +141,7 @@ function Header() {
             <Register setPopup={setPopup} />
             )}
         </header>
+
   )
 }
 
