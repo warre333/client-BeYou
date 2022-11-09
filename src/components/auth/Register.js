@@ -54,7 +54,6 @@ function Register(props) {
                         password: password,
                     })
                         .then((response) => {
-                            console.log(response)
                             const success = response.data.success
 
                             if(success){

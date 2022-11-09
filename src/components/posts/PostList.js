@@ -15,7 +15,7 @@ function PostList(props) {
             })
           )}
 
-          <p className="text-center p-10">You've seen all your posts from your feed.</p>
+          <p className="text-center mt-10">You've seen all your posts from your feed.</p>
         </div>
     </div>
   )

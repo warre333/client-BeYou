@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
-import { useParams } from "react-router-dom"
+import { Navigate, useNavigate, useParams } from "react-router-dom"
 
 import useWindowDimensions from '../hooks/useWindowDimensions'
 
@@ -13,7 +13,7 @@ import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
 
-import { AUTH, PROFILE_IMAGE, USERS } from '../config/api.config'
+import { AUTH, CHAT, PROFILE_IMAGE, USERS } from '../config/api.config'
 import Edit from '../components/profile/Edit'
 import PreviewPost from '../components/posts/PreviewPost'
 
@@ -33,6 +33,8 @@ const styles = {
 const newCookies = new Cookies();
 
 function Profile() {
+  const navigate = useNavigate()
+
     const [user, setUser] = useState()
     const [popup, setPopup] = useState()
     
@@ -49,6 +51,7 @@ function Profile() {
     const [isUserFollowing, setIsUserFollowing] = useState()
     
     const params = useParams()
+
     const profileUsername = params.username
 
     function getCookie(){
@@ -174,6 +177,26 @@ function Profile() {
       
     }
 
+    function handleMessage(){
+      const cookies = getCookie()
+
+      axios.post(CHAT, {
+        user_id: profileInfo.user_id
+      }, {
+        headers: {
+          "x-access-token": cookies
+        },
+      },)
+        .then((response) => {
+          console.log(response);
+          if(response.data.success){
+            navigate("/chat/" + response.data.chatroom_id)
+          } else {
+          }
+        })
+      
+    }
+
     useEffect(() => {
       if(!profileInfo || !profilePosts){
         getUserInfo()
@@ -254,8 +277,9 @@ function Profile() {
                  </div> 
                )}
                {user && profileInfo && user !== profileInfo.user_id && isUserFollowing && ( 
-                 <div className="">
-                   <button className="btn btn-light rounded-3 border w-100" onClick={handleUnfollow} >Unfollow</button>
+                 <div className="row">
+                   <button className="col me-2 btn btn-light rounded-3 border w-100" onClick={handleUnfollow} >Unfollow</button>
+                   <button className="col ms-2 btn btn-light rounded-3 border w-100" onClick={handleMessage} >Message</button>
                  </div>
                )}
             </div>

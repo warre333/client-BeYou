@@ -62,8 +62,9 @@ function Page() {
   }, [])
 
   useEffect(() => {
-    axios.get(POSTS + "?post_id=" + params.post)
+    axios.get(POSTS + "post?post_id=" + params.post)
       .then((response) => {
+        console.log(response.data);
         if(response.data.success){
           setPost(response.data.data)
           const media_link = IMAGES + "posts/" + response.data.data.media_link
@@ -75,6 +76,7 @@ function Page() {
       })
   }, [])
   
+  console.log(post);
 
   return (
     <div>

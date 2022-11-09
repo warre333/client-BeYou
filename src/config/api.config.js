@@ -19,6 +19,7 @@ module.exports = {
     USERS: "http://10.43.36.26:4000/users/",
     IMAGES: "http://10.43.36.26:4000/images/",
     SEARCH: "http://10.43.36.26:4000/search/",
+    CHAT: "http://10.43.36.26:4000/chat/",
 
     PROFILE_IMAGE: "http://10.43.36.26:4000/images/profiles/",
     POST_IMAGE: "http://10.43.36.26:4000/images/posts/",

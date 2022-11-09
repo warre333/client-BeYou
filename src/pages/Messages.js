@@ -67,7 +67,7 @@ function Messages() {
         { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <ChatList />
+        <ChatList setError={setError} error={error} />
         
         {/* Login & register popups */}
         { popup === "login" && (

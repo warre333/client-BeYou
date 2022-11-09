@@ -162,9 +162,11 @@ function Normal(props) {
           },
         }).then((response) => {
           if(response.data.success){
-            const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, username: user.username}
+            const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, user_id: user.user_id, username: user.username}
             const newCommentSection = [newComment, ...comments]
 
+            setComment("")
+          
             setComments(newCommentSection)
           } else {
             setError("There occurred an error while commenting.")
@@ -177,6 +179,8 @@ function Normal(props) {
       setError("You need to be logged in to comment.")
     } 
   }
+
+  console.log(user, comments);
 
   async function deleteComment(e){
     const cookies = getCookie()
@@ -317,6 +321,7 @@ function Normal(props) {
           </table> 
         </div>
 
+
         {/* Image div (image/video + caption, name, ..) */}
         <div className="border-top">
           {/* Image div (black background, image/video is scaling within it) */}
@@ -329,7 +334,7 @@ function Normal(props) {
           {/* Lower div with caption etc */}
           <div className="">
               {/* Like / Comment / ... */}
-              <div className="row text-center py-2 border-bottom">
+              <div className="row text-center py-2">
                 <div className="col">
                   <button style={styles.button} onClick={likePost} onAnimationEnd={() => setLikeAnimation(false)} >
                     <svg width="24" height="24" fill={liked ? "red " : "currentColor"} className={likeAnimation ? "bi bi-heart-fill zoom-in-out-box" : "bi bi-heart-fill"} viewBox="0 0 16 16">
@@ -354,6 +359,8 @@ function Normal(props) {
                   </button>
                 </div>
               </div>
+              
+              <hr className='m-0 ' />
 
               {share &&
                 <div>
@@ -398,7 +405,7 @@ function Normal(props) {
                   <div className="container" id="comments">
                     <div className="row mt-3 mb-3" style={styles.postComment}>
                       <div className="col h-100">
-                        <textarea className="form-control h-100" aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }}></textarea>
+                        <textarea className="form-control h-100" type="reset" value={comment} aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }}></textarea>
                       </div>
 
                       <div className="col h-100">
