@@ -12,7 +12,7 @@ import Loading from '../states/Loading'
 
 const styles = {
     opacityBackground: {
-        background: "rgba(33, 37, 41, .9)",
+        background: "rgba(33, 37, 41, .4)",
     },
 
     center: {
@@ -82,27 +82,27 @@ function Register(props) {
     }
 
   return (
-    <div className='vw-100 vh-100 top-0 start-0 position-fixed' style={styles.opacityBackground}>
+    <div className='w-screen h-screen top-0 start-0 fixed mx-auto my-auto' style={styles.opacityBackground}>
         {/* Darkend background */}
-        <div className="w-50 h-50 top-25 left-25 position-fixed bg-light" style={styles.centerWhiteCard}>
+        <div className="w-full top-[25%] md:left-[25%] md:w-1/2 h-1/2 fixed bg-light rounded-3xl">
 
             {/* centered white space */}
-            <div className="h-100 text-center">
-                <h1 className="text-center m-4">Register</h1>
+            <div className="h-full">
+                <h1 className="text-center text-xl font-bold m-4">Register</h1>
 
                 {!loading && (
-                    <div className="w-75 p-2" style={styles.marginLeft25}>
-                        <label htmlFor="email" className="text-start w-100 control-label">Email Address:</label>
-                        <input type="email" name="email" id="email" className="form-control mb-2" onChange={(e) => { setEmail(e.target.value) }} />
+                    <div className="w-3/4 mx-auto p-2">
+                        <label htmlFor="email" className="text-left w-full ml-4">Email Address:</label>
+                        <input type="email" name="email" id="email" className="w-full mb-2 px-4 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setEmail(e.target.value) }} />
 
-                        <label htmlFor="username" className="text-start w-100 control-label">Username</label>
-                        <input type="text" name="username" id="username" className="form-control mb-2" onChange={(e) => { setUsername(e.target.value) }} />
+                        <label htmlFor="username" className="text-left w-full ml-4">Username</label>
+                        <input type="text" name="username" id="username" className="w-full mb-2 px-4 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setUsername(e.target.value) }} />
 
-                        <label htmlFor="password" className="text-start w-100 control-label">Password</label>
-                        <div className="input-group">
-                            <input type={viewPassword ? "test" : "password"} name="password" id="password" className="form-control mb-2 password-revealable" onChange={(e) => { setPassword(sha256(e.target.value)) }} />
+                        <label htmlFor="password" className="text-left w-full ml-4">Password</label>
+                        <div className="w-full mb-2 border border-gray-200 focus:border-none bg-white rounded-2xl flex flex-row">
+                            <input type={viewPassword ? "test" : "password"} name="password" id="password" className="w-full ml-4 mr-2" onChange={(e) => { setPassword(sha256(e.target.value)) }} />
                             
-                            <button className="input-group-text h-100" 
+                            <button className="mr-3" 
                                 onClick={() => { 
                                     if(viewPassword){
                                         setViewPassword(false) 
@@ -111,14 +111,14 @@ function Register(props) {
                                     }
                                 }}>
                                 {!viewPassword && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
                                         <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
                                         <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
                                     </svg>
                                 )}
 
                                 {viewPassword && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
                                         <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/>
                                         <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/>
                                     </svg>
@@ -126,13 +126,13 @@ function Register(props) {
                             </button>
                         </div>
 
-                        <div className="row mt-3">
-                            <div className="col">
-                                <button className="btn btn-primary w-100" onClick={register}>Register</button>
+                        <div className="flex flex-row mt-3">
+                            <div className="w-full md:w-1/2 mr-0 md:mr-1">
+                                <button className="w-full text-center bg-blue-500 rounded-full py-1 text-white" onClick={register}>Register</button>
                             </div>
 
-                            <div className="col">
-                                <button className="btn btn-secondary w-100" onClick={() => { props.setPopup("login") }}>Login</button>
+                            <div className="w-full md:w-1/2 ml-0 md:ml-1">
+                                <button className="w-full text-center bg-gray-300 rounded-full py-1" onClick={() => { props.setPopup("login") }}>Login</button>
                             </div>
                         </div>   
                     </div>
