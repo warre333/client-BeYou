@@ -149,42 +149,42 @@ function Page() {
 
         */}
         {/* Create Post */}
-        <div className="text-center h-75" >
+        <div className="text-center h-3/4" >
           {/* Upload image, show image */}
           <div className="text-center">
             {/* show image */}
             { previewPost && (
-              <div className="bg-image-post max-image-size text-center w-25 mx-auto my-3" >                     
+              <div className="bg-image-post max-image-size text-center w-1/4 mx-auto my-3" >                     
                   {/* {props.image && ( <img src={POST_IMAGE + props.image} alt="post" className='ms-auto me-auto' style={styles.image} /> )} */}
                 <img src={previewPost} alt="preview of uploaded file" className='mx-auto' style={styles.image} />
               </div>
             )}
 
             {/* upload image */}
-            <div className="w-50 mt-3" style={styles.centerInputs}> 
-              <label htmlFor="" className="w-100 text-center">Upload media to post:</label>
-              <div className="row">
-                <div className="col-12 col-md-6">
-                  <label htmlFor="" className="w-100 text-center">Open files</label>
-                  <input type="file" onChange={(e) => { loadPreview(e) }} className="form-control" />
+            <div className="w-1/2 mx-auto mt-3"> 
+              <label htmlFor="" className="w-full text-center">Upload media to post:</label>
+              <div className="flex flex-row">
+                <div className="w-full md:w-1/2">
+                  <label htmlFor="" className="w-full text-center">Open files</label>
+                  <input type="file" onChange={(e) => { loadPreview(e) }} className="w-full" />
                 </div>
-                <div className="col-12 col-md-6">
-                  <label htmlFor="" className="w-100 text-center">Open camera</label>
-                  <input type="file" onChange={(e) => { loadPreview(e) }} accept="image/*" capture="camera" className="form-control" data-classButton="btn btn-secundary" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
+                <div className="w-full md:w-1/">
+                  <label htmlFor="" className="w-full text-center">Open camera</label>
+                  <input type="file" onChange={(e) => { loadPreview(e) }} accept="image/*" capture="camera" className="form-control" data-classButton="py-1 px-4 bg-blue-500" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Choose caption */}
-          <div className="w-50 mt-3" style={styles.centerInputs}> 
-            <label htmlFor="bio" className="w-100 text-start mt-3">
+          <div className="w-1/2 mx-auto mt-3"> 
+            <label htmlFor="bio" className="w-full text-start mt-3">
               Enter caption:
             </label>
             <input 
               type="text" 
               name='caption' 
-              className="w-100 form-control" 
+              className="w-full form-control" 
               defaultValue={caption}
               onChange={(e) => {
                 setCaption(e.target.value)

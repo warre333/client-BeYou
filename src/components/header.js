@@ -118,7 +118,7 @@ function Header() {
               {user && (
                 <div className="text-end my-auto ml-2 relative">
                   <button onClick={handleOpenMenu}>
-                    <img src={PROFILE_IMAGE + user.profile_image} alt="profile_image" width="32" height="32" className="rounded-full " />
+                    <img src={PROFILE_IMAGE + user.profile_image} alt="profile_image" width="50" height="50" className="object-cover w-10 h-10 rounded-full" />
                   </button>
 
                   {isProfileMenuOpen && (

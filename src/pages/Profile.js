@@ -17,18 +17,18 @@ import { AUTH, CHAT, PROFILE_IMAGE, USERS } from '../config/api.config'
 import Edit from '../components/profile/Edit'
 import PreviewPost from '../components/posts/PreviewPost'
 
-const styles = {
-    profileImage: {
-        height: "25vw",
-        width: "25vw",
-        objectFit: "cover",
-    },
-    profileImageDesktop: {
-        height: "10vw",
-        width: "10vw",
-        objectFit: "cover",
-    },
-}
+// const styles = {
+//     profileImage: {
+//         height: "25vw",
+//         width: "25vw",
+//         objectFit: "cover",
+//     },
+//     profileImageDesktop: {
+//         height: "10vw",
+//         width: "10vw",
+//         objectFit: "cover",
+//     },
+// }
 
 const newCookies = new Cookies();
 
@@ -215,20 +215,20 @@ function Profile() {
         { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <div className="container">
+        <div className="container mx-auto">
             {/* row met image daarnaast username, bio, edit profile button */}
             {/* Image + username */}
-            <div className="row">
-                <div className="col-4 col-md-auto text-end">
-                  {profileInfo && ( <img src={PROFILE_IMAGE + profileInfo.profile_image} alt="profile_image" style={isOnMobile ? styles.profileImage : styles.profileImageDesktop} className="rounded-circle" /> )}
+            <div className="flex flex-row pr-4">
+                <div className="text-right w-1/3 md:w-1/4 lg:w-1/5 flex justify-center align-middle">
+                  {profileInfo && ( <img src={PROFILE_IMAGE + profileInfo.profile_image} alt="profile_image" className="object-cover w-[15vw] h-[15vw] md:w-[10vw] md:h-[10vw] aspect-square rounded-full" /> )}
                 </div>
 
-                <div className="col ms-md-3">
-                    <table className="h-50">
+                <div className="ml-3 w-full">
+                    <table className="h-1/2">
                         <tbody>
                             <tr>
                                 <td className="align-middle">
-                                  {profileInfo && (<h2 className="text-start ml-10">{profileInfo.username}</h2>)}
+                                  {profileInfo && (<h2 className="text-start font-bold text-2xl">{profileInfo.username}</h2>)}
                                 </td>
                                 <td className="align-middle">                         
                                   {verified && (
@@ -242,16 +242,16 @@ function Profile() {
                             </tr>
                         </tbody>                        
                     </table>
-                      <div className="row h-25 text-center w-100">
-                        <div className="col align-middle">                                  
+                      <div className="flex flex-row h-1/4 justify-between text-center w-full">
+                        <div className="align-middle">                                  
                           <p className="">Followers</p>
                           {profileTotalFollowers && (<p className="">{profileTotalFollowers}</p>)}
                         </div>
-                        <div className="col align-middle">                                  
+                        <div className="align-middle">                                  
                           <p className="">Posts</p>
                           {profileTotalPosts && (<p className="">{profileTotalPosts}</p>)}
                         </div>
-                        <div className="col align-middle">                                  
+                        <div className="align-middle">                                  
                           <p className="">Likes</p>
                           {profileTotalLikes && (<p className="">{profileTotalLikes}</p>)}
                         </div>
@@ -261,38 +261,38 @@ function Profile() {
 
 
             {/* bio + edit */}
-            <div className="m-2">
+            <div className="mx-2 my-8">
               {profileInfo && (<p>{profileInfo.bio}</p>) } 
             </div>
 
             <div className="m-2">
                {user && profileInfo && user === profileInfo.user_id && ( 
                  <div className="">
-                   <button className="btn bg-light rounded-3 border w-100" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
+                   <button className="py-1 px-4 bg-light rounded-xl border w-full" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
                  </div>
                )}
                {user && profileInfo && user !== profileInfo.user_id && !isUserFollowing && ( 
                  <div className="">
-                   <button className="btn btn-primary rounded-3 border w-100" onClick={handleFollow} >Follow</button>
+                   <button className="py-1 px-4 btn-primary rounded-xl border w-full" onClick={handleFollow} >Follow</button>
                  </div> 
                )}
                {user && profileInfo && user !== profileInfo.user_id && isUserFollowing && ( 
                  <div className="row">
-                   <button className="col me-2 btn btn-light rounded-3 border w-100" onClick={handleUnfollow} >Unfollow</button>
-                   <button className="col ms-2 btn btn-light rounded-3 border w-100" onClick={handleMessage} >Message</button>
+                   <button className="col me-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleUnfollow} >Unfollow</button>
+                   <button className="col ms-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleMessage} >Message</button>
                  </div>
                )}
             </div>
 
             {popup && popup == "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} changeProfile={setProfileInfo} />}
 
-            <div className="border-bottom mt-4"></div>
+            <div className="border-b mt-4"></div>
 
 
 
             {/* Posts grid */}
-            <div className="container my-5">
-              <div className="row g-3">
+            <div className="my-5">
+              <div className="grid grid-cols-3 gap-4">
 
                 {profilePosts && profilePosts.length > 0 && (
                   profilePosts.map((post, key) => {
@@ -301,7 +301,7 @@ function Profile() {
                 )}
 
                 {profilePosts && profilePosts.length == 0 && (
-                  <h4 className="w-100 text-center">No posts are found...</h4>
+                  <h4 className="w-full text-center">No posts are found...</h4>
                 )}
 
               </div>

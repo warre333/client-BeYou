@@ -37,9 +37,9 @@ const styles = {
 
 function PreviewPost(props) {
   return (
-    <div className="col-4 text-center rounded-3"  >
-      <Link to={"/post/" + props.post_id}>
-        <div className="bg-light border justify-content-center text-center align-middle" style={styles.bg}>
+    <Link to={"/post/" + props.post_id}>
+      <div className="text-center rounded-xl"  >
+        <div className="bg-light border justify-center text-center align-middle" style={styles.bg}>
           <table style={styles.keepRatio}>
             <tbody style={styles.keepRatio}>
               <tr style={styles.keepRatio}>
@@ -47,9 +47,9 @@ function PreviewPost(props) {
               </tr>
             </tbody>
           </table>
-        </div> 
-      </Link>       
-    </div>
+        </div>      
+      </div>
+    </Link>  
   )
 }
 

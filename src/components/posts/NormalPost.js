@@ -407,11 +407,11 @@ function Normal(props) {
                   <div className="ml-2" id="comments">
                     <div className="flex flex-row mt-3 mb-3" style={styles.postComment}>
                       <div className="h-full">
-                        <textarea className="h-full border border-gray-200 rounded-full px-4" type="reset" value={comment} aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }}></textarea>
+                        <textarea className="h-full bg-white border border-gray-200 rounded-full px-4" type="reset" value={comment} aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }}></textarea>
                       </div>
 
                       <div className="h-full">
-                        <button type="submit" className="h-full bg-blue-500 px-6 ml-2 rounded-full" onClick={placeComment}>post</button>
+                        <button type="submit" className="h-full text-white bg-blue-500 px-6 ml-2 rounded-full" onClick={placeComment}>post</button>
                       </div>
                     </div>
                     
