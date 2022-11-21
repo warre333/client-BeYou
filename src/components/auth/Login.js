@@ -110,10 +110,10 @@ function Login(props) {
                         {error && ( <p className='w-full text-center text-orange-300'>{error}</p> )}
 
                         <label htmlFor="username" className="text-left w-full ml-4">Username</label>
-                        <input type="text" name="username" id="username" className="w-full mb-2 px-4 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setUsername(e.target.value)}} />
+                        <input type="text" name="username" id="username" className="w-full mb-2 py-1 px-4 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setUsername(e.target.value)}} />
 
                         <label htmlFor="password" className="text-left w-full ml-4">Password</label>
-                        <div className="w-full mb-2 border border-gray-200 focus:border-none bg-white rounded-2xl flex flex-row">
+                        <div className="w-full mb-2 border border-gray-200 focus:border-none bg-white py-1 rounded-2xl flex flex-row">
                             <input type={viewPassword ? "test" : "password"} name="password" id="password" className="w-full ml-4 mr-2" onChange={(e) => { setPassword(sha256(e.target.value))}} />
 
                             <button className="mr-3" 

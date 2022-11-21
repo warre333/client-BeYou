@@ -4,8 +4,8 @@ import Friend from './Friend'
 function FriendsList({ friendsList }) {
   return (
     <div>        
-      <div className="container">
-        <h1 className="text-center mb-3">Friends</h1>
+      <div className="container mx-auto">
+        <h1 className="text-center mb-3 font-bold text-xl">Friends</h1>
 
         {/* Mapping of friends list */}
         {friendsList && friendsList.map((friend, key) => {

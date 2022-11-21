@@ -28,6 +28,7 @@ function Header() {
 
     const [user, setUser] = useState()
     const [popup, setPopup] = useState()
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
 
     const [search, setSearch] = useState()
 
@@ -88,6 +89,14 @@ function Header() {
       }
     }
 
+    function handleOpenMenu(){
+      if(isProfileMenuOpen){
+        setIsProfileMenuOpen(false)
+      } else {
+        setIsProfileMenuOpen(true)
+      }
+    }
+
   return (
         <header className="p-1 mb-3 border-bottom bg-light">
           <div className="container mx-auto">
@@ -107,18 +116,22 @@ function Header() {
               </div>
 
               {user && (
-                <div className="text-end my-auto ml-2">
-                  <a href="/" className="my-auto" id="">
+                <div className="text-end my-auto ml-2 relative">
+                  <button onClick={handleOpenMenu}>
                     <img src={PROFILE_IMAGE + user.profile_image} alt="profile_image" width="32" height="32" className="rounded-full " />
-                  </a>
-                  <ul className=" absolute text-small">
-                    <li><a className="dropdown-item" href={"/u/" + user.username}>Profile</a></li> 
-                    <li><a className="dropdown-item" href="/create">Create Post</a></li>
-                    <li><a className="dropdown-item" href="/settings">Settings</a></li>
+                  </button>
 
-                    <li><hr className="dropdown-divider" /></li>
-                    <li><button className="dropdown-item" onClick={logout}>Sign out</button></li>
-                  </ul>
+                  {isProfileMenuOpen && (
+                    <ul className="absolute mt-4 mx-auto right-0 xl:-right-8 text-center bg-light p-1 border border-gray-200 rounded-lg text-small">
+                      <li><a className="" href={"/u/" + user.username}>Profile</a></li> 
+                      <li><a className="" href="/create">Create&nbsp;post</a></li>
+                      <li><a className="" href="/settings">Settings</a></li>
+
+                      <li><hr /></li>
+
+                      <li><button className="text-red-500" onClick={logout}>Sign out</button></li>
+                    </ul>
+                  )}                  
                 </div>
               )}
               {!user && (

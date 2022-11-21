@@ -93,13 +93,13 @@ function Register(props) {
                 {!loading && (
                     <div className="w-3/4 mx-auto p-2">
                         <label htmlFor="email" className="text-left w-full ml-4">Email Address:</label>
-                        <input type="email" name="email" id="email" className="w-full mb-2 px-4 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setEmail(e.target.value) }} />
+                        <input type="email" name="email" id="email" className="w-full mb-2 px-4 py-1 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setEmail(e.target.value) }} />
 
                         <label htmlFor="username" className="text-left w-full ml-4">Username</label>
-                        <input type="text" name="username" id="username" className="w-full mb-2 px-4 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setUsername(e.target.value) }} />
+                        <input type="text" name="username" id="username" className="w-full mb-2 px-4 py-1 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setUsername(e.target.value) }} />
 
                         <label htmlFor="password" className="text-left w-full ml-4">Password</label>
-                        <div className="w-full mb-2 border border-gray-200 focus:border-none bg-white rounded-2xl flex flex-row">
+                        <div className="w-full mb-2 py-1 border border-gray-200 focus:border-none bg-white rounded-2xl flex flex-row">
                             <input type={viewPassword ? "test" : "password"} name="password" id="password" className="w-full ml-4 mr-2" onChange={(e) => { setPassword(sha256(e.target.value)) }} />
                             
                             <button className="mr-3" 
