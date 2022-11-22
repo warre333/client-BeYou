@@ -149,19 +149,19 @@ function Page() {
 
         */}
         {/* Create Post */}
-        <div className="text-center h-3/4" >
+        <div className="text-center h-3/4 mx-auto" >
           {/* Upload image, show image */}
-          <div className="text-center">
+          <div className="text-center w-1/2 mx-auto">
             {/* show image */}
             { previewPost && (
               <div className="bg-image-post max-image-size text-center w-1/4 mx-auto my-3" >                     
-                  {/* {props.image && ( <img src={POST_IMAGE + props.image} alt="post" className='ms-auto me-auto' style={styles.image} /> )} */}
+                {/* {props.image && ( <img src={POST_IMAGE + props.image} alt="post" className='ms-auto me-auto' style={styles.image} /> )} */}
                 <img src={previewPost} alt="preview of uploaded file" className='mx-auto' style={styles.image} />
               </div>
             )}
 
             {/* upload image */}
-            <div className="w-1/2 mx-auto mt-3"> 
+            <div className="w-full mx-auto mt-3"> 
               <label htmlFor="" className="w-full text-center">Upload media to post:</label>
               <div className="flex flex-row">
                 <div className="w-full md:w-1/2">
@@ -170,21 +170,21 @@ function Page() {
                 </div>
                 <div className="w-full md:w-1/">
                   <label htmlFor="" className="w-full text-center">Open camera</label>
-                  <input type="file" onChange={(e) => { loadPreview(e) }} accept="image/*" capture="camera" className="form-control" data-classButton="py-1 px-4 bg-blue-500" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
+                  <input type="file" onChange={(e) => { loadPreview(e) }} accept="image/*" capture="camera" className="w-full" data-classButton="py-1 px-4 bg-blue-500" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Choose caption */}
-          <div className="w-1/2 mx-auto mt-3"> 
-            <label htmlFor="bio" className="w-full text-start mt-3">
+          <div className="w-1/2 mx-auto mt-3 text-left"> 
+            <label htmlFor="bio" className="w-full mt-3">
               Enter caption:
             </label>
             <input 
               type="text" 
               name='caption' 
-              className="w-full form-control" 
+              className="w-full py-1 px-4 border rounded-xl" 
               defaultValue={caption}
               onChange={(e) => {
                 setCaption(e.target.value)
@@ -194,7 +194,7 @@ function Page() {
 
           {/* Post */}
           <div className="">
-            <button className="btn btn-primary btn-lg w-50 mt-4" onClick={post} name="post">POST</button>
+            <button className="py-2 w-1/2 text-white rounded-xl bg-blue-500 mt-4" onClick={post} name="post">POST</button>
             </div>
         </div>
 

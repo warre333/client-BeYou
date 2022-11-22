@@ -38,7 +38,7 @@ function MessagesList({setError, error}) {
 
   return (
     <div>
-      <div className="container">
+      <div className="container mx-auto">
         <h1 className="text-center mb-3">Chats</h1>
 
         {chats && chats.map((chat, key) => {

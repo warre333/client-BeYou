@@ -273,13 +273,13 @@ function Profile() {
                )}
                {user && profileInfo && user !== profileInfo.user_id && !isUserFollowing && ( 
                  <div className="">
-                   <button className="py-1 px-4 btn-primary rounded-xl border w-full" onClick={handleFollow} >Follow</button>
+                   <button className="py-1 px-4 bg-blue-500 text-white rounded-xl border w-full" onClick={handleFollow} >Follow</button>
                  </div> 
                )}
                {user && profileInfo && user !== profileInfo.user_id && isUserFollowing && ( 
-                 <div className="row">
-                   <button className="col me-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleUnfollow} >Unfollow</button>
-                   <button className="col ms-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleMessage} >Message</button>
+                 <div className="flex flex-row">
+                   <button className="mr-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleUnfollow} >Unfollow</button>
+                   <button className="ml-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleMessage} >Message</button>
                  </div>
                )}
             </div>

@@ -25,20 +25,18 @@ function ChatListItem(props) {
     console.log(props);
   return (
     <a href={"/chat/" + props.chatroom_id}>
-        <div className='my-1 text-dark'>
-            <div className="bg-light border rounded-4">
-                <div className="row">
-                    <div className="col-8">
+        <div className='my-1'>
+            <div className="bg-light border rounded-xl">
+                <div className="flex flex-row">
+                    <div className="">
                         <table>
                             <tbody>
                                 <tr>
                                     <td>
-                                        <svg width="50" height="50" className='rounded-circle m-2'>
-                                            <image href={PROFILE_IMAGE + props.user_image} style={styles.image} height="50" width="50" />
-                                        </svg>
+                                    <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + props.user_image} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
                                     </td>
                                     <td>
-                                        <h4 className="font-weight-normal small align-middle">{props.username}</h4>
+                                        <h4 className="font-normal text-sm align-middle">{props.username}</h4>
                                     </td>
                                 </tr>
                             </tbody>

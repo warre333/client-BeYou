@@ -126,35 +126,33 @@ function Page() {
             Page content
 
         */}
-        <div className="container">      
-          <div className='mt-4 mb-4  ms-lg-0'>
-            <input className="form-control" type="search" onKeyPress={handleEnterSearch} onChange={(e) => { setSearch(e.target.value) }} placeholder="Search..." aria-label="Search" />
+        <div className="container mx-auto">      
+          <div className='pt-8 mb-4 lg:ms-0'>
+            <input className="py-1 px-4 w-full border rounded-xl" type="search" onKeyPress={handleEnterSearch} onChange={(e) => { setSearch(e.target.value) }} placeholder="Search..." aria-label="Search" />
           </div>
 
           {searchResult && searchResult.map((item, key) => {
             return (
               <a key={key} href={"/u/" + item.username} style={styles.link}>
                 <div className='my-1'>
-                    <div className="bg-light border rounded-4">
-                        <div className="row">
-                            <div className="col-8">
+                    <div className="bg-light border rounded-2xl">
+                        <div className="flex flex-row">
+                            <div className="w-full">
                                 <table>
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <svg width="50" height="50" className='rounded-circle m-2'>
-                                                    <image href={PROFILE_IMAGE + item.profile_image} style={styles.image} height="50" width="50" />
-                                                </svg>
+                                                <div className='p-1'><img src={PROFILE_IMAGE + item.profile_image} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
                                             </td>
                                             <td>
-                                                <h4 className="font-weight-normal small align-middle">{item.username}</h4>
+                                                <h4 className="font-normal text-sm align-middle">{item.username}</h4>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="col">
-                                <table className="h-100">
+                            <div className="">
+                                <table className="h-full">
                                     <tbody>
                                         <tr>
                                         </tr>
@@ -168,7 +166,7 @@ function Page() {
             )
           })}
           {searchResult == [] && (
-            <div className="container">
+            <div className="container mx-auto">
               <p className="text-center">No users are found.</p>
             </div>
           )}

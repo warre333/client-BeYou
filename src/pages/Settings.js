@@ -162,40 +162,40 @@ function Page() {
             Page content
 
         */}
-        <div className="w-50 mx-auto">
-          <h3 className="">Change password</h3>
+        <div className="w-1/2 mx-auto">
+          <p className="font-bold text-xl pb-2">Change password</p>
 
           <label htmlFor="" className="">Old password</label>
-          <input type="password" className="form-control" onChange={handleOldPassword} />
+          <input type="password" className="py-1 px-4 w-full border rounded-xl" onChange={handleOldPassword} />
 
           <br />
           
           <label htmlFor="" className="">New password</label>
-          <input type="password" className="form-control" onChange={handleNewPassword} />
+          <input type="password" className="py-1 px-4 w-full border rounded-xl" onChange={handleNewPassword} />
           
           <br />
 
-          <input type="submit" value="Change password" onClick={changePassword} className='btn btn-primary' />
+          <input type="submit" value="Change password" onClick={changePassword} className='w-full bg-blue-500 text-white rounded-xl p-1 mt-4' />
 
           <br />
           <br />
           <br />
 
-          <h3 className="">Change email address</h3>
+          <h3 className="font-bold text-xl">Change email address</h3>
 
           <label htmlFor="" className="">New email address</label>
-          <input type="email" onChange={handleNewEmail} className="form-control" />
+          <input type="email" onChange={handleNewEmail} className="py-1 px-4 w-full border rounded-xl" />
           
           <br />
 
-          <input type="submit" onClick={changeEmail} value="Change email" className='btn btn-primary' />
+          <input type="submit" onClick={changeEmail} value="Change email" className='w-full bg-blue-500 text-white rounded-xl p-1 mt-4' />
 
           <br />
           <br />
           <br />
           <br />
 
-          <input type="text" onClick={terminateAccount} value="TERMINATE ACCOUNT" className='btn border border-danger text-danger text-center rounded' />
+          <input type="text" onClick={terminateAccount} value="TERMINATE ACCOUNT" className='border border-red-500 text-red-500 text-center rounded-lg' />
         </div>
 
         
