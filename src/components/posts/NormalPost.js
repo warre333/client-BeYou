@@ -62,7 +62,6 @@ function Normal(props) {
   const isVisible = isOnScreen(ref)
 
   useEffect(() => {
-    // console.log(isVisible, viewed)
     if(isVisible && !viewed){
       const cookies = getCookie()
 
@@ -74,7 +73,6 @@ function Normal(props) {
           "x-access-token": cookies
         },
       },).then((response) => {
-        console.log(response)
         setViewed(true)
       })
     }
@@ -179,8 +177,6 @@ function Normal(props) {
       setError("You need to be logged in to comment.")
     } 
   }
-
-  console.log(user, comments);
 
   async function deleteComment(e){
     const cookies = getCookie()
@@ -334,7 +330,7 @@ function Normal(props) {
           {/* Lower div with caption etc */}
           <div className="">
               {/* Like / Comment / ... */}
-              <div className="flex flex-row justify-between text-center py-2 px-32">
+              <div className="flex flex-row justify-between text-center py-2 px-16 md:px-32">
                 <div className="">
                   <button style={styles.button} onClick={likePost} onAnimationEnd={() => setLikeAnimation(false)} >
                     <svg width="24" height="24" fill={liked ? "red " : "currentColor"} className={likeAnimation ? "bi bi-heart-fill zoom-in-out-box" : "bi bi-heart-fill"} viewBox="0 0 16 16">

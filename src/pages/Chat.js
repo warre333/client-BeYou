@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
+import io from "io"
 
 import Header from '../components/header'
 
@@ -13,6 +14,8 @@ import Register from '../components/auth/Register'
 import { AUTH } from '../config/api.config'
 
 const newCookies = new Cookies();
+// const socket = io();
+// socket.emit('add user', 'balls');
 
 function Page() {
   const [user, setUser] = useState()

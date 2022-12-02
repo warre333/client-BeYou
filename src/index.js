@@ -20,6 +20,7 @@ import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
 import Settings from './pages/Settings';
 import Search from './pages/Search';
+import Chat from './pages/Chat';
 
 
 
@@ -33,6 +34,7 @@ root.render(
       <Route path="/friends" element={<Friends />} />
       <Route path="/messages" element={<Messages />} />
       <Route path="/search" element={<Search />} />
+      <Route path="/messages/:chatroom" element={<Chat />} />
 
       <Route path="/u/:username" element={<Profile />} />
       <Route path="/create" element={<CreatePost />} />
