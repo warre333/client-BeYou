@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
-import io from "io"
+import { useParams } from 'react-router-dom'
 
 import Header from '../components/header'
 
@@ -11,15 +11,23 @@ import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
 
-import { AUTH } from '../config/api.config'
+import { API_URL, AUTH } from '../config/api.config'
+import { io } from 'socket.io-client'
 
 const newCookies = new Cookies();
-// const socket = io();
-// socket.emit('add user', 'balls');
 
-function Page() {
+
+function Chat() {
+  const params = useParams()
+  const socket = io(API_URL);
+  
   const [user, setUser] = useState()
+  const [chatroom, setChatroom] = useState(params.chatroom)
   const [popup, setPopup] = useState()
+  
+  const [users, setUsers] = useState('');
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
   
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
@@ -45,6 +53,10 @@ function Page() {
         ).then((response) => {
           if(response.data.success){
             setUser(response.data.user_id)
+
+            const username = response.data.user_id
+            socket.auth = { username }
+            socket.connect()
           }  else {
             setUser("none")
             setPopup("login")
@@ -59,7 +71,34 @@ function Page() {
 
     isAuthenticated()
   }, [])
-  
+
+  useEffect(() => {
+    if(!chatroom || !user) return
+
+    socket.emit('join', { name: user, chatroom }, (error) => {
+      if(error) {
+        console.log(error);
+      }
+    });
+  }, [chatroom]) 
+
+  useEffect(() => {
+    socket.on('message', message => {
+      setMessages(msgs => [ ...msgs, message ]);
+    });
+    
+    socket.on("roomData", ({ users }) => {
+      setUsers(users);
+    });
+  }, []);
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+
+    if(message) {
+      socket.emit('sendMessage', message, () => setMessage(''));
+    }
+  }
 
   return (
     <div>
@@ -91,4 +130,4 @@ function Page() {
   )
 }
 
-export default Page
+export default Chat

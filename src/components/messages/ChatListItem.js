@@ -24,7 +24,7 @@ const styles = {
 function ChatListItem(props) {
     console.log(props);
   return (
-    <a href={"/chat/" + props.chatroom_id}>
+    <a href={"/messages/" + props.chatroom_id}>
         <div className='my-1'>
             <div className="bg-light border rounded-xl">
                 <div className="flex flex-row">
