@@ -19,10 +19,11 @@ const newCookies = new Cookies();
 
 function Chat() {
   const params = useParams()
-  const socket = io(API_URL);
+  const socket = io(API_URL, { transports : ['websocket', 'polling', 'flashsocket'] });
   
   const [user, setUser] = useState()
   const [chatroom, setChatroom] = useState(params.chatroom)
+  const [joinedRoom, setJoinedRoom] = useState(false)
   const [popup, setPopup] = useState()
   
   const [users, setUsers] = useState('');
@@ -73,14 +74,21 @@ function Chat() {
   }, [])
 
   useEffect(() => {
-    if(!chatroom || !user) return
-
-    socket.emit('join', { name: user, chatroom }, (error) => {
+    if(!chatroom || !(user && user !== "none")) return
+    socket.emit('leave', { user_id: user }, (error) => {
       if(error) {
         console.log(error);
       }
     });
-  }, [chatroom]) 
+
+    socket.emit('join', { user_id: user, chatroom }, (error) => {
+      if(error) {
+        console.log(error);
+      }
+    });
+
+    setJoinedRoom(true)
+  }, [chatroom, user]) 
 
   useEffect(() => {
     socket.on('message', message => {
@@ -90,13 +98,13 @@ function Chat() {
     socket.on("roomData", ({ users }) => {
       setUsers(users);
     });
-  }, []);
+  });
 
   const sendMessage = (event) => {
     event.preventDefault();
 
     if(message) {
-      socket.emit('sendMessage', message, () => setMessage(''));
+      socket.emit('sendMessage', { user_id: user, chatroom, message }, () => setMessage(''));
     }
   }
 
@@ -115,6 +123,19 @@ function Chat() {
             Page content
 
         */}
+        {joinedRoom && (
+          <div className="">
+            {messages && messages.map((text, key) => {
+              return <p className="text-black">{text.user}: {text.text}</p>
+            })}
+            <input type="text" className='border' onChange={(e) => { setMessage(e.target.value) }} name="" id="" />
+            <button onClick={sendMessage}>Send</button>
+          </div>
+        )}
+        {!joinedRoom && (
+          Loading
+        )}
+        
         
 
         {/* Login & register popups */}
