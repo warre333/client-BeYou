@@ -95,16 +95,39 @@ function Chat() {
       setMessages(msgs => [ ...msgs, message ]);
     });
     
-    socket.on("roomData", ({ users }) => {
+    socket.on("roomData", ({ users, messages }) => {
       setUsers(users);
+      setMessages(messages)
+      console.log(messages);
     });
+
+    // socket.on("users", (users) => {
+    //   users.forEach((user) => {
+    //     user.messages.forEach((message) => {
+    //       message.fromSelf = message.from === socket.userID;
+    //     });
+    //     for (let i = 0; i < this.users.length; i++) {
+    //       const existingUser = this.users[i];
+    //       if (existingUser.userID === user.userID) {
+    //         existingUser.connected = user.connected;
+    //         existingUser.messages = user.messages;
+    //         return;
+    //       }
+    //     }      
+    //   })
+    // })
   });
 
   const sendMessage = (event) => {
-    event.preventDefault();
-
     if(message) {
       socket.emit('sendMessage', { user_id: user, chatroom, message }, () => setMessage(''));
+      document.getElementById('messageInput').value = ""
+    }
+  }
+
+  const pressEnter = (e) => {
+    if(e.key === "Enter"){
+      sendMessage()
     }
   }
 
@@ -124,19 +147,43 @@ function Chat() {
 
         */}
         {joinedRoom && (
-          <div className="">
-            {messages && messages.map((text, key) => {
-              return <p className="text-black">{text.user}: {text.text}</p>
-            })}
-            <input type="text" className='border' onChange={(e) => { setMessage(e.target.value) }} name="" id="" />
-            <button onClick={sendMessage}>Send</button>
+          <div className="fixed top-0 left-0 w-screen h-screen mt-24">
+            <div className="container mx-auto overflow-auto h-3/4 w-1/2 flex flex-col-reverse">
+              <div class="w-full px-5 flex flex-col justify-between">
+                <div class="flex flex-col mt-5">
+                  {messages && messages.map((text, key) => {
+                    if(text.user_id === user){
+                      return(
+                        <div class="flex justify-end mb-4" key={key}>
+                          <div class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white max-w-full text-ellipsis">
+                            {text.user}: {text.text}
+                          </div>
+                        </div>
+                      )
+                    } else {
+                      return(
+                        <div class="flex justify-start mb-4" key={key}>
+                          <div class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white max-w-full text-ellipsis">
+                            {text.user}: {text.text}
+                          </div>
+                        </div>
+                      )
+                    }
+                  })}
+
+                </div> 
+              </div> 
+            </div> 
+            <div className="flex flex-row container mx-auto w-1/2">
+              <input type="text" className="border w-full rounded-full pl-6" onChange={(e) => { setMessage(e.target.value) }} onKeyDown={pressEnter} name="" id="messageInput" />
+              <button className="bg-blue-400 py-3 px-8 ml-4 rounded-full text-white" onClick={sendMessage}>Send</button>
+            </div>
           </div>
         )}
+
         {!joinedRoom && (
           Loading
         )}
-        
-        
 
         {/* Login & register popups */}
         { popup === "login" && (
