@@ -39,7 +39,7 @@ function Page() {
   const navigate = useNavigate()
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState()
+  const [search, setSearch] = useState(searchParams.get('keywords'))
 
   const [user, setUser] = useState()
   const [popup, setPopup] = useState()
@@ -135,7 +135,7 @@ function Page() {
             return (
               <a key={key} href={"/u/" + item.username} style={styles.link}>
                 <div className='my-1'>
-                    <div className="bg-light border rounded-2xl">
+                    <div className="bg-gray-100 border rounded-2xl">
                         <div className="flex flex-row">
                             <div className="w-full">
                                 <table>

@@ -56,15 +56,17 @@ function Login(props) {
                     password: password,
                 })
                     .then((response) => {
-                        const success = response.data.success
-                        console.log(response)
-
-                        if(success){
+                        if(response.data.success){
                             setLoading(false)
                             setError("")
                             newCookies.set("user", response.data.token, { path: '/' })
                             props.setPopup("none")
-                            window.location.reload(false);
+
+                            if(response.data.role){
+
+                            } else {
+                                window.location.reload(false);
+                            }
                         } else {
                             setLoading(false)
                             setError(response.data.message)

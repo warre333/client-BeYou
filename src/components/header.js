@@ -86,6 +86,7 @@ function Header() {
 
     function handleEnterSearch(e){
       if (e.code == "Enter") {
+        console.log(search);
         navigate('/search?keywords=' + search + '&page=1')
       }
     }
@@ -107,7 +108,7 @@ function Header() {
     }
 
   return (
-        <header className="p-1 mb-3 border-bottom bg-light">
+        <header className="p-1 mb-3 border-bottom bg-gray-100">
           <div className="hidden md:block container mx-auto">
             <div className="flex flex-row align-center justify-between">
               <a href="/" className="flex align-center my-auto text-decoration-none">
@@ -121,7 +122,7 @@ function Header() {
               </ul>
 
               <div className='my-auto'>
-                <input className="border rounded-2xl px-2 py-1" type="search" onKeyPress={handleEnterSearch} onChange={(e) => { setSearch(e.target.value) }} placeholder="Search..." aria-label="Search" />
+                <input className="border rounded-2xl px-2 py-1" type="search" onKeyPress={handleEnterSearch} onChange={(e) => { setSearch(e.target.value); console.log(e.target.value); }} placeholder="Search..." aria-label="Search" />
               </div>
 
               {user && (
@@ -131,7 +132,7 @@ function Header() {
                   </button>
 
                   {isProfileMenuOpen && (
-                    <ul className="absolute mt-4 mx-auto right-0 xl:-right-8 text-center bg-light p-1 border border-gray-200 rounded-lg text-small">
+                    <ul className="absolute mt-4 mx-auto right-0 xl:-right-8 text-center bg-gray-100 p-1 border border-gray-200 rounded-lg text-small">
                       <li><a className="" href={"/u/" + user.username}>Profile</a></li> 
                       <li><a className="" href="/create">Create&nbsp;post</a></li>
                       <li><a className="" href="/settings">Settings</a></li>
@@ -164,7 +165,7 @@ function Header() {
               </button>
 
               {isMenuOpen && (
-                <div className="fixed top-14 left-0 bg-light w-screen h-screen">
+                <div className="fixed top-14 left-0 bg-gray-100 w-screen h-screen">
                   <div className="w-1/2 mt-6 text-center mx-auto">
                     <a href="/explore" className="link-dark"><p className="p-2">Explore</p></a>
                     <hr className="" />
@@ -185,7 +186,7 @@ function Header() {
                         </button>
 
                         {isProfileMenuOpen && (
-                          <ul className="absolute mt-4 mx-auto right-8 text-center bg-light p-1 border border-gray-200 rounded-lg text-small">
+                          <ul className="absolute mt-4 mx-auto right-8 text-center bg-gray-100 p-1 border border-gray-200 rounded-lg text-small">
                             <li><a className="" href={"/u/" + user.username}>Profile</a></li> 
                             <li><a className="" href="/create">Create&nbsp;post</a></li>
                             <li><a className="" href="/settings">Settings</a></li>

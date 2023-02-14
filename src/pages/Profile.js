@@ -268,7 +268,7 @@ function Profile() {
             <div className="m-2">
                {user && profileInfo && user === profileInfo.user_id && ( 
                  <div className="">
-                   <button className="py-1 px-4 bg-light rounded-xl border w-full" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
+                   <button className="py-1 px-4 bg-gray-100 rounded-xl border w-full" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
                  </div>
                )}
                {user && profileInfo && user !== profileInfo.user_id && !isUserFollowing && ( 

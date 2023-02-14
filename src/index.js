@@ -21,6 +21,7 @@ import CreatePost from './pages/CreatePost';
 import Settings from './pages/Settings';
 import Search from './pages/Search';
 import Chat from './pages/Chat';
+import Admin from './pages/Admin';
 
 
 
@@ -41,6 +42,8 @@ root.render(
       <Route path="/settings" element={<Settings />} />
 
       <Route path="/post/:post" element={<Post />} />
+
+      <Route path="/admin" element={<Admin />} />
     </Routes>
   </BrowserRouter>
 );
