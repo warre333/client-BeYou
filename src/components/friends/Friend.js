@@ -1,5 +1,8 @@
+import axios from 'axios'
 import React from 'react'
-import { PROFILE_IMAGE } from '../../config/api.config'
+import { useNavigate } from 'react-router-dom'
+import Cookies from 'universal-cookie'
+import { CHAT, PROFILE_IMAGE } from '../../config/api.config'
 
 const styles = {
     image: {
@@ -22,25 +25,56 @@ const styles = {
 }
 
 function Friend(props) {
+    const newCookies = new Cookies()
+    const navigate = useNavigate()
+
+    function getCookie(){
+      if(newCookies.get('user')){
+        return newCookies.get('user')
+      }
+    }   
+
+    function handleMessage(){
+        const cookies = getCookie()
+  
+        axios.post(CHAT, {
+          user_id: props.user_id
+        }, {
+          headers: {
+            "x-access-token": cookies
+          },
+        },)
+          .then((response) => {
+            console.log(response);
+            if(response.data.success){
+              navigate("/messages/" + response.data.chatroom_id)
+            } else {
+            }
+          })
+        
+      }
+
+      
   return (
-    <a href={"/u/" + props.username}>
         <div className='my-1'>
             <div className="bg-light border rounded-xl">
                 <div className="flex flex-row">
                     <div className="w-full">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <img src={PROFILE_IMAGE + props.user_image} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full m-1" />
-                                    </td>
-                                    <td>
-                                        <h4 className="text-sm align-middle">{props.username}</h4>
-                                    </td>
-                                </tr>
-                            </tbody>
-        
-                        </table>
+                        <a href={"/u/" + props.username}>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <img src={PROFILE_IMAGE + props.user_image} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full m-1" />
+                                        </td>
+                                        <td>
+                                            <h4 className="text-sm align-middle">{props.username}</h4>
+                                        </td>
+                                    </tr>
+                                </tbody>
+            
+                            </table>
+                        </a>
                     </div>
         
                     <div className="">
@@ -48,7 +82,7 @@ function Friend(props) {
                             <tbody>
                                 <tr>
                                     <td className='align-middle'>
-                                        <a className="bg-blue-500 py-1 px-4 text-white rounded-xl" href={"/message/"}>message</a>
+                                        <a className="bg-blue-500 py-1 px-4 text-white rounded-xl" onClick={handleMessage}>message</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -57,7 +91,6 @@ function Friend(props) {
                 </div>
             </div>
         </div>
-    </a>
   )
 }
 

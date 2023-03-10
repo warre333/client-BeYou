@@ -65,10 +65,12 @@ function Analytics() {
     }, [])
 
     function searchFunction(){
+      console.log(searchParams.get('keywords'));
       axios.get(SEARCH + "?keywords=" + searchParams.get('keywords') || "" + "&page=1") // + searchParams.get('page')
         .then((response) => {
           if(response.data.success){
             setSearchResult(response.data.data)
+            console.log(response.data.data);
           } else {
             console.log(response.data.message);
           }
@@ -156,9 +158,9 @@ function Analytics() {
         )}
       </div>
 
-      <div className={popup ? "bg-black" : "hidden"}>
+      {/* <div className={popup ? "bg-black" : "hidden"}>
 
-      </div>
+      </div> */}
     </div>
   )
 }

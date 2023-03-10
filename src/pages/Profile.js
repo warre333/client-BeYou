@@ -190,7 +190,7 @@ function Profile() {
         .then((response) => {
           console.log(response);
           if(response.data.success){
-            navigate("/chat/" + response.data.chatroom_id)
+            navigate("/messages/" + response.data.chatroom_id)
           } else {
           }
         })

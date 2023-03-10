@@ -148,14 +148,14 @@ function Chat() {
         */}
         {joinedRoom && (
           <div className="fixed top-0 left-0 w-screen h-screen mt-24">
-            <div className="container mx-auto overflow-auto h-3/4 w-1/2 flex flex-col-reverse">
+            <div className="container mx-auto overflow-auto h-3/4 md:w-1/2 w-full flex flex-col-reverse">
               <div class="w-full px-5 flex flex-col justify-between">
                 <div class="flex flex-col mt-5">
                   {messages && messages.map((text, key) => {
                     if(text.user_id === user){
                       return(
                         <div class="flex justify-end mb-4" key={key}>
-                          <div class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white max-w-full text-ellipsis">
+                          <div class="py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white max-w-full text-ellipsis">
                             {text.user}: {text.text}
                           </div>
                         </div>
@@ -163,7 +163,7 @@ function Chat() {
                     } else {
                       return(
                         <div class="flex justify-start mb-4" key={key}>
-                          <div class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white max-w-full text-ellipsis">
+                          <div class="py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white max-w-full text-ellipsis">
                             {text.user}: {text.text}
                           </div>
                         </div>
@@ -174,7 +174,7 @@ function Chat() {
                 </div> 
               </div> 
             </div> 
-            <div className="flex flex-row container mx-auto w-1/2">
+            <div className="flex flex-row container mx-auto md:w-1/2 w-full">
               <input type="text" className="border w-full rounded-full pl-6" onChange={(e) => { setMessage(e.target.value) }} onKeyDown={pressEnter} name="" id="messageInput" />
               <button className="bg-blue-400 py-3 px-8 ml-4 rounded-full text-white" onClick={sendMessage}>Send</button>
             </div>

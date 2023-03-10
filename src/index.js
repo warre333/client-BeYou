@@ -29,20 +29,30 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <Routes>
+      {/* Feeds */}
       <Route path="/" element={<Homepage />} />
-
       <Route path="/explore" element={<Explore />} />
+
+      {/* People */}
       <Route path="/friends" element={<Friends />} />
-      <Route path="/messages" element={<Messages />} />
       <Route path="/search" element={<Search />} />
+      <Route path="/u/:username" element={<Profile />} />
+
+      {/* Messages */}
+      <Route path="/messages" element={<Messages />} />
       <Route path="/messages/:chatroom" element={<Chat />} />
 
-      <Route path="/u/:username" element={<Profile />} />
+      {/* Posts */}
       <Route path="/create" element={<CreatePost />} />
-      <Route path="/settings" element={<Settings />} />
-
       <Route path="/post/:post" element={<Post />} />
 
+      {/* Advertisements */}
+      <Route path="/admin" element={<Admin />} />
+
+      {/* Others */}
+      <Route path="/settings" element={<Settings />} />
+
+      {/* Admin */}
       <Route path="/admin" element={<Admin />} />
     </Routes>
   </BrowserRouter>

@@ -63,7 +63,11 @@ function Login(props) {
                             props.setPopup("none")
 
                             if(response.data.role){
-
+                                setLoading(false)
+                                setError("")
+                                newCookies.set("user", response.data.token, { path: '/' })
+                                props.setPopup("none")
+                                window.location.reload(false);
                             } else {
                                 window.location.reload(false);
                             }

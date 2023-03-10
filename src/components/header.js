@@ -17,7 +17,7 @@ const styles = {
 
     logo: {
         height: '80%',
-        width: '60px',
+        width: '80px',
         objectFit: 'cover',
     }
 };
@@ -27,6 +27,7 @@ function Header() {
     const navigate = useNavigate()
 
     const [user, setUser] = useState()
+    const [role, setRole] = useState()
     const [popup, setPopup] = useState()
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -61,6 +62,8 @@ function Header() {
           )
             .then((response) => {
                 if(response.data.success){
+                    setRole(response.data.role)
+
                     axios.get(USERS + "?user_id=" + response.data.user_id).then((response) => {
                         if(response.data.success){
                             setUser(response.data.data)
@@ -113,12 +116,14 @@ function Header() {
             <div className="flex flex-row align-center justify-between">
               <a href="/" className="flex align-center my-auto text-decoration-none">
                 <img src={Logo} alt="logo" style={styles.logo}/>
+                {/* <p className="text-2xl font-extrabold mr-4">Speakr</p> */}
               </a>
 
               <ul className="flex flex-row mr-auto my-auto ">
                 <li><a href="/explore" className="nav-link px-2 link-dark">Explore</a></li>
                 <li><a href="/friends" className="nav-link px-2 link-dark">Friends</a></li>
                 <li><a href="/messages" className="nav-link px-2 link-dark">Messages</a></li>
+                {role == "admin" && <li><a className="nav-link px-2 link-dark" href="/admin">Admin</a></li>}
               </ul>
 
               <div className='my-auto'>
@@ -171,11 +176,11 @@ function Header() {
                     <hr className="" />
                   </div>
                   <div className="w-1/2 mt-2 text-center mx-auto">
-                    <a href="/explore" className="link-dark"><p className="p-2">Friends</p></a>
+                    <a href="/friends" className="link-dark"><p className="p-2">Friends</p></a>
                     <hr className="" />
                   </div>
                   <div className="w-1/2 mt-2 text-center mx-auto">
-                    <a href="/explore" className="link-dark"><p className="p-2">Messages</p></a>
+                    <a href="/messages" className="link-dark"><p className="p-2">Messages</p></a>
                     <hr className="" />
                   </div>
                   <div className="w-1/2 mt-4 text-center mx-auto">
