@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IMAGES } from '../../config/api.config';
 
@@ -16,18 +17,6 @@ const styles = {
         aspectRatio: "1 / 1",
         objectFit: "contain",
     },
-      
-    buttonbg: {    
-        background: "none",
-        color: "inherit",
-        border: "none",
-        padding: 0,
-        font: "inherit",
-        cursor: "pointer",
-        outline: "inherit",
-        // width: "100%",
-        // aspectRatio: "1 / 1",
-    },
     
     keepRatio: {
       width: "100%",
@@ -35,10 +24,10 @@ const styles = {
     },
 }
 
-function PreviewPost(props) {
+function PreviewPost(props) {  
   return (
     <Link to={"/post/" + props.post_id}>
-      <div className="text-center rounded-xl"  >
+      <div className="text-center rounded-xl">
         <div className="bg-gray-100 justify-center text-center align-middle" style={styles.bg}>
           <table style={styles.keepRatio}>
             <tbody style={styles.keepRatio}>
@@ -47,9 +36,15 @@ function PreviewPost(props) {
               </tr>
             </tbody>
           </table>
-        </div>      
+        </div> 
+
+        <p className="bg-gray-100 font-bold pt-1">Status: {props.status || "loading"}</p>
+        <div className="bg-gray-100 py-1 px-2 flex flex-row justify-between rounded-b-lg">
+          <p className="">Budget: €{props.budget / 100 || 0}</p>
+          <p className="">{props.views || 0} Views</p>
+        </div>     
       </div>
-    </Link>  
+    </Link>
   )
 }
 

@@ -22,6 +22,8 @@ import Settings from './pages/Settings';
 import Search from './pages/Search';
 import Chat from './pages/Chat';
 import Admin from './pages/Admin';
+import Ads from './pages/Ads';
+import AdsPaid from './pages/AdsPaid';
 
 
 
@@ -47,7 +49,8 @@ root.render(
       <Route path="/post/:post" element={<Post />} />
 
       {/* Advertisements */}
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/ads" element={<Ads />} />
+      <Route path="/ads/paid" element={<AdsPaid />} />
 
       {/* Others */}
       <Route path="/settings" element={<Settings />} />

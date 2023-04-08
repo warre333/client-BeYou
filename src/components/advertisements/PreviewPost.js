@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IMAGES } from '../../config/api.config';
 
@@ -16,18 +17,6 @@ const styles = {
         aspectRatio: "1 / 1",
         objectFit: "contain",
     },
-      
-    buttonbg: {    
-        background: "none",
-        color: "inherit",
-        border: "none",
-        padding: 0,
-        font: "inherit",
-        cursor: "pointer",
-        outline: "inherit",
-        // width: "100%",
-        // aspectRatio: "1 / 1",
-    },
     
     keepRatio: {
       width: "100%",
@@ -35,10 +24,9 @@ const styles = {
     },
 }
 
-function PreviewPost(props) {
+function PreviewPost(props) {  
   return (
-    <Link to={"/post/" + props.post_id}>
-      <div className="text-center rounded-xl"  >
+      <div className="text-center rounded-xl">
         <div className="bg-gray-100 justify-center text-center align-middle" style={styles.bg}>
           <table style={styles.keepRatio}>
             <tbody style={styles.keepRatio}>
@@ -47,9 +35,8 @@ function PreviewPost(props) {
               </tr>
             </tbody>
           </table>
-        </div>      
-      </div>
-    </Link>  
+        </div>   
+      </div> 
   )
 }
 

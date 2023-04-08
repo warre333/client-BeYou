@@ -2,13 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Cookies from "universal-cookie"
 
-import { AUTH, IMAGES, POSTS, POST_IMAGE, PROFILE_IMAGE, USERS } from '../../config/api.config';
+import { ADS, AUTH, IMAGES, POSTS, POST_IMAGE, PROFILE_IMAGE, USERS } from '../../config/api.config';
 
 import "../../styles/like_animation.css"
 
-import Error from "../../components/states/Error"
+import Error from "../states/Error"
 import isOnScreen from "../../hooks/isOnScreen"
-import { useNavigate } from 'react-router-dom';
 
 const styles = {
   image: {
@@ -43,7 +42,6 @@ const styles = {
 
 function Normal(props) {
   const newCookies = new Cookies()
-  const navigate = useNavigate()
 
   // Functions
   const [error, setError] = useState()
@@ -59,10 +57,28 @@ function Normal(props) {
   const [commentsSuccess, setCommentsSuccess] = useState(false);
   const [share, setShare] = useState(false)
   const [poster, setPoster] = useState()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const ref = useRef()
   const isVisible = isOnScreen(ref)
+
+  useEffect(() => {
+    if(isVisible && !viewed){
+      const cookies = getCookie()
+
+      // Send viewed to API
+      axios.post(ADS + "view", {
+        post_id: props.post_id,
+        ad_id: props.ad_id
+      }, {
+        headers: {
+          "x-access-token": cookies
+        },
+      },).then((response) => {
+        setViewed(true)
+      })
+    }
+  })
+
   
   function getCookie(){
     if(newCookies.get('user')){
@@ -128,7 +144,7 @@ function Normal(props) {
     })
   }
 
-  function placeComment(){
+  async function placeComment(){
     const cookies = getCookie()
     
     // Post to DB
@@ -145,7 +161,7 @@ function Normal(props) {
           },
         }).then((response) => {
           if(response.data.success){
-            const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, user_id: userId, username: user.username}
+            const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, user_id: user.user_id, username: user.username}
             const newCommentSection = [newComment, ...comments]
 
             setComment("")
@@ -163,10 +179,10 @@ function Normal(props) {
     } 
   }
 
-  function deleteComment(e){
+  async function deleteComment(e){
     const cookies = getCookie()
     
-    axios.delete(POSTS + "comment?comment_id=" + e.currentTarget.value, {
+    axios.delete(POSTS + "comment?comment_id=" + e.target.value, {
       headers: {
         "x-access-token": cookies
       },
@@ -180,25 +196,7 @@ function Normal(props) {
     })
   }
 
-  function deletePost(){
-    const cookies = getCookie()
-    
-    if(window.confirm("Are you sure you want to delete this post?")){
-      axios.delete(POSTS + "post?post_id=" + props.post_id, {
-        headers: {
-          "x-access-token": cookies
-        },
-      }).then((response) => {
-        if(response.data.success){
-          navigate("/")
-        } else {
-          setError(response.data.message)
-        }      
-      })
-    }
-  }
-
-  function getComments(){
+  async function getComments(){
     const cookies = getCookie()
 
     axios.get(POSTS + "comment/all?post_id=" + props.post_id, {
@@ -215,7 +213,7 @@ function Normal(props) {
     })
   }
 
-  function isLiked(){
+  async function isLiked(){
     const cookies = getCookie()
     axios.get(POSTS + "like?post_id=" + props.post_id,
       {
@@ -248,7 +246,7 @@ function Normal(props) {
     })
   }
 
-   function getUserInfo(){
+  async function getUserInfo(){
     
     if(userId){
       axios.get(USERS + "?user_id=" + userId).then((response) => {
@@ -257,7 +255,7 @@ function Normal(props) {
     }
   }
 
-   function isAuthenticated(){
+  async function isAuthenticated(){
     const cookies = getCookie()
 
     if(cookies){
@@ -275,31 +273,6 @@ function Normal(props) {
     }
   }
 
-  function toggleMenu(){
-    if(isMenuOpen){
-      setIsMenuOpen(false)
-    } else {
-      setIsMenuOpen(true)
-    }
-  }
-
-  useEffect(() => {
-    if(isVisible && !viewed){
-      const cookies = getCookie()
-
-      // Send viewed to API
-      axios.post(POSTS + "view", {
-        post_id: props.post_id
-      }, {
-        headers: {
-          "x-access-token": cookies
-        },
-      },).then((response) => {
-        setViewed(true)
-      })
-    }
-  })
-
   useEffect(() => {
     getPosterInfo()
     isLiked()
@@ -314,52 +287,36 @@ function Normal(props) {
     <div className='mt-5' id={props.post_id} ref={ref}>
       <div className="bg-light border rounded-lg">
         {/* User image + username */}
-        {poster && (  
-          <div className="border-b flex flex-row justify-between px-2">              
-            <a href={"/u/" + poster.username} style={styles.noDecorationLink}>
-              <div className="flex flex-row align-middle">
-                <div>
-                  {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
-                  {poster.profile_image && ( <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + poster.profile_image} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div> )}
-                </div>
-                <p className="ml-2 my-auto text-sm">{poster.username}</p>
-              </div>
-            </a>
-
-            {userId && userId === props.user_id && (
-              <div className="my-auto mr-2 relative">
-                <button onClick={toggleMenu}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                  </svg>
-                </button>
-
-                {isMenuOpen && (
-                  <ul className="absolute mt-4 mx-auto right-0 xl:-right-8 text-center bg-gray-100 p-1 border border-gray-200 rounded-lg text-small">
-                    <li><a className="px-1 pb-2" href={"/ads?post_id=" + props.post_id}>promote</a></li> 
-
-                    <li><hr /></li>
-
-                    <li><button className="text-red-500" onClick={deletePost}>delete</button></li>
-                  </ul>
-                )}  
-              </div>
-            )}
-          </div>
-        )}
-        {!poster && (  
-          <div className="border-b">            
-            <div>
-              <td>
-                {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
-                <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + "NOT_FOUND.jpg"} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
-              </td>
-              <td className='align-middle'>
-                <h4 className="text-sm align-middle h-full">USER NOT FOUND</h4>
-              </td>
-            </div>
-          </div>
-        )}
+        <div className="border-b">
+          <table>
+            <tbody>
+              <tr>
+                {poster && (                
+                  <a href={"/u/" + poster.username} style={styles.noDecorationLink}>
+                    <td >
+                      {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
+                      {poster.profile_image && ( <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + poster.profile_image} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div> )}
+                    </td>
+                    <td className='align-middle'>
+                      <h4 className="text-sm align-middle h-full">{poster.username}</h4>
+                    </td>
+                  </a>
+                )}
+                {!poster && (              
+                  <a href={""} style={styles.noDecorationLink}>
+                    <td>
+                      {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
+                      <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + "NOT_FOUND.jpg"} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
+                    </td>
+                    <td className='align-middle'>
+                      <h4 className="text-sm align-middle h-full">USER NOT FOUND</h4>
+                    </td>
+                  </a>
+                )}
+              </tr>
+            </tbody>
+          </table> 
+        </div>
 
 
         {/* Image div (image/video + caption, name, ..) */}
@@ -371,6 +328,11 @@ function Normal(props) {
               {props.image && props.image.slice(-3) === "mp4" && ( <video style={styles.image} controls ><source src={POST_IMAGE + props.image} type="video/mp4" alt="post" className='mx-auto' style={styles.image} /></video> )}
           </div>
 
+          {/* Ad mention */}
+          <div className="bg-gray-100 mt-1">
+            <p className="text-yellow-500 font-bold text-sm w-full text-center">ADVERTISEMENT</p>
+          </div>
+
           {/* Lower div with caption etc */}
           <div className="">
               {/* Like / Comment / ... */}
@@ -380,7 +342,7 @@ function Normal(props) {
                     <svg width="24" height="24" fill={liked ? "red " : "currentColor"} className={likeAnimation ? "bi bi-heart-fill zoom-in-out-box" : "bi bi-heart-fill"} viewBox="0 0 16 16">
                       <path fillRule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                     </svg>
-                  </button>            
+                  </button>                  
                 </div>
 
                 <div className="">
@@ -424,11 +386,6 @@ function Normal(props) {
               {/* @username: caption */}
               <table className='ml-2 mt-2'>
                 <tbody>
-                  <tr>
-                    <td>
-                      <p className="text-sm font-bold">{props.views} views</p>
-                    </td>
-                  </tr>
                   <tr>
                     {poster && (<td className='pr-1'>{poster.username}: </td>)}
                     <td>{props.caption}</td>
@@ -484,7 +441,7 @@ function Normal(props) {
                                   </td>
 
                                   <td>
-                                    {userId === item.user_id && (
+                                    {userId == item.user_id && (
                                       <div className="float-right" style={styles.deleteButtonDiv}>
                                         <input type="hidden" name="comment_id"  />
                                         <button className="text-red-400" style={styles.button} id={index} value={item.comment_id} onClick={deleteComment}><p className="text-red-400">delete</p></button>

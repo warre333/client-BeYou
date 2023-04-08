@@ -20,6 +20,10 @@ function Analytics() {
     const [totalUsers, setTotalUsers] = useState()
     const [totalPosts, setTotalPosts] = useState()
     const [totalAdvertisements, setTotalAdvertisements] = useState()
+    const [totalEndedAdvertisements, setTotalEndedAdvertisements] = useState()
+    const [averageAdSpent, setAverageAdSpent] = useState()
+    const [averageAdSpentToday, setAverageAdSpentToday] = useState()
+    const [adSpent, setAdSpent] = useState()
 
     function getCookie(){
         if(newCookies.get('user')){
@@ -91,6 +95,10 @@ function Analytics() {
             setTotalUsers(response.data.data.users)
             setTotalPosts(response.data.data.posts)
             setTotalAdvertisements(response.data.data.advertisements)
+            setTotalEndedAdvertisements(response.data.data.ended_advertisements)
+            setAverageAdSpent(response.data.data.average_ad_spent)
+            setAverageAdSpentToday(response.data.data.average_ad_spent_today)
+            setAdSpent(response.data.data.total_ad_spent)
           } else {
             console.log(response.data.message);        
           }
@@ -116,19 +124,27 @@ function Analytics() {
                 </p>
                 <p className="font-semibold text-xl">
                     {totalAdvertisements}
-                    <span className="font-normal text-base"> advertisements</span>
+                    <span className="font-normal text-base"> active advertisements</span>
+                </p>
+                <p className="font-semibold text-xl">
+                    {totalEndedAdvertisements}
+                    <span className="font-normal text-base"> ended advertisements</span>
                 </p>
             </div>
 
             <div className="bg-gray-100 rounded-xl w-full mx-6 p-4">
                 <p className="text-sm">Advertisements</p>
                 <p className="font-semibold text-xl">
-                    $XXX.XX
-                    <span className="font-normal text-base"> ad spent (today)</span>
+                    €{(averageAdSpentToday/100).toFixed(2)}
+                    <span className="font-normal text-base"> average ad spent (today)</span>
                 </p>
                 <p className="font-semibold text-xl">
-                    $XXX.XX
-                    <span className="font-normal text-base"> average ad spent</span>
+                    €{(averageAdSpent/100).toFixed(2)}
+                    <span className="font-normal text-base"> average ad spent (total)</span>
+                </p>
+                <p className="font-semibold text-xl">
+                    €{(adSpent/100).toFixed(2)}
+                    <span className="font-normal text-base"> total ad spent</span>
                 </p>
             </div>
         </div>

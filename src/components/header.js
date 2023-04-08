@@ -88,7 +88,7 @@ function Header() {
     }
 
     function handleEnterSearch(e){
-      if (e.code == "Enter") {
+      if (e.code === "Enter") {
         console.log(search);
         navigate('/search?keywords=' + search + '&page=1')
       }
@@ -123,7 +123,7 @@ function Header() {
                 <li><a href="/explore" className="nav-link px-2 link-dark">Explore</a></li>
                 <li><a href="/friends" className="nav-link px-2 link-dark">Friends</a></li>
                 <li><a href="/messages" className="nav-link px-2 link-dark">Messages</a></li>
-                {role == "admin" && <li><a className="nav-link px-2 link-dark" href="/admin">Admin</a></li>}
+                {role === "admin" && <li><a className="nav-link px-2 link-dark" href="/admin">Admin</a></li>}
               </ul>
 
               <div className='my-auto'>
@@ -140,6 +140,7 @@ function Header() {
                     <ul className="absolute mt-4 mx-auto right-0 xl:-right-8 text-center bg-gray-100 p-1 border border-gray-200 rounded-lg text-small">
                       <li><a className="" href={"/u/" + user.username}>Profile</a></li> 
                       <li><a className="" href="/create">Create&nbsp;post</a></li>
+                      <li><a className="" href="/ads">Advertisements</a></li>
                       <li><a className="" href="/settings">Settings</a></li>
 
                       <li><hr /></li>
