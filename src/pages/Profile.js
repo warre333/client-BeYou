@@ -284,7 +284,7 @@ function Profile() {
                )}
             </div>
 
-            {popup && popup == "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} changeProfile={setProfileInfo} />}
+            {popup && popup === "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} changeProfile={setProfileInfo} />}
 
             <div className="border-b mt-4"></div>
 
@@ -300,7 +300,7 @@ function Profile() {
                   })
                 )}
 
-                {profilePosts && profilePosts.length == 0 && (
+                {profilePosts && profilePosts.length === 0 && (
                   <h4 className="w-full text-center">No posts are found...</h4>
                 )}
 

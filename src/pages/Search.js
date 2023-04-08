@@ -100,13 +100,13 @@ function Page() {
   }, [searchParams.get('keywords'), searchParams.get('page')])
 
   useEffect(() => {
-    if(search != searchParams.get('keywords')){  
+    if(search !== searchParams.get('keywords')){  
       setSearchParams({'keywords': search, 'page': searchParams.get('page')})
     }
   }, [search])
   
   function handleEnterSearch(e){
-    if (e.code == "Enter") {
+    if (e.code === "Enter") {
       navigate('/search?keywords=' + search + '&page=1')
     }
   }
@@ -165,7 +165,7 @@ function Page() {
               </a>
             )
           })}
-          {searchResult == [] && (
+          {searchResult === [] && (
             <div className="container mx-auto">
               <p className="text-center">No users are found.</p>
             </div>
