@@ -63,10 +63,10 @@ function Analytics() {
       getUsers()
     }, [])
 
-    function searchFunction(id){
+    function searchFunction(username){
       const cookies = getCookie()
 
-      axios.get(ADMIN + "posts/search?post_id=" + id,
+      axios.get(ADMIN + "posts/search?username=" + username,
       {
         headers: {
           "x-access-token": cookies
@@ -105,7 +105,7 @@ function Analytics() {
   
     
     function handleEnterSearch(e){
-      if (e.code == "Enter") {
+      if (e.code === "Enter") {
         searchFunction(e.target.value)
       }
     }
@@ -146,7 +146,7 @@ function Analytics() {
   return (    
     <div className="w-full bg-gray-100 mt-12 mx-8 rounded-xl"> 
       <div className='pt-8 mb-4 mx-4'>
-        <input className="py-1 px-4 w-full border rounded-xl" type='number' onKeyPress={handleEnterSearch} onChange={handleSearch} placeholder="Search..." aria-label="Search" />
+        <input className="py-1 px-4 w-full border rounded-xl" type='text' onKeyPress={handleEnterSearch} onChange={handleSearch} placeholder="Search..." aria-label="Search" />
       </div>
 
       <div className="w-full grid grid-cols-4 gap-4">
