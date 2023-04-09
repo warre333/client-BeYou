@@ -163,14 +163,18 @@ function Page() {
             {/* upload image */}
             <div className="w-full mx-auto mt-3"> 
               <label htmlFor="" className="w-full text-center">Upload media to post:</label>
-              <div className="flex flex-row">
-                <div className="w-full md:w-1/2">
-                  <label htmlFor="" className="w-full text-center">Open files</label>
-                  <input type="file" onChange={(e) => { loadPreview(e) }} className="w-full" />
+              <div className="md:flex md:flex-row">
+                <div className="w-full md:w-1/2 mb-2 md:mb-0">
+                    <label htmlFor="file-upload" className="border border-blue-400 bg-blue-200 rounded-xl inline-block py-1 px-10">
+                        Open files
+                    </label>
+                    <input id="file-upload" className='hidden' type="file" onChange={(e) => { loadPreview(e) }} />
                 </div>
-                <div className="w-full md:w-1/">
-                  <label htmlFor="" className="w-full text-center">Open camera</label>
-                  <input type="file" onChange={(e) => { loadPreview(e) }} accept="image/*" capture="camera" className="w-full" data-classButton="py-1 px-4 bg-blue-500" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
+                <div className="w-full md:w-1/2">
+                    <label htmlFor="file-upload" className="border border-blue-400 bg-blue-200 rounded-xl inline-block py-1 px-10">
+                        Open camera
+                    </label>
+                    <input id="file-upload" className='hidden' type="file" onChange={(e) => { loadPreview(e) }} accept="image/*" capture="camera" />
                 </div>
               </div>
             </div>

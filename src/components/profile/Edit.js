@@ -182,16 +182,29 @@ function Edit(props) {
                 {/* Profile image + change image */}
                 <div className="">
                     <div className="w-1/2 mx-auto mt-3"> 
-                        <label htmlFor="" className="w-full text-center">Change profile image</label>
-                        <div className="flex flex-row">
-                            <div className="w-full md:w-1/2">
+                        <label htmlFor="" className="w-full text-center pb-2">Change profile image</label>
+                        <div className="md:flex md:flex-row">
+                            {/* <div className="w-full md:w-1/2">
                                 <label htmlFor="" className="w-full text-center">Open files</label>
-                                <input type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} className="form-control" />
+                                <input type="file"  className="form-control" />
+                            </div> */}
+                            <div className="w-full md:w-1/2 mb-2 md:mb-0">
+                                <label htmlFor="file-upload" className="border border-blue-400 bg-blue-200 rounded-xl inline-block py-1 px-10">
+                                    Open files
+                                </label>
+                                <input id="file-upload" className='hidden' type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} />
                             </div>
+                            
                             <div className="w-full md:w-1/2">
+                                <label htmlFor="file-upload" className="border border-blue-400 bg-blue-200 rounded-xl  inline-block py-1 px-7">
+                                    Open camera
+                                </label>
+                                <input id="file-upload" className='hidden' type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} accept="image/*" capture="camera" />
+                            </div>
+                            {/* <div className="w-full md:w-1/2">
                                 <label htmlFor="" className="w-full text-center">Open camera</label>
                                 <input type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} accept="image/*" capture="camera" className="form-control" data-classButton="btn btn-secundary" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
