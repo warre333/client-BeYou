@@ -198,6 +198,31 @@ function Normal(props) {
     }
   }
 
+  function editPost(){
+    const cookies = getCookie()
+
+    let newCaption = window.prompt("Enter a new caption for the post:")
+    console.log(newCaption)
+
+    if(newCaption){
+      axios.patch(POSTS + "post", {
+        post_id: props.post_id,
+        caption: newCaption
+      }, {
+        headers: {
+          "x-access-token": cookies
+        },
+      }).then((response) => {
+        if(response.data.success){
+          navigate("/post/" + props.post_id)
+          window.location.reload()
+        } else {
+          setError(response.data.message)
+        }      
+      })
+    }
+  }
+
   function getComments(){
     const cookies = getCookie()
 
@@ -336,7 +361,8 @@ function Normal(props) {
 
                 {isMenuOpen && (
                   <ul className="absolute mt-4 mx-auto right-0 xl:-right-8 text-center bg-gray-100 p-1 border border-gray-200 rounded-lg text-small">
-                    <li><a className="px-1 pb-2" href={"/ads?post_id=" + props.post_id}>promote</a></li> 
+                    <li><button className="px-1" onClick={editPost} >edit</button></li> 
+                    <li><a className="px-1" href={"/ads?post_id=" + props.post_id}>promote</a></li> 
 
                     <li><hr /></li>
 
