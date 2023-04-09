@@ -2,20 +2,18 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import Cookies from 'universal-cookie'
 import { useState } from 'react'
-import { CHAT } from '../../config/api.config'
 
 import ChatListItem from './ChatListItem'
 
-function MessagesList({setError, error}) {
+import { CHAT } from '../../config/api.config'
+import { getCookie } from '../../functions/Common'
+
+
+function MessagesList({ setError }) {
   const newCookies = new Cookies()
 
   const [chats, setChats] = useState()
 
-  function getCookie(){
-    if(newCookies.get('user')){
-      return newCookies.get('user')
-    }
-  }  
 
   useEffect(() => {
     const user = getCookie()
@@ -30,7 +28,6 @@ function MessagesList({setError, error}) {
           setChats(response.data.data)
         } else {
           setError(response.data.message)
-          console.log(response.data);
         }
       })
   }, [])
@@ -42,7 +39,6 @@ function MessagesList({setError, error}) {
         <h1 className="text-center mb-3">Chats</h1>
 
         {chats && chats.map((chat, key) => {
-          console.log(chat);
           return <ChatListItem key={key} chatroom_id={chat.chatroom_id} username={chat.username} user_image={chat.profile_image} />
         })}
       </div>

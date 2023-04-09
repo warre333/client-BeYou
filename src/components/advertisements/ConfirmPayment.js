@@ -1,14 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {useStripe} from '@stripe/react-stripe-js';
-import { useSearchParams } from 'react-router-dom';
-import Cookies from 'universal-cookie';
 
 function Confirm({ paymentIntent }){
-    const newCookies = new Cookies()
-
     const stripe = useStripe();
 
-    const [message, setMessage] = useState(null);
     const [status, setStatus] = useState(0);
 
     useEffect(() => {
@@ -22,13 +17,11 @@ function Confirm({ paymentIntent }){
             .then(({paymentIntent}) => {
                 switch (paymentIntent.status) {
                     case 'succeeded':
-                        setMessage('Success! Payment received.');
                         setStatus(1)
                         
                         break;
 
                     case 'processing':
-                        setMessage("Payment processing. You'll receive an email when the payment has been received.");
                         setStatus(2)
 
                         break;
@@ -36,17 +29,17 @@ function Confirm({ paymentIntent }){
                     case 'requires_payment_method':
                         // Redirect your user back to your payment page to attempt collecting
                         // payment again
-                        setMessage('Payment failed. Please try again.');
                         setStatus(3)
+
                         break;
 
                     default:
-                        setMessage('Something went wrong.');
                         setStatus(4)
+
                         break;
                 }
             });
-    }, [stripe]);
+    }, [stripe, paymentIntent]);
 
 
     return (

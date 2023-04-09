@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-import {useStripe, useElements, PaymentElement, Elements} from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
 
-import { STRIPE, WEBSITE_URL } from '../../config/api.config';
+import { WEBSITE_URL } from '../../config/api.config';
 
 
-const CheckoutForm = ({ changePage, paymentIntent }) => {
+const CheckoutForm = ({ changePage }) => {
   const stripe = useStripe();
   const elements = useElements();
 

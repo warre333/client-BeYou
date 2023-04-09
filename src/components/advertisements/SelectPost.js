@@ -1,20 +1,14 @@
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
-import Cookies from 'universal-cookie'
-import { AUTH, POSTS } from '../../config/api.config'
+
 import PreviewPost from '../advertisements/PreviewPost'
+import { getCookie, isAuthenticated } from '../../functions/Common'
+
+import { AUTH, POSTS } from '../../config/api.config'
 
 function SelectPost({ changePage, changeSelectedPost }) {
-    const cookies = new Cookies()
-
     const [posts, setPosts] = useState()
-
-    function getCookie(){
-      if(cookies.get('user')){
-        return cookies.get('user')
-      }
-    }  
 
     function close(){
         changePage(0)
@@ -26,37 +20,22 @@ function SelectPost({ changePage, changeSelectedPost }) {
 
     useEffect(() => {
         const user = getCookie()
+        const isAuthenticatedResult = isAuthenticated()
   
-        if(user){
-          axios.get(AUTH,
-            {
-              headers: {
-                "x-access-token": user
-              },
-            },
-          ).then((response) => {
-            if(response.data.success){
-                axios.get(POSTS + "?user_id=" + response.data.user_id,
-                    {
-                    headers: {
-                        "x-access-token": user
-                    },
+        if(isAuthenticatedResult.success){
+            axios.get(POSTS + "?user_id=" + isAuthenticatedResult.data.user_id,
+                {
+                headers: {
+                    "x-access-token": user
+                },
+            })
+                .then((response) => {
+                    if(response.data.success){
+                        setPosts(response.data.data)
+                    } 
                 })
-                    .then((response) => {
-                        if(response.data.success){
-                            setPosts(response.data.data)
-                        } 
-                    })
-  
-            }  else {
-              cookies.remove('user', { path: '/' });
-              window.location.reload() 
-            }
-          })
-        } else { 
-            cookies.remove('user', { path: '/' });
-            window.location.reload() 
-        }
+
+        }        
     }, [])
     
   return (

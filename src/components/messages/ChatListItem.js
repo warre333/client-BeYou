@@ -1,28 +1,8 @@
 import React from 'react'
+
 import { PROFILE_IMAGE } from '../../config/api.config'
 
-const styles = {
-    image: {
-        objectFit: "contain",
-    },
-    
-    button: {    
-      background: "none",
-      color: "inherit",
-      border: "none",
-      padding: 0,
-      font: "inherit",
-      cursor: "pointer",
-      outline: "inherit",
-    },
-  
-    postComment: {
-      height: "4vh",
-    },
-}
-
 function ChatListItem(props) {
-    console.log(props);
   return (
     <a href={"/messages/" + props.chatroom_id}>
         <div className='my-1'>

@@ -1,22 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-import Cookies from "universal-cookie"
 
 import Header from '../components/header'
 import PostList from '../components/posts/PostList'
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
+import { getCookie, isAuthenticated } from '../functions/Common'
 
-import { AUTH, POSTS } from '../config/api.config'
-
-const cookies = new Cookies();
+import { POSTS } from '../config/api.config'
 
 function Homepage() {
-  const [user, setUser] = useState()
   const [posts, setPosts] = useState()
   const [popup, setPopup] = useState("none")
   
@@ -24,53 +20,27 @@ function Homepage() {
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
 
-  function getCookie(){
-    if(cookies.get('user')){
-      return cookies.get('user')
-    }
-  }  
 
-  useEffect(() => {
-    function isAuthenticated(){
-      const user = getCookie()
-  
-      if(user){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": user
-            },
-          },
-        ).then((response) => {
+  useEffect(() => {    
+    const isAuthenticatedResult = isAuthenticated()
+    const user = getCookie()
+
+    if (isAuthenticatedResult.success) {
+      axios.get(POSTS + "feed", {
+        headers: {
+          "x-access-token": user
+        },
+      })
+        .then((response) => {
           if(response.data.success){
-            setUser(response.data.user_id)
-
-            axios.get(POSTS + "feed",
-              {
-                headers: {
-                  "x-access-token": user
-                },
-              },
-            ).then((response) => {
-              if(response.data.success){
-                setPosts(response.data.data)
-              } else {
-                setError("An unkown error has occurred.")
-              }              
-            })
-          } else {            
-            setUser(0)
-            setPopup("login")
-            cookies.remove('user', { path: '/' });
-          }          
+            setPosts(response.data.data)
+          } else {
+            setError("An unkown error has occurred.")
+          }              
         })
-      } else { 
-        setUser(0)
-        setPopup("login")
-      }
-    }
-
-    isAuthenticated()
+    } else {
+      setPopup("login");
+    }  
   }, [])
   
   

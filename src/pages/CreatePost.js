@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-import Cookies from "universal-cookie"
 import { useNavigate } from "react-router-dom";
 
 import Header from '../components/header'
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
 
-import { AUTH, POSTS } from '../config/api.config'
+import { POSTS } from '../config/api.config'
+import { getCookie, isAuthenticated } from '../functions/Common';
 
-const newCookies = new Cookies();
 const styles = {
   image: {
     maxHeight: "80vh",
@@ -58,10 +56,10 @@ const styles = {
   },
 }
 
-function Page() {
-  const [user, setUser] = useState()
-  const [popup, setPopup] = useState()
-  
+function CreatePost() {
+  const navigate = useNavigate()
+
+  const [popup, setPopup] = useState()  
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
@@ -69,14 +67,6 @@ function Page() {
   const [previewPost, setPreviewPost] = useState()
   const [postMedia, setPostMedia] = useState()
   const [caption, setCaption] = useState("")
-
-  const navigate = useNavigate()
-
-  function getCookie(){
-    if(newCookies.get('user')){
-      return newCookies.get('user')
-    }
-  }  
 
   function loadPreview(e){
     setPreviewPost(URL.createObjectURL(e.target.files[0]))
@@ -86,6 +76,7 @@ function Page() {
   function post(){
     const cookies = getCookie()
     const formData = new FormData()
+    
     formData.append('postImage', postMedia)
     formData.append('caption', caption)
 
@@ -104,32 +95,13 @@ function Page() {
   }
 
   useEffect(() => {
-    function isAuthenticated(){
-      const cookies = getCookie()
-  
-      if(cookies){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": cookies
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-            setUser(response.data.user_id)
-          }  else {
-            setUser("none")
-            setPopup("login")
-            cookies.remove('user', { path: '/' });
-          }
-        })
-      } else { 
-        setUser("none")
-        setPopup("login")
-      }
-    }
+    const isAuthenticatedResult = isAuthenticated()
 
-    isAuthenticated()
+    if (!isAuthenticatedResult.success) {
+      setError(isAuthenticatedResult.data.message)
+    } else {
+      setPopup("login");
+    }
   }, [])
   
 
@@ -215,4 +187,4 @@ function Page() {
   )
 }
 
-export default Page
+export default CreatePost

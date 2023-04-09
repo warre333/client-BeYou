@@ -1,14 +1,11 @@
 import React from "react";
+
 function Error(props) {
     const changeMessageState = () => {
         props.changeMessage("")
     }
 
-    return (
-        // <div classNameName="alert alert-danger alert-dismissible fade show">
-        //     <p style={{margin: "0"}}>{props.message}</p>
-        //     <button type="button" data-bs-dismiss="alert" classNameName="btn-close " aria-label="Close" style={{float: 'right'}} onClick={changeMessageState}/>
-        // </div>     
+    return (    
         <div className="bg-red-50 border border-red-400 rounded text-red-800 text-sm p-4 flex items-start">
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor" >

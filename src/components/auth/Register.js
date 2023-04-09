@@ -4,11 +4,10 @@ import axios from 'axios'
 import Cookies from 'universal-cookie'
 import validator from "validator";
 
-import { AUTH } from '../../config/api.config'
-
 import Error from '../states/Error'
-import Success from '../states/Success'
 import Loading from '../states/Loading'
+
+import { AUTH } from '../../config/api.config'
 
 const styles = {
     opacityBackground: {
@@ -54,9 +53,7 @@ function Register(props) {
                         password: password,
                     })
                         .then((response) => {
-                            const success = response.data.success
-
-                            if(success){
+                            if(response.data.success){
                                 setLoading(false)
                                 setError("")
                                 newCookies.set("user", response.data.token, { path: '/' })
@@ -91,7 +88,9 @@ function Register(props) {
                 <h1 className="text-center text-xl font-bold m-4">Register</h1>
 
                 {!loading && (
-                    <div className="w-3/4 mx-auto p-2">
+                    <div className="w-2/3 mx-auto p-2">
+                        {error && ( <Error message={error} changeMessage={setError} /> )}
+
                         <label htmlFor="email" className="text-left w-full ml-4">Email Address:</label>
                         <input type="email" name="email" id="email" className="w-full mb-2 px-4 py-1 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setEmail(e.target.value) }} />
 

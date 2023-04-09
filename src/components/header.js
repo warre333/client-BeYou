@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Cookies from "universal-cookie"
 
-import { AUTH, PROFILE_IMAGE, USERS } from '../config/api.config';
-
 import Logo from "../images/logo.png"
 import Login from './auth/Login';
 import Register from './auth/Register';
+import { isAuthenticated } from '../functions/Common';
+
+import { AUTH, PROFILE_IMAGE, USERS } from '../config/api.config';
 
 const styles = {
     header_container: {
@@ -31,56 +32,31 @@ function Header() {
     const [popup, setPopup] = useState()
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-
     const [search, setSearch] = useState()
 
     function logout(){
-        // Log out
         newCookies.remove("user", {path: "/"})
         setUser("")
         navigate("/")
         window.location.reload(false);
     }
-
-    function getCookie(){
-      if(newCookies.get('user')){
-        return newCookies.get('user')
-      }
-    }  
   
     useEffect(() => {
-      function isAuthenticated(){
-        const cookies = getCookie()
-    
-        if(cookies){
-          axios.get(AUTH,
-            {
-              headers: {
-                "x-access-token": cookies
-              },
-            },
-          )
-            .then((response) => {
-                if(response.data.success){
-                    setRole(response.data.role)
+      const isAuthenticatedResult = isAuthenticated()
 
-                    axios.get(USERS + "?user_id=" + response.data.user_id).then((response) => {
-                        if(response.data.success){
-                            setUser(response.data.data)
-                        } else {                          
-                          setUser("")
-                        }
-                    }) 
-                } else {
-                  setUser("")
-                }         
-            })
-        } else {
-          setUser("")
-        }
+      if(isAuthenticatedResult.success){
+        setRole(isAuthenticatedResult.data.role)
+
+        axios.get(USERS + "?user_id=" + isAuthenticatedResult.data.user_id).then((response) => {
+          if(response.data.success){
+              setUser(response.data.data)
+          } else {                          
+            setUser("")
+          }
+        }) 
+      } else {
+        setUser("")
       }
-  
-      isAuthenticated()
     }, [user])
 
     function handleLogin(){
@@ -89,7 +65,6 @@ function Header() {
 
     function handleEnterSearch(e){
       if (e.code === "Enter") {
-        console.log(search);
         navigate('/search?keywords=' + search + '&page=1')
       }
     }
@@ -116,7 +91,6 @@ function Header() {
             <div className="flex flex-row align-center justify-between">
               <a href="/" className="flex align-center my-auto text-decoration-none">
                 <img src={Logo} alt="logo" style={styles.logo}/>
-                {/* <p className="text-2xl font-extrabold mr-4">Speakr</p> */}
               </a>
 
               <ul className="flex flex-row mr-auto my-auto ">

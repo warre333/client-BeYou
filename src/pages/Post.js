@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-import Cookies from "universal-cookie"
+import { useParams } from 'react-router-dom'
 
 import Header from '../components/header'
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
@@ -12,13 +11,9 @@ import Register from '../components/auth/Register'
 import NormalPost from '../components/posts/NormalPost'
 
 import { IMAGES, AUTH, POSTS, WEBSITE_URL } from '../config/api.config'
-import { useParams } from 'react-router-dom'
 
-const cookies = new Cookies();
-
-function Page() {
+function Post() {
   const params = useParams()
-  const [user, setUser] = useState()
   const [post, setPost] = useState()
   const [postMedia, setPostMedia] = useState()
   const [popup, setPopup] = useState()
@@ -27,47 +22,13 @@ function Page() {
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
 
-  function getCookie(){
-    if(cookies.get('user')){
-      return cookies.get('user')
-    }
-  }  
-
-  useEffect(() => {
-    function isAuthenticated(){
-      const cookies = getCookie()
-  
-      if(cookies){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": cookies
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-            setUser(response.data.user_id)
-          }  else {
-            setUser("none")
-            setPopup("login")
-            cookies.remove('user', { path: '/' });
-          }
-        })
-      } else { 
-        setUser("none")
-      }
-    }
-
-    isAuthenticated()
-  }, [])
-
   useEffect(() => {
     axios.get(POSTS + "post?post_id=" + params.post)
       .then((response) => {
-        console.log(response.data);
         if(response.data.success){
-          setPost(response.data.data)
           const media_link = IMAGES + "posts/" + response.data.data.media_link
+
+          setPost(response.data.data)
           setPostMedia(media_link)
         } else {          
           setPost({post_id: 0, user_id: 0, media_link: "NOT_FOUND.PNG", caption: "", time_placed: "0"})
@@ -76,8 +37,6 @@ function Page() {
       })
   }, [])
   
-  console.log(post);
-
   return (
     <div>
         <Header />
@@ -111,4 +70,4 @@ function Page() {
   )
 }
 
-export default Page
+export default Post

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import Cookies from "universal-cookie"
-
-import { ADS, AUTH, IMAGES, POSTS, POST_IMAGE, PROFILE_IMAGE, USERS } from '../../config/api.config';
-
-import "../../styles/like_animation.css"
 
 import Error from "../states/Error"
 import isOnScreen from "../../hooks/isOnScreen"
+
+import { ADS, AUTH, POSTS, POST_IMAGE, PROFILE_IMAGE, USERS } from '../../config/api.config';
+
+import "../../styles/like_animation.css"
+import { getCookie, isAuthenticated } from '../../functions/Common';
 
 const styles = {
   image: {
@@ -41,22 +41,18 @@ const styles = {
 }
 
 function Normal(props) {
-  const newCookies = new Cookies()
-
-  // Functions
   const [error, setError] = useState()
   const [liked, setLiked] = useState(false);
   const [likeAnimation, setLikeAnimation] = useState(false);
   const [viewed, setViewed] = useState(false);
-  // const [viewSend, setViewed] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
+  const [commentsSuccess, setCommentsSuccess] = useState(false);
   const [user, setUser] = useState();
   const [userId, setUserId] = useState();
-  const [commentsSuccess, setCommentsSuccess] = useState(false);
-  const [share, setShare] = useState(false)
   const [poster, setPoster] = useState()
+  const [share, setShare] = useState(false)
 
   const ref = useRef()
   const isVisible = isOnScreen(ref)
@@ -73,23 +69,16 @@ function Normal(props) {
         headers: {
           "x-access-token": cookies
         },
-      },).then((response) => {
+      },).then(() => {
         setViewed(true)
       })
     }
   })
 
-  
-  function getCookie(){
-    if(newCookies.get('user')){
-      return newCookies.get('user')
-    }
-  } 
-
   function likePost(){
-    const cookies = getCookie()
+    const userCookie = getCookie()
 
-    if(cookies){
+    if(userCookie){
       setLikeAnimation(true)
 
       if(liked){
@@ -97,10 +86,9 @@ function Normal(props) {
 
         // Remove like from database
         axios.delete(POSTS + "like?post_id=" + props.post_id, 
-          // headers
           {
             headers: {
-              "x-access-token": cookies
+              "x-access-token": userCookie
             },
           },
         )
@@ -115,14 +103,11 @@ function Normal(props) {
 
         // Add like to database
         axios.post(POSTS + "like", 
-          // body
           {
             "post_id": props.post_id,
-          },
-          // headers
-          {
+          }, {
             headers: {
-              "x-access-token": cookies
+              "x-access-token": userCookie
             },
           },
         )
@@ -144,28 +129,26 @@ function Normal(props) {
     })
   }
 
-  async function placeComment(){
-    const cookies = getCookie()
+  function placeComment(){
+    const userCookie = getCookie()
     
     // Post to DB
     // Add new post to the list
-    if(cookies){
-      if(comment !== ""){
+    if(userCookie){
+      if(comment.length > 0){
         axios.post(POSTS + "comment", {
           post_id: props.post_id,
           comment: comment,
-        }, 
-        {
+        }, {
           headers: {
-            "x-access-token": cookies
+            "x-access-token": userCookie
           },
         }).then((response) => {
           if(response.data.success){
             const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, user_id: user.user_id, username: user.username}
             const newCommentSection = [newComment, ...comments]
 
-            setComment("")
-          
+            setComment("")          
             setComments(newCommentSection)
           } else {
             setError("There occurred an error while commenting.")
@@ -179,16 +162,17 @@ function Normal(props) {
     } 
   }
 
-  async function deleteComment(e){
-    const cookies = getCookie()
+  function deleteComment(e){
+    const userCookie = getCookie()
     
     axios.delete(POSTS + "comment?comment_id=" + e.target.value, {
       headers: {
-        "x-access-token": cookies
+        "x-access-token": userCookie
       },
     }).then((response) => {
       if(response.data.success){
         comments.splice(e.target.id, 1);
+
         getComments()
       } else {
         setError(response.data.message)
@@ -196,12 +180,12 @@ function Normal(props) {
     })
   }
 
-  async function getComments(){
-    const cookies = getCookie()
+  function getComments(){
+    const userCookie = getCookie()
 
     axios.get(POSTS + "comment/all?post_id=" + props.post_id, {
       headers: {
-        "x-access-token": cookies
+        "x-access-token": userCookie
       },
     }).then((response) => {
       if(response.data.success){
@@ -213,8 +197,9 @@ function Normal(props) {
     })
   }
 
-  async function isLiked(){
+  function isLiked(){
     const cookies = getCookie()
+
     axios.get(POSTS + "like?post_id=" + props.post_id,
       {
         headers: {
@@ -222,7 +207,6 @@ function Normal(props) {
         },
       },
     ).then((response) => {
-      // Check if liked
       if(response.data.liked){
         setLiked(true)
       }
@@ -246,8 +230,7 @@ function Normal(props) {
     })
   }
 
-  async function getUserInfo(){
-    
+  function getUserInfo(){    
     if(userId){
       axios.get(USERS + "?user_id=" + userId).then((response) => {
         setUser(response.data.data)
@@ -255,33 +238,17 @@ function Normal(props) {
     }
   }
 
-  async function isAuthenticated(){
-    const cookies = getCookie()
-
-    if(cookies){
-      axios.get(AUTH,
-        {
-          headers: {
-            "x-access-token": cookies
-          },
-        },
-      ).then((response) => {
-        if(response.data.success){
-          setUserId(response.data.user_id)
-        }       
-      })
-    }
-  }
-
   useEffect(() => {
+    const isAuthenticatedResult = isAuthenticated() 
+
+    if(isAuthenticatedResult.success){
+      setUserId(isAuthenticatedResult.data.user_id)
+      getUserInfo()
+    }   
+
     getPosterInfo()
     isLiked()
   }, [])
-
-  useEffect(() => {
-    isAuthenticated()    
-    getUserInfo()
-  })
   
   return (
     <div className='mt-5' id={props.post_id} ref={ref}>
@@ -303,7 +270,7 @@ function Normal(props) {
                   </a>
                 )}
                 {!poster && (              
-                  <a href={""} style={styles.noDecorationLink}>
+                  <div>
                     <td>
                       {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
                       <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + "NOT_FOUND.jpg"} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
@@ -311,7 +278,7 @@ function Normal(props) {
                     <td className='align-middle'>
                       <h4 className="text-sm align-middle h-full">USER NOT FOUND</h4>
                     </td>
-                  </a>
+                  </div>
                 )}
               </tr>
             </tbody>
@@ -372,9 +339,7 @@ function Normal(props) {
                       <div className="">
                         <button type="button" className="" data-bs-dismiss="alert" aria-label="Close" onClick={() => { setShare(false) }}><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-x mt-2 mr-2" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg></button>
                       </div>
-                    </div>
-                    
-                    
+                    </div>    
                   </div>
                 </div>
               } 
@@ -441,7 +406,7 @@ function Normal(props) {
                                   </td>
 
                                   <td>
-                                    {userId == item.user_id && (
+                                    {userId === item.user_id && (
                                       <div className="float-right" style={styles.deleteButtonDiv}>
                                         <input type="hidden" name="comment_id"  />
                                         <button className="text-red-400" style={styles.button} id={index} value={item.comment_id} onClick={deleteComment}><p className="text-red-400">delete</p></button>
@@ -455,11 +420,9 @@ function Normal(props) {
                         )
                       })
                     )}
-
                   </div>
                 </div>
               )}
-
             </div>
           </div>
         </div>        

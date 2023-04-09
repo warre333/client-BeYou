@@ -4,19 +4,18 @@ import Cookies from "universal-cookie"
 import sha256 from 'js-sha256'
 
 import Header from '../components/header'
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
+import { getCookie, isAuthenticated } from '../functions/Common'
 
-import { AUTH, USERS } from '../config/api.config'
+import { USERS } from '../config/api.config'
 
 const newCookies = new Cookies();
 
-function Page() {
-  const [user, setUser] = useState()
+function Settings() {
   const [popup, setPopup] = useState()
 
   const [oldPassword, setOldPassword] = useState()
@@ -26,12 +25,6 @@ function Page() {
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
-
-  function getCookie(){
-    if(newCookies.get('user')){
-      return newCookies.get('user')
-    }
-  }  
 
   function handleOldPassword(e){
     setOldPassword(sha256(e.target.value))
@@ -84,14 +77,12 @@ function Page() {
       })
 
       .catch((err) => {
-        console.log(err)
+        setError(err)
       })
   }
 
   function logout(){
-      // Log out
       newCookies.remove("user", {path: "/"})
-      setUser("")
       window.location.reload(false);
   }
 
@@ -113,37 +104,16 @@ function Page() {
         }
       })
       .catch((err) => {
-        console.log(err)
+        setError(err)
       })
   }
 
-  useEffect(() => {
-    function isAuthenticated(){
-      const cookies = getCookie()
-  
-      if(cookies){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": cookies
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-            setUser(response.data.user_id)
-          }  else {
-            setUser("none")
-            setPopup("login")
-            cookies.remove('user', { path: '/' });
-          }
-        })
-      } else { 
-        setUser("none")
-        setPopup("login")
-      }
-    }
+  useEffect(() => {    
+    const isAuthenticatedResult = isAuthenticated()
 
-    isAuthenticated()
+    if (!isAuthenticatedResult.success) {
+      setPopup("login");
+    }
   }, [])
   
 
@@ -213,4 +183,4 @@ function Page() {
   )
 }
 
-export default Page
+export default Settings

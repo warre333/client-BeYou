@@ -1,14 +1,11 @@
 import React from "react";
+
 function Success(props) {
     const changeMessageState = () => {
         props.changeMessage("")
     }
 
     return (
-        // <div className="alert alert-success alert-dismissible fade show">
-        //     <p style={{margin: "0"}}>{props.message}</p>
-        //     <button type="button" data-bs-dismiss="alert" className="btn-close " aria-label="Close" style={{float: 'right'}} onClick={changeMessageState} />
-        // </div>  
         <div class="bg-green-50 border border-green-400 rounded text-green-800 text-sm p-4 flex items-start">
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor" >

@@ -1,28 +1,20 @@
 import React, {useEffect, useState} from 'react'
-import axios from 'axios'
-import Cookies from "universal-cookie"
+import { useNavigate } from 'react-router-dom';
 
 import Header from '../components/header'
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
-
-import { ADMIN } from '../config/api.config'
-import { useNavigate } from 'react-router-dom';
-
 import Analytics from '../components/admin/Analytics'
 import Users from '../components/admin/Users'
 import Posts from '../components/admin/Posts'
+import { isAdmin } from '../functions/Common'
 
-const newCookies = new Cookies();
-
-function Page() {
+function AdminPage() {
   const navigate = useNavigate()
 
-  const [user, setUser] = useState()
   const [page, setPage] = useState('Analytics')
   const [popup, setPopup] = useState()
   
@@ -30,36 +22,13 @@ function Page() {
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
 
-  function getCookie(){
-    if(newCookies.get('user')){
-      return newCookies.get('user')
-    }
-  }  
 
   useEffect(() => {
-    function isAuthenticated(){
-      const cookies = getCookie()
-  
-      if(cookies){
-        axios.get(ADMIN,
-          {
-            headers: {
-              "x-access-token": cookies
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-            setUser(response.data.user_id)
-          }  else {
-            navigate("/")
-          }
-        })
-      } else { 
-        navigate("/")
-      }
-    }
+    const isAdminResult = isAdmin()
 
-    isAuthenticated()
+    if(!isAdminResult.success){
+      navigate("/")
+    }
   }, [])
 
 
@@ -82,13 +51,13 @@ function Page() {
         <div className="flex flex-row">
           <div className="w-1/5">
             <div className="bg-gray-100 mt-12 py-8 h-full w-full rounded-r-2xl flex flex-col">
-              <button className="py-2 pl-6 border-t border-gray-200" onClick={(e) => { setPage('Analytics') }}>
+              <button className="py-2 pl-6 border-t border-gray-200" onClick={() => { setPage('Analytics') }}>
                 <p className="">Analytics</p>
               </button>
-              <button className="py-2 pl-6 border-t border-gray-200" onClick={(e) => { setPage('Users') }}>
+              <button className="py-2 pl-6 border-t border-gray-200" onClick={() => { setPage('Users') }}>
                 <p className="">Users</p>
               </button>
-              <button className="py-2 pl-6 border-y border-gray-200" onClick={(e) => { setPage('Posts') }}>
+              <button className="py-2 pl-6 border-y border-gray-200" onClick={() => { setPage('Posts') }}>
                 <p className="">Posts</p>
               </button>
               {/* <button className="py-2 pl-6 border-b border-gray-200" onClick={(e) => { setPage('Advertisements') }}>
@@ -118,4 +87,4 @@ function Page() {
   )
 }
 
-export default Page
+export default AdminPage

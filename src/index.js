@@ -7,9 +7,7 @@ import {
   Route
 } from "react-router-dom";
  
-// import './styles/index.css';
 import './styles/posts.css';
-import './styles/colors.css';
 
 import Homepage from './pages/Homepage'
 import Explore from './pages/Explore';
@@ -24,8 +22,6 @@ import Chat from './pages/Chat';
 import Admin from './pages/Admin';
 import Ads from './pages/Ads';
 import AdsPaid from './pages/AdsPaid';
-
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

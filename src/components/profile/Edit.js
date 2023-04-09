@@ -1,11 +1,9 @@
 import axios from 'axios';
-import React, {useState, useEffect} from 'react'
-import { PROFILE_IMAGE, USERS } from '../../config/api.config';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
-import Cookies from "universal-cookie"
+import React, {useState} from 'react'
 import { useNavigate } from "react-router-dom";
 
-// import "../../styles/colors.css"
+import { USERS } from '../../config/api.config';
+import { getCookie } from '../../functions/Common';
 
 const styles = {
     bg:  {
@@ -46,34 +44,15 @@ const styles = {
 }
 
 function Edit(props) {
-    // Screen sizing
-    const { width } = useWindowDimensions();
-    const [isOnMobile, setIsOnMobile] = useState(false)
-
-    const newCookies = new Cookies()
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if(width < 768){
-            setIsOnMobile(true)
-        } else {
-            setIsOnMobile(false)
-        }
-    })
-    
-    function getCookie(){
-        if(newCookies.get('user')){
-          return newCookies.get('user')
-        }
-    } 
-
+    const navigate = useNavigate();    
     const profile = props.profile
+
     const [profileImage, setProfileImage] = useState()
     const [fileName, setFileName] = useState("");
     const [username, setUsername] = useState(profile.username.substring(1))
     const [bio, setBio] = useState(profile.bio)
 
-    async function saveData(){
+    function saveData(){
         const cookies = getCookie()
 
         if(profileImage){
@@ -86,7 +65,6 @@ function Edit(props) {
                   'Content-Type': 'multipart/form-data'
                 },
             }).then((response) => {
-                console.log(response.data.data.new_media_link)
                 if(response.data.success){
                     props.changeProfile({
                         bio: profile.bio,
@@ -184,10 +162,6 @@ function Edit(props) {
                     <div className="w-1/2 mx-auto mt-3"> 
                         <label htmlFor="" className="w-full text-center pb-2">Change profile image</label>
                         <div className="md:flex md:flex-row">
-                            {/* <div className="w-full md:w-1/2">
-                                <label htmlFor="" className="w-full text-center">Open files</label>
-                                <input type="file"  className="form-control" />
-                            </div> */}
                             <div className="w-full md:w-1/2 mb-2 md:mb-0">
                                 <label htmlFor="file-upload" className="border border-blue-400 bg-blue-200 rounded-xl inline-block py-1 px-10">
                                     Open files
@@ -201,10 +175,6 @@ function Edit(props) {
                                 </label>
                                 <input id="file-upload" className='hidden' type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} accept="image/*" capture="camera" />
                             </div>
-                            {/* <div className="w-full md:w-1/2">
-                                <label htmlFor="" className="w-full text-center">Open camera</label>
-                                <input type="file" onChange={(e) => { setProfileImage(e.target.files[0]); setFileName(e.target.files[0].name)}} accept="image/*" capture="camera" className="form-control" data-classButton="btn btn-secundary" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here." />
-                            </div> */}
                         </div>
                     </div>
                 </div>

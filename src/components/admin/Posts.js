@@ -1,68 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import Cookies from 'universal-cookie';
-import axios, { Axios } from 'axios';
-import { ADMIN, POST_IMAGE, PROFILE_IMAGE, SEARCH } from '../../config/api.config';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 
-const newCookies = new Cookies();
+import { ADMIN, POST_IMAGE } from '../../config/api.config';
+import { getCookie } from '../../functions/Common';
 
-const styles = {
-  image: {
-      objectFit: "contain",
-  },
-  
-  button: {    
-    background: "none",
-    color: "inherit",
-    border: "none",
-    padding: 0,
-    font: "inherit",
-    cursor: "pointer",
-    outline: "inherit",
-  },
-
-  link: {
-    textDecoration: "none",
-    color: "black",
-  }
-}
-
-function Analytics() {
-    const navigate = useNavigate()
-    const [popup, setPopup] = useState(false)
-    const [users, setUsers] = useState()
-    const [searchParams, setSearchParams] = useSearchParams();
+function Posts() {
     const [searchResult, setSearchResult] = useState()
-
-    function getCookie(){
-        if(newCookies.get('user')){
-          return newCookies.get('user')
-        }
-    }
-
-    function getUsers(){
-      const cookies = getCookie()
-
-      axios.get(ADMIN,
-        {
-          headers: {
-            "x-access-token": cookies
-          },
-        }
-      )
-        .then((response) => {
-          if(response.data.success){
-            setUsers(response.data.data)
-          } else {
-            console.log(response.data.message);        
-          }
-        })
-    }
   
-    useEffect(() => {
-      getUsers()
-    }, [])
-
     function searchFunction(username){
       const cookies = getCookie()
 
@@ -116,15 +60,16 @@ function Analytics() {
 
     const remove = (id) => {
       const newPosts = searchResult.filter((post) => post.post_id.toString() !== id)
+
       searchResult.filter((post) => console.log(post.post_id, id, post.post_id.toString() !== id))
-      console.log(newPosts, searchResult);
+
       setSearchResult(newPosts)
     };
 
     function handleModerate(e){
-      const cookies = getCookie()
-      console.log(e);
+      const cookies = getCookie()      
       const id = e.target.id
+
       if (window.confirm("Are you sure you want to delete this post")) {
         axios.delete(ADMIN + "posts?post_id=" + id, {
           headers: {
@@ -138,9 +83,7 @@ function Analytics() {
               console.log(response);
             }
           })
-      } else {
-        console.log("Canceled");
-      }     
+      }   
     }
 
   return (    
@@ -156,7 +99,7 @@ function Analytics() {
               <div className='my-1 mx-4'>
                 <div className="bg-gray-100 border rounded-2xl">
                   <div className="w-full flex flex-col">
-                    <a key={key} className="w-full" href={"/post/" + item.post_id} style={styles.link}>
+                    <a key={key} className="w-full" href={"/post/" + item.post_id}>
                       <div className='p-1 w-full'>
                         <img src={POST_IMAGE + item.media_link} alt="post" height="200" width="200" className="object-cover aspect-square px-1 pt-1 rounded-xl mx-auto" />
                       </div>
@@ -170,18 +113,14 @@ function Analytics() {
             </div>
           )
         })}
-        {searchResult == [] && (
+        {searchResult === [] && (
             <div className="container mx-auto">
               <p className="text-center">No users are found.</p>
             </div>
         )}
       </div>
-
-      <div className={popup ? "bg-black" : "hidden"}>
-
-      </div>
     </div>
   )
 }
 
-export default Analytics
+export default Posts

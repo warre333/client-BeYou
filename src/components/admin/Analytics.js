@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import Cookies from 'universal-cookie';
 import axios from 'axios';
-import { ADMIN } from '../../config/api.config';
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from 'chart.js';
+// import { Line } from 'react-chartjs-2';
 
-const newCookies = new Cookies();
+import { getCookie } from '../../functions/Common';
+
+import { ADMIN } from '../../config/api.config';
 
 function Analytics() {
     const [totalUsers, setTotalUsers] = useState()
@@ -25,60 +25,58 @@ function Analytics() {
     const [averageAdSpentToday, setAverageAdSpentToday] = useState()
     const [adSpent, setAdSpent] = useState()
 
-    function getCookie(){
-        if(newCookies.get('user')){
-          return newCookies.get('user')
-        }
-    }  
+    /*
+      Test for a graph, maybe an idea to add?
+    */
 
-    ChartJS.register(
-      CategoryScale,
-      LinearScale,
-      PointElement,
-      LineElement,
-      Title,
-      Tooltip,
-      Legend
-    );
+    // ChartJS.register(
+    //   CategoryScale,
+    //   LinearScale,
+    //   PointElement,
+    //   LineElement,
+    //   Title,
+    //   Tooltip,
+    //   Legend
+    // );
     
-    const options = {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        title: {
-          display: false,
-          text: 'Analytics',
-        },
-      },
-    };
+    // const options = {
+    //   responsive: true,
+    //   plugins: {
+    //     legend: {
+    //       position: 'top',
+    //     },
+    //     title: {
+    //       display: false,
+    //       text: 'Analytics',
+    //     },
+    //   },
+    // };
     
-    const date = new Date()
-    const labels = [new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (6 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (6 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (6 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (5 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (5 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (5 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (4 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (4 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (4 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (3 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (3 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (3 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (2 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (2 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (2 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (1 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (1 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (1 * 24 * 60 * 60 * 1000)).getFullYear()];
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: 'Users',
-          data: labels.map(() => 1),
-          borderColor: 'rgb(82, 222, 229)',
-          backgroundColor: 'rgba(82, 222, 229, 0.5)',
-        },
-        {
-          label: 'Posts',
-          data: labels.map(() => 1),
-          borderColor: 'rgb(53, 162, 235)',
-          backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-        {
-          label: 'Advertisements',
-          data: labels.map(() => 1),
-          borderColor: 'rgb(242, 232, 109)',
-          backgroundColor: 'rgba(242, 232, 109, 0.5)',
-        },
-      ],
-    };
+    // const date = new Date()
+    // const labels = [new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (6 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (6 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (6 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (5 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (5 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (5 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (4 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (4 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (4 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (3 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (3 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (3 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (2 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (2 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (2 * 24 * 60 * 60 * 1000)).getFullYear(), new Date(date.getTime() - (1 * 24 * 60 * 60 * 1000)).getDate() + "-" + (new Date(date.getTime() - (1 * 24 * 60 * 60 * 1000)).getMonth() + 1) + "-" + new Date(date.getTime() - (1 * 24 * 60 * 60 * 1000)).getFullYear()];
+    // const data = {
+    //   labels,
+    //   datasets: [
+    //     {
+    //       label: 'Users',
+    //       data: labels.map(() => 1),
+    //       borderColor: 'rgb(82, 222, 229)',
+    //       backgroundColor: 'rgba(82, 222, 229, 0.5)',
+    //     },
+    //     {
+    //       label: 'Posts',
+    //       data: labels.map(() => 1),
+    //       borderColor: 'rgb(53, 162, 235)',
+    //       backgroundColor: 'rgba(53, 162, 235, 0.5)',
+    //     },
+    //     {
+    //       label: 'Advertisements',
+    //       data: labels.map(() => 1),
+    //       borderColor: 'rgb(242, 232, 109)',
+    //       backgroundColor: 'rgba(242, 232, 109, 0.5)',
+    //     },
+    //   ],
+    // };
   
     function getAnalytics(){
       const cookies = getCookie()
@@ -148,13 +146,15 @@ function Analytics() {
                 </p>
             </div>
         </div>
-        
+
+        {/*
         <div className="m-6">
-            {/* <Line
+             <Line
             options={options}
             data={data}
-            /> */}
+            /> 
         </div>
+        */}
     </div>
   )
 }

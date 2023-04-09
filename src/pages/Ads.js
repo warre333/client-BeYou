@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Cookies from "universal-cookie";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-
-import { ADS, AUTH, STRIPE, USERS } from "../config/api.config";
+import { useSearchParams } from "react-router-dom";
 
 import Header from "../components/header";
 import Error from "../components/states/Error";
@@ -16,18 +14,16 @@ import Ad from "../components/advertisements/Ad";
 import SelectPost from "../components/advertisements/SelectPost";
 import AdInfo from "../components/advertisements/AdInfo";
 import CheckoutForm from "../components/advertisements/CheckoutForm";
-import { useSearchParams } from "react-router-dom";
+import { getCookie, isAuthenticated } from "../functions/Common";
+
+import { ADS, STRIPE } from "../config/api.config";
 
 const stripePromise = loadStripe(STRIPE, { locale: "en" });
 
-function Explore() {
-  const cookies = new Cookies();
+function Ads() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [user, setUser] = useState();
   const [popup, setPopup] = useState();
-
-  // const [search, setSearch] = useState()
   const [ads, setAds] = useState();
   const [endedAds, setEndedAds] = useState();
   const [page, setPage] = useState(0);
@@ -38,11 +34,6 @@ function Explore() {
   const [success, setSuccess] = useState();
   const [loading, setLoading] = useState();
 
-  function getCookie() {
-    if (cookies.get("user")) {
-      return cookies.get("user");
-    }
-  }
 
   function getAds() {
     const user = getCookie();
@@ -67,41 +58,14 @@ function Explore() {
     setPage(1);
   }
 
-  // function handleEnterSearch(e){
-  //   if (e.code === "Enter") {
-  //     console.log(search);
-  //   }
-  // }
-
   useEffect(() => {
-    function isAuthenticated() {
-      const user = getCookie();
+    const isAuthenticatedResult = isAuthenticated()
 
-      if (user) {
-        axios
-          .get(AUTH, {
-            headers: {
-              "x-access-token": user,
-            },
-          })
-          .then((response) => {
-            if (response.data.success) {
-              setUser(response.data.user_id);
-
-              getAds();
-            } else {
-              setUser("none");
-              setPopup("login");
-              cookies.remove("user", { path: "/" });
-            }
-          });
-      } else {
-        setUser("none");
-        setPopup("login");
-      }
+    if (isAuthenticatedResult.success) {
+      getAds();
+    } else {
+      setPopup("login");
     }
-
-    isAuthenticated();
   }, []);
 
   useEffect(() => {
@@ -124,13 +88,6 @@ function Explore() {
       {error && <Error message={error} changeMessage={setError} />}
       {success && <Success message={success} changeMessage={setSuccess} />}
       {loading && <Loading changeMessage={setLoading} />}
-
-      {/* <CreateAd></CreateAd>
-        <div className="">
-          <SearchBar></SearchBar>
-          <SearchButton></SearchButton>
-        </div>
-        <Advertisements></Advertisements> */}
 
       <div className="container mx-auto">
         <button onClick={startAdProgress} className="text-white bg-blue-500 w-full rounded-xl py-1 mt-6">
@@ -222,4 +179,4 @@ function Explore() {
   );
 }
 
-export default Explore;
+export default Ads;

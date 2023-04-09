@@ -1,36 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-import Cookies from "universal-cookie"
-import { Navigate, useNavigate, useParams } from "react-router-dom"
-
-import useWindowDimensions from '../hooks/useWindowDimensions'
+import { useNavigate, useParams } from "react-router-dom"
 
 import Header from "../components/header"
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
-
-import { AUTH, CHAT, PROFILE_IMAGE, USERS } from '../config/api.config'
 import Edit from '../components/profile/Edit'
 import PreviewPost from '../components/posts/PreviewPost'
+import { getCookie, isAuthenticated } from '../functions/Common'
 
-// const styles = {
-//     profileImage: {
-//         height: "25vw",
-//         width: "25vw",
-//         objectFit: "cover",
-//     },
-//     profileImageDesktop: {
-//         height: "10vw",
-//         width: "10vw",
-//         objectFit: "cover",
-//     },
-// }
-
-const newCookies = new Cookies();
+import { AUTH, CHAT, PROFILE_IMAGE, USERS } from '../config/api.config'
 
 function Profile() {
   const navigate = useNavigate()
@@ -53,66 +35,31 @@ function Profile() {
     const params = useParams()
 
     const profileUsername = params.username
-
-    function getCookie(){
-      if(newCookies.get('user')){
-        return newCookies.get('user')
-      }
-    }  
   
-    useEffect(() => {
-      const cookies = getCookie()
-    
-      if(cookies){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": cookies
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-           setUser(response.data.user_id)
-          } else {
-            newCookies.remove('user', { path: '/' });
-          }
-        })
-      } 
-    }, [user])
+    useEffect(() => {    
+      const isAuthenticatedResult = isAuthenticated()
 
-    // Screen sizing
-    const { width, height } = useWindowDimensions();
-    const [isOnMobile, setIsOnMobile] = useState(false)
-
-    useEffect(() => {
-        if(width < 768){
-            setIsOnMobile(true)
-        } else {
-            setIsOnMobile(false)
-        }
-    })
+      if (!isAuthenticatedResult.success) {
+        setPopup("login");
+      }
+    }, [])
 
     function getUserInfo(){
-      // Get user info from api with userid
-      // put in userinfo
-
-      // Info, profile_image, bio, total followers, total posts
       axios.get(USERS + "profile?username=" + profileUsername)
         .then((response) => {
-          console.log(response.data);
           if(response.data.success){
             setProfileInfo(response.data.data.user_info[0])
             setProfilePosts(response.data.data.posts)
             setProfileTotalFollowers(response.data.data.total_followers)
             setProfileTotalLikes(response.data.data.total_likes)
             setProfileTotalPosts(response.data.data.total_posts)
-            if(response.data.data.user_info[0].verified == 1){
+            amIFollowingThisUser(response.data.data.user_info[0].user_id)
+
+            if(response.data.data.user_info[0].verified === 1){
               setVerified(true)
             } else {
               setVerified(false)
             }
-
-            amIFollowingThisUser(response.data.data.user_info[0].user_id)
           } else {
             setError(response.data.message)
           }
@@ -188,10 +135,8 @@ function Profile() {
         },
       },)
         .then((response) => {
-          console.log(response);
           if(response.data.success){
             navigate("/messages/" + response.data.chatroom_id)
-          } else {
           }
         })
       
@@ -222,7 +167,6 @@ function Profile() {
                 <div className="text-right w-1/3 md:w-1/4 lg:w-1/5 flex justify-center align-middle">
                   {profileInfo && ( <img src={PROFILE_IMAGE + profileInfo.profile_image} alt="profile_image" className="object-cover w-[15vw] h-[15vw] md:w-[10vw] md:h-[10vw] aspect-square rounded-full" /> )}
                 </div>
-
                 <div className="ml-3 w-full">
                     <table className="h-1/2">
                         <tbody>
@@ -259,7 +203,6 @@ function Profile() {
                 </div>
             </div>
 
-
             {/* bio + edit */}
             <div className="mx-2 my-8">
               {profileInfo && (<p>{profileInfo.bio}</p>) } 
@@ -288,12 +231,9 @@ function Profile() {
 
             <div className="border-b mt-4"></div>
 
-
-
             {/* Posts grid */}
             <div className="my-5">
               <div className="grid grid-cols-3 gap-4">
-
                 {profilePosts && profilePosts.length > 0 && (
                   profilePosts.map((post, key) => {
                     return <PreviewPost image={post.media_link} post_id={post.post_id} key={key} />
@@ -303,9 +243,7 @@ function Profile() {
                 {profilePosts && profilePosts.length === 0 && (
                   <h4 className="w-full text-center">No posts are found...</h4>
                 )}
-
-              </div>
-              
+              </div>              
             </div>
         </div>
         
@@ -317,8 +255,6 @@ function Profile() {
         { popup === "register" && (
           <Register setPopup={setPopup} setError={setError} setSuccess={setSuccess} setLoading={setLoading}  />
         )}
-        
-        
     </div>
   )
 }

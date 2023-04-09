@@ -1,76 +1,54 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useState } from 'react'
-import Cookies from 'universal-cookie'
 
-import { ADS, AUTH, POSTS } from '../../config/api.config'
+import { getCookie, isAuthenticated } from '../../functions/Common'
 
-import PreviewPost from './PreviewPost'
+import { ADS } from '../../config/api.config'
+
 
 function SelectPost({ changePage, changePaymentIntent, selectedPost }) {
-    const cookies = new Cookies()
-
     const [error, setError] = useState("")
 
     const [budget, setBudget] = useState(5.00)
-
-    function getCookie(){
-      if(cookies.get('user')){
-        return cookies.get('user')
-      }
-    }  
 
     function close(){
         changePage(0)
     }
 
-    function create(){
-        const user = getCookie()
-  
-        if(user){
-          axios.get(AUTH,
-            {
-              headers: {
-                "x-access-token": user
-              },
-            },
-          ).then((response) => {
-            if(response.data.success){
-                if(selectedPost && budget){
-                    if(budget >= 1.00){
-                        axios.post(ADS, {
-                            post_id: selectedPost,
-                            budget: budget,
+    function create(){       
+        const user = getCookie() 
+        const isAuthenticatedResult = isAuthenticated()
+
+        if(isAuthenticatedResult.success){
+            if(selectedPost && budget){
+                if(budget >= 1.00){
+                    axios.post(ADS, {
+                        post_id: selectedPost,
+                        budget: budget,
+                    },
+                        {
+                        headers: {
+                            "x-access-token": user
                         },
-                            {
-                            headers: {
-                                "x-access-token": user
-                            },
-                        })
-                            .then((response) => {
-                                if(response.data.success){
-                                    changePaymentIntent(response.data.data)
-                                    changePage(3)
-                                } else {
-                                    console.log(response)
-                                    setError("There was an error starting the payment.")
-                                }
-                            })    
-                    } else {
-                        setError("The budget should be greater then €1,00.")
-                    }
+                    })
+                        .then((response) => {
+                            if(response.data.success){
+                                changePaymentIntent(response.data.data)
+                                changePage(3)
+                            } else {
+                                setError("There was an error starting the payment. ERROR: " + response.data.message)
+                            }
+                        })    
                 } else {
-                    setError("You must fill in all fields.")
+                    setError("The budget should be greater then €1,00.")
                 }
-            }  else {
-              cookies.remove('user', { path: '/' });
-              window.location.reload() 
+            } else {
+                setError("You must fill in all fields.")
             }
-          })
-        } else { 
-            cookies.remove('user', { path: '/' });
-            window.location.reload() 
-        }
+        } else {
+            setError(isAuthenticatedResult.message)
+        }        
     }
     
   return (

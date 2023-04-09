@@ -3,12 +3,10 @@ import sha256 from 'js-sha256'
 import axios from 'axios'
 import Cookies from 'universal-cookie'
 
-import { AUTH } from '../../config/api.config'
-
 import Error from '../states/Error'
-import Success from '../states/Success'
 import Loading from '../states/Loading'
-import useWindowDimensions from '../../hooks/useWindowDimensions'
+
+import { AUTH } from '../../config/api.config'
 
 const styles = {
     opacityBackground: {
@@ -45,12 +43,11 @@ function Login(props) {
     const [password, setPassword] = useState()
     const [viewPassword, setViewPassword] = useState()
 
-    async function login(){
+    function login(){
         setLoading(true)
 
         if(username){
             if(password){
-                console.log(username, password)
                 axios.post(AUTH + "login", {           
                     username: username,
                     password: password,
@@ -77,7 +74,7 @@ function Login(props) {
                         }
                     })
                     .catch((err) => {
-                        console.log(err)
+                        setError(err)
                     })
             } else {
                 setLoading(false)
@@ -88,19 +85,6 @@ function Login(props) {
             setError("You should enter a username")
         }
     }
-
-    // Screen sizing
-    const { width } = useWindowDimensions();
-    const [isOnMobile, setIsOnMobile] = useState(false)
-
-    useEffect(() => {
-        if(width < 768){
-            setIsOnMobile(true)
-        } else {
-            setIsOnMobile(false)
-        }
-    })
-
 
   return (
     <div className='w-screen h-screen top-0 start-0 fixed mx-auto my-auto' style={styles.opacityBackground}>
@@ -113,7 +97,7 @@ function Login(props) {
                 
                 {!loading && (
                     <div className="w-2/3 mx-auto p-2">
-                        {error && ( <p className='w-full text-center text-orange-300'>{error}</p> )}
+                        {error && ( <Error message={error} changeMessage={setError} /> )}
 
                         <label htmlFor="username" className="text-left w-full ml-4">Username</label>
                         <input type="text" name="username" id="username" className="w-full mb-2 py-1 px-4 border border-gray-200 focus:border-none bg-white rounded-2xl" onChange={(e) => { setUsername(e.target.value)}} />

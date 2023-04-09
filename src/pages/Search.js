@@ -1,17 +1,16 @@
 import React, {useEffect, useState} from 'react'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
-import Cookies from "universal-cookie"
 
 import Header from '../components/header'
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
+import { isAuthenticated } from '../functions/Common'
 
 import { AUTH, PROFILE_IMAGE, SEARCH } from '../config/api.config'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 const styles = {
   image: {
@@ -35,58 +34,29 @@ const styles = {
 }
 
 function Page() {
-  const newCookies = new Cookies();
   const navigate = useNavigate()
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('keywords'))
 
-  const [user, setUser] = useState()
-  const [popup, setPopup] = useState()
-  
+  const [popup, setPopup] = useState()  
   const [searchResult, setSearchResult] = useState()
 
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
 
-  function getCookie(){
-    if(newCookies.get('user')){
-      return newCookies.get('user')
-    }
-  }  
+  useEffect(() => {    
+    const isAuthenticatedResult = isAuthenticated()
 
-  useEffect(() => {
-    function isAuthenticated(){
-      const user = getCookie()
-  
-      if(user){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": user
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-            setUser(response.data.user_id)
-          }  else {
-            setUser("none")
-            newCookies.remove('user', { path: '/' });
-          }
-        })
-      } else { 
-        setUser("none")
-      }
+    if (!isAuthenticatedResult.success) {
+      setPopup("login");
     }
-
-    isAuthenticated()
   }, [])
 
   function searchFunction(){
     axios.get(SEARCH + "?keywords=" + searchParams.get('keywords') + "&page=" + searchParams.get('page'))
       .then((response) => {
-        console.log(response.data);
         if(response.data.success){
           setSearchResult(response.data.data)
         } else {

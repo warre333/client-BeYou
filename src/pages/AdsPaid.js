@@ -1,25 +1,16 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
+import { useSearchParams } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import Cookies from "universal-cookie";
 
 import Confirm from "../components/advertisements/ConfirmPayment";
+
 import { STRIPE } from "../config/api.config";
-import { useSearchParams } from "react-router-dom";
 
 const stripePromise = loadStripe(STRIPE, { locale: "en" });
 
-const newCookies = new Cookies();
-
-function Checkout() {
+function AdsPaid() {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  function getCookie() {
-    if (newCookies.get("user")) {
-      return newCookies.get("user");
-    }
-  }
 
   if (searchParams.get('payment_intent_client_secret')) {
     const options = {
@@ -43,4 +34,4 @@ function Checkout() {
   }
 }
 
-export default Checkout;
+export default AdsPaid;
