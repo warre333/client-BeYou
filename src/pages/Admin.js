@@ -24,11 +24,16 @@ function AdminPage() {
 
 
   useEffect(() => {
-    const isAdminResult = isAdmin()
-
-    if(!isAdminResult.success){
-      navigate("/")
+    async function auth(){
+      await isAdmin()
+        .then((response) => {
+          if(!response.success){
+            navigate("/")
+          }        
+        })       
     }
+
+    auth()
   }, [])
 
 

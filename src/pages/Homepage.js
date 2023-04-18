@@ -15,6 +15,8 @@ import { POSTS } from '../config/api.config'
 function Homepage() {
   const [posts, setPosts] = useState()
   const [popup, setPopup] = useState("none")
+  const [postsSeen, setPostsSeen] = useState(0)
+  const [requestingPosts, setRequestingPosts] = useState(false)
   
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
@@ -22,27 +24,59 @@ function Homepage() {
 
 
   useEffect(() => {    
-    const isAuthenticatedResult = isAuthenticated()
     const user = getCookie()
 
-    if (isAuthenticatedResult.success) {
-      axios.get(POSTS + "feed", {
-        headers: {
-          "x-access-token": user
-        },
-      })
+    async function auth(){
+      await isAuthenticated()
         .then((response) => {
-          if(response.data.success){
-            setPosts(response.data.data)
+          if(response.success) {
+            axios.get(POSTS + "feed", {
+              headers: {
+                "x-access-token": user
+              },
+            })
+              .then((response) => {
+                if(response.data.success){
+                  setPosts(response.data.data)
+                } else {
+                  setError("An unkown error has occurred.")
+                }              
+              })
           } else {
-            setError("An unkown error has occurred.")
-          }              
-        })
-    } else {
-      setPopup("login");
-    }  
+            setPopup("login");
+          }        
+        })       
+    }
+
+    auth()
   }, [])
   
+  useEffect(() => {
+    if(posts){
+      if(postsSeen + 2 >= posts.length && !requestingPosts){
+        setRequestingPosts(true)
+
+        const cookies = getCookie()
+
+        axios.get(POSTS + "feed", {
+          headers: {
+            "x-access-token": cookies
+          },
+        })
+          .then((response) => {
+            if(response.data.success){
+              for(let i = 0; i < response.data.data.length; i++){
+                setPosts(posts => [ ...posts, response.data.data[i] ]);
+              }
+            } else {
+              setError("An unkown error has occurred.")
+            }
+            setRequestingPosts(false)
+        })    
+      }
+    }
+    
+  }, [postsSeen])
   
   return (
     <div>
@@ -53,7 +87,7 @@ function Homepage() {
         { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading /> )}
         
-        <PostList posts={posts} setError={setError} />  
+        <PostList posts={posts} setError={setError} setPostsSeen={setPostsSeen} postsSeen={postsSeen} />  
         
         {/* Login & register popups */}
         { popup === "login" && (

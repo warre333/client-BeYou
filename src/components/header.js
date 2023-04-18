@@ -42,21 +42,25 @@ function Header() {
     }
   
     useEffect(() => {
-      const isAuthenticatedResult = isAuthenticated()
-
-      if(isAuthenticatedResult.success){
-        setRole(isAuthenticatedResult.data.role)
-
-        axios.get(USERS + "?user_id=" + isAuthenticatedResult.data.user_id).then((response) => {
-          if(response.data.success){
-              setUser(response.data.data)
-          } else {                          
-            setUser("")
-          }
-        }) 
-      } else {
-        setUser("")
+      async function auth(){
+        await isAuthenticated()
+          .then((response) => {
+            if(response.success){
+              setRole(response.data.role)
+              axios.get(USERS + "?user_id=" + response.data.user_id).then((response) => {
+                if(response.data.success){
+                    setUser(response.data.data)
+                } else {
+                  setUser("")
+                }
+              })
+            } else {
+              setUser("")
+            }        
+          })       
       }
+
+      auth()
     }, [user])
 
     function handleLogin(){

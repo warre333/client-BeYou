@@ -81,7 +81,7 @@ function Register(props) {
   return (
     <div className='w-screen h-screen top-0 start-0 fixed mx-auto my-auto' style={styles.opacityBackground}>
         {/* Darkend background */}
-        <div className="w-full top-[25%] md:left-[25%] md:w-1/2 h-1/2 fixed bg-light rounded-3xl">
+        <div className="w-full top-[25%] md:left-[25%] md:w-1/2 h-1/2 fixed bg-gray-100 rounded-3xl">
 
             {/* centered white space */}
             <div className="h-full">

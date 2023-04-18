@@ -95,13 +95,16 @@ function CreatePost() {
   }
 
   useEffect(() => {
-    const isAuthenticatedResult = isAuthenticated()
-
-    if (!isAuthenticatedResult.success) {
-      setError(isAuthenticatedResult.data.message)
-    } else {
-      setPopup("login");
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(!response.success){
+            setPopup("login");
+          }        
+        })       
     }
+
+    auth()
   }, [])
   
 

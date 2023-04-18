@@ -59,6 +59,8 @@ function Normal(props) {
 
   useEffect(() => {
     if(isVisible && !viewed){
+      props.setPostsSeen(props.postsSeen + 1)
+
       const cookies = getCookie()
 
       // Send viewed to API
@@ -296,7 +298,7 @@ function Normal(props) {
           </div>
 
           {/* Ad mention */}
-          <div className="bg-gray-100 mt-1">
+          <div className="mt-1">
             <p className="text-yellow-500 font-bold text-sm w-full text-center">ADVERTISEMENT</p>
           </div>
 

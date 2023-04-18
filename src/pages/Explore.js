@@ -14,6 +14,8 @@ import { getCookie, isAuthenticated } from '../functions/Common'
 
 function Explore() {
   const [posts, setPosts] = useState()
+  const [postsSeen, setPostsSeen] = useState(0)
+  const [requestingPosts, setRequestingPosts] = useState(false)
   const [popup, setPopup] = useState()
   
   const [error, setError] = useState()
@@ -21,26 +23,60 @@ function Explore() {
   const [loading, setLoading] = useState()
 
   useEffect(() => {    
-    const isAuthenticatedResult = isAuthenticated()
     const cookies = getCookie()
 
-    if (isAuthenticatedResult.success) {
-      axios.get(POSTS + "trending", {
-        headers: {
-          "x-access-token": cookies
-        },
-      })
+    async function auth(){
+      await isAuthenticated()
         .then((response) => {
-          if(response.data.success){
-            setPosts(response.data.data)
+          if(response.success){
+            axios.get(POSTS + "trending", {
+              headers: {
+                "x-access-token": cookies
+              },
+            })
+              .then((response) => {
+                if(response.data.success){
+                  setPosts(response.data.data)
+                  // setPostsPage(postsPage + 1)
+                } else {
+                  setError("An unkown error has occurred.")
+                }
+            })   
           } else {
-            setError("An unkown error has occurred.")
-          }
-      })    
-    } else {
-      setPopup("login");
+            setPopup("login");
+          }        
+        })       
     }
+
+    auth()
   }, [])
+
+  useEffect(() => {
+    if(posts){
+      if(postsSeen + 2 >= posts.length && !requestingPosts){
+        setRequestingPosts(true)
+
+        const cookies = getCookie()
+
+        axios.get(POSTS + "trending", {
+          headers: {
+            "x-access-token": cookies
+          },
+        })
+          .then((response) => {
+            if(response.data.success){
+              for(let i = 0; i < response.data.data.length; i++){
+                setPosts(posts => [ ...posts, response.data.data[i] ]);
+              }
+            } else {
+              setError("An unkown error has occurred.")
+            }
+            setRequestingPosts(false)
+        })    
+      }
+    }
+    
+  }, [postsSeen])
   
 
   return (
@@ -52,7 +88,7 @@ function Explore() {
         { success && ( <Success changeMessage={setSuccess} message={success} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <PostList posts={posts} />
+        <PostList posts={posts} setPostsSeen={setPostsSeen} postsSeen={postsSeen} />
 
 
         {/* Login & register popups */}

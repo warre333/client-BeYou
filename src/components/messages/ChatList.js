@@ -1,17 +1,14 @@
 import axios from 'axios'
 import React, { useEffect } from 'react'
-import Cookies from 'universal-cookie'
 import { useState } from 'react'
 
 import ChatListItem from './ChatListItem'
+import { getCookie } from '../../functions/Common'
 
 import { CHAT } from '../../config/api.config'
-import { getCookie } from '../../functions/Common'
 
 
 function MessagesList({ setError }) {
-  const newCookies = new Cookies()
-
   const [chats, setChats] = useState()
 
 

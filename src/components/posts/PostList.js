@@ -14,9 +14,9 @@ function PostList(props) {
           { posts && (
             posts.map((post, index) => {
               if(post.ad_id){
-                return <AdPost key={index} ad_id={post.ad_id} image={post.media_link} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} setError={props.setError} />
+                return <AdPost key={index} ad_id={post.ad_id} postsSeen={props.postsSeen} setPostsSeen={props.setPostsSeen} image={post.media_link} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} setError={props.setError} />
               } else {
-                return <NormalPost key={index} views={post.views} likes={post.likes} image={post.media_link} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} setError={props.setError} />
+                return <NormalPost key={index} views={post.views} postsSeen={props.postsSeen} setPostsSeen={props.setPostsSeen} likes={post.likes} image={post.media_link} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} post_id={post.post_id} time_placed={post.time_placed} setError={props.setError} />
               }
             })
           )}

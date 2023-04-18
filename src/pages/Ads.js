@@ -59,13 +59,18 @@ function Ads() {
   }
 
   useEffect(() => {
-    const isAuthenticatedResult = isAuthenticated()
-
-    if (isAuthenticatedResult.success) {
-      getAds();
-    } else {
-      setPopup("login");
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(response.success){
+            getAds()
+          } else {
+            setPopup("login");
+          }        
+        })       
     }
+
+    auth()
   }, []);
 
   useEffect(() => {

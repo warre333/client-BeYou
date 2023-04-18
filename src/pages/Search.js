@@ -47,11 +47,16 @@ function Page() {
   const [loading, setLoading] = useState()
 
   useEffect(() => {    
-    const isAuthenticatedResult = isAuthenticated()
-
-    if (!isAuthenticatedResult.success) {
-      setPopup("login");
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(!response.success){
+            setPopup("login");
+          }        
+        })       
     }
+
+    auth()
   }, [])
 
   function searchFunction(){

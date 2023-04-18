@@ -30,19 +30,24 @@ function Chat() {
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
 
-  useEffect(() => {
-      
-    const isAuthenticatedResult = isAuthenticated()
+  useEffect(() => {      
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(response.success){
+            const username = response.data.user_id
 
-    if (isAuthenticatedResult.success) {
-      const username = isAuthenticatedResult.data.user_id
+            setUser(username)
+            socket.auth = { username }
+            socket.connect()
 
-      setUser(username)
-      socket.auth = { username }
-      socket.connect()
-    } else {
-      setPopup("login");
+          } else {
+            setPopup("login");
+          }        
+        })       
     }
+
+    auth()
   }, [])
 
   useEffect(() => {

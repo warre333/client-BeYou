@@ -21,13 +21,18 @@ function Explore() {
   const [loading, setLoading] = useState()
 
   useEffect(() => {      
-    const isAuthenticatedResult = isAuthenticated()
-
-    if (isAuthenticatedResult.success) {
-      getFriends()
-    } else {
-      setPopup("login");
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(response.success) {
+            getFriends()
+          } else {
+            setPopup("login");
+          }        
+        })       
     }
+
+    auth()
   }, [])
 
   function getFriends(){

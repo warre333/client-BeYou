@@ -274,6 +274,8 @@ function Normal(props) {
 
   useEffect(() => {
     if(isVisible && !viewed){
+      props.setPostsSeen(props.postsSeen + 1)
+
       const cookies = getCookie()
 
       // Send viewed to API

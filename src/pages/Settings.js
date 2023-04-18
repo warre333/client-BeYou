@@ -108,12 +108,17 @@ function Settings() {
       })
   }
 
-  useEffect(() => {    
-    const isAuthenticatedResult = isAuthenticated()
-
-    if (!isAuthenticatedResult.success) {
-      setPopup("login");
+  useEffect(() => {  
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(!response.success){
+            setPopup("login");
+          }        
+        })       
     }
+
+    auth()
   }, [])
   
 
