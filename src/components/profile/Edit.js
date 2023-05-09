@@ -87,7 +87,7 @@ function Edit(props) {
                 },
             }).then((response) => {
                 if(response.data.success){
-                    navigate("/profile/@" + username)
+                    navigate("/u/@" + username)
                     props.setPopup("none")
                     
                     props.changeProfile({
@@ -111,7 +111,7 @@ function Edit(props) {
                 },
             }).then((response) => {
                 if(response.data.success){
-                    navigate("/profile/@" + username)
+                    navigate("/u/@" + username)
                     props.setPopup("none")
                     
                     props.changeProfile({
@@ -131,7 +131,7 @@ function Edit(props) {
 
   return (
     <div style={styles.bg}>
-        <div className="w-full h-full md:w-3/4 md:h-auto fixed bg-light md:rounded-xl top-[12.5%] left-[12.5%]">
+        <div className="w-full top-[25%] md:left-[25%] md:w-1/2 h-1/2 fixed bg-gray-100 rounded-3xl">
             {/* The top, x (doesn't save states) edit profile checkmark */}
             <div id="top" className="flex flex-row justify-between m-3">
                 <div className="align-center">
@@ -187,7 +187,7 @@ function Edit(props) {
                     <input
                         type="text" 
                         name='username' 
-                        className="w-full px-4 py-1 rounded-xl" 
+                        className="w-full mb-2 border border-gray-200 focus:border-none bg-white py-1 px-2 rounded-2xl flex flex-row" 
                         defaultValue={username}
                         onChange={(e) => {
                             setUsername(e.target.value)
@@ -202,7 +202,7 @@ function Edit(props) {
                     <input 
                         type="text" 
                         name='bio' 
-                        className="w-full px-4 py-1 rounded-xl" 
+                        className="w-full mb-2 border border-gray-200 focus:border-none bg-white py-1 px-2 rounded-2xl flex flex-row" 
                         defaultValue={bio}
                         onChange={(e) => {
                             setBio(e.target.value)

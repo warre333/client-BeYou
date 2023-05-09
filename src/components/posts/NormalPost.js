@@ -129,6 +129,7 @@ function Normal(props) {
           },
         }).then((response) => {
           if(response.data.success){
+            console.log(user);
             const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, user_id: userId, username: user.username}
             const newCommentSection = [newComment, ...comments]
 
@@ -259,6 +260,7 @@ function Normal(props) {
    function getUserInfo(){    
     if(userId){
       axios.get(USERS + "?user_id=" + userId).then((response) => {
+        console.log(response);
         setUser(response.data.data)
       })
     }
@@ -292,13 +294,18 @@ function Normal(props) {
   })
 
   useEffect(() => {
-    const isAuthenticatedResult = isAuthenticated() 
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(response.success){
+            
+            setUserId(response.data.user_id)
+            getUserInfo()
+          }     
+        })       
+    }
 
-    if(isAuthenticatedResult.success){
-      setUserId(isAuthenticatedResult.data.user_id)
-      getUserInfo()
-    }   
-
+    auth()
     getPosterInfo()
     isLiked()
   }, [])

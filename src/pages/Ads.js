@@ -49,6 +49,7 @@ function Ads() {
           setAds(response.data.data.active);
           setEndedAds(response.data.data.ended)
         } else {
+          console.log(response);
           setError(response.data.message);
         }
       });

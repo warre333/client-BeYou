@@ -89,7 +89,7 @@ function CreatePost() {
       if(response.data.success){
         navigate("/post/" + response.data.data.post_id)
       } else {
-        console.log("error:", response.data)
+        setError(response.data.message)
       }
     })
   }

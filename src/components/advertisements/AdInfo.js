@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { getCookie, isAuthenticated } from '../../functions/Common'
 
 import { ADS } from '../../config/api.config'
+import Steps from './Steps'
 
 
 function SelectPost({ changePage, changePaymentIntent, selectedPost }) {
@@ -16,39 +17,46 @@ function SelectPost({ changePage, changePaymentIntent, selectedPost }) {
         changePage(0)
     }
 
-    function create(){       
+    function create(){  
         const user = getCookie() 
-        const isAuthenticatedResult = isAuthenticated()
 
-        if(isAuthenticatedResult.success){
-            if(selectedPost && budget){
-                if(budget >= 1.00){
-                    axios.post(ADS, {
-                        post_id: selectedPost,
-                        budget: budget,
-                    },
-                        {
-                        headers: {
-                            "x-access-token": user
-                        },
-                    })
-                        .then((response) => {
-                            if(response.data.success){
-                                changePaymentIntent(response.data.data)
-                                changePage(3)
-                            } else {
-                                setError("There was an error starting the payment. ERROR: " + response.data.message)
-                            }
-                        })    
+        async function auth(){
+          await isAuthenticated()
+            .then((response) => {
+                if(response.success){
+                    if(selectedPost && budget){
+                        if(budget >= 1.00){
+                            axios.post(ADS, {
+                                post_id: selectedPost,
+                                budget: budget,
+                            },
+                                {
+                                headers: {
+                                    "x-access-token": user
+                                },
+                            })
+                                .then((response) => {
+                                    if(response.data.success){
+                                        changePaymentIntent(response.data.data)
+                                        changePage(3)
+                                    } else {
+                                        console.log(response);
+                                        setError("There was an error starting the payment. ERROR: " + response.data.message)
+                                    }
+                                })    
+                        } else {
+                            setError("The budget should be greater then €1,00.")
+                        }
+                    } else {
+                        setError("You must fill in all fields.")
+                    }
                 } else {
-                    setError("The budget should be greater then €1,00.")
-                }
-            } else {
-                setError("You must fill in all fields.")
-            }
-        } else {
-            setError(isAuthenticatedResult.message)
-        }        
+                    setError(response.message)
+                }         
+            })       
+        }
+  
+        auth()       
     }
     
   return (
@@ -70,6 +78,8 @@ function SelectPost({ changePage, changePaymentIntent, selectedPost }) {
         </div>
 
         <div className="container mx-auto mt-6">
+            <Steps step={2} />
+
             <div className="mt-2">
                 <p className="ml-4 text-left w-full"><span className="font-bold">Current rate:</span> 10 views/€1</p>
             </div>  

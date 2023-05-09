@@ -40,9 +40,12 @@ function Profile() {
       async function auth(){
         await isAuthenticated()
           .then((response) => {
-            if(!response.success){
+            console.log(response);
+            if(response.success){
+              setUser(response.data.user_id)
+            } else {
               setPopup("login");
-            }        
+            }     
           })       
       }
   
@@ -214,6 +217,7 @@ function Profile() {
             </div>
 
             <div className="m-2">
+              {console.log(user, profileInfo)}
                {user && profileInfo && user === profileInfo.user_id && ( 
                  <div className="">
                    <button className="py-1 px-4 bg-gray-100 rounded-xl border w-full" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>

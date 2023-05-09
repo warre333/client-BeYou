@@ -16,6 +16,7 @@ function Post() {
   const params = useParams()
   const [post, setPost] = useState()
   const [postMedia, setPostMedia] = useState()
+  const [postsSeen, setPostsSeen] = useState(0)
   const [popup, setPopup] = useState()
   
   const [error, setError] = useState()
@@ -53,7 +54,7 @@ function Post() {
 
         */}
 
-        {post && (<div className="posts__container"><NormalPost image={post.media_link} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} views={post.views} post_id={post.post_id} time_placed={post.time_placed} setError={setError} /></div>)}
+        {post && (<div className="posts__container"><NormalPost image={post.media_link} setPostsSeen={setPostsSeen} postsSeen={postsSeen} user_id={post.user_id} caption={post.caption} share_link={WEBSITE_URL + "post/" + post.post_id} views={post.views} post_id={post.post_id} time_placed={post.time_placed} setError={setError} /></div>)}
         
         
 

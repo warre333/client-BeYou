@@ -95,6 +95,7 @@ function Settings() {
       },
     },)
       .then((response) => {
+        console.log(response);
         if(response.data.success){
           logout()
 

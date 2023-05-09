@@ -43,8 +43,8 @@ function PreviewPost(props) {
         <div className="bg-gray-100 justify-center text-center align-middle" style={styles.bg}>
           <table style={styles.keepRatio}>
             <tbody style={styles.keepRatio}>
-              <tr style={styles.keepRatio}>
-                <td style={styles.keepRatio}><img src={IMAGES + "posts/" + props.image} alt="user post" className="" style={styles.image} /></td>
+              <tr style={styles.keepRatio} className="mx-auto">
+                <td style={styles.keepRatio}><img src={IMAGES + "posts/" + props.image} alt="user post" className="justify-center text-center mx-auto" style={styles.image} /></td>
               </tr>
             </tbody>
           </table>

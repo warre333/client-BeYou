@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
 
 import { WEBSITE_URL } from '../../config/api.config';
+import Steps from './Steps';
 
 
 const CheckoutForm = ({ changePage }) => {
@@ -52,6 +53,8 @@ const CheckoutForm = ({ changePage }) => {
       </div>
 
       <div className="container mx-auto w-1/2">
+        <Steps step={3} />
+
         <PaymentElement />
         <button disabled={!stripe} onClick={handleSubmit} className="w-full mt-6 p-2 rounded-xl bg-accent text-white font-semibold bg-blue-500">Checkout</button>
         

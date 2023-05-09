@@ -30,7 +30,9 @@ export function isAdmin() {
                 })
         })
     } else {
-        return {success: false, message: "You're not logged in."}
+      return new Promise(function (resolve, reject) { 
+        resolve({success: false, message: "You're not logged in."}) 
+      })
     }
 }
 
@@ -54,6 +56,8 @@ export function isAuthenticated() {
                 })
         })
     } else {
-        return {success: false, message: "You're not logged in."}
+      return new Promise(function (resolve, reject) { 
+        resolve({success: false, message: "You're not logged in."}) 
+      })
     }
 }

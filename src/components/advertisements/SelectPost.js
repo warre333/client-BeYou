@@ -5,7 +5,8 @@ import { useState } from 'react'
 import PreviewPost from '../advertisements/PreviewPost'
 import { getCookie, isAuthenticated } from '../../functions/Common'
 
-import { AUTH, POSTS } from '../../config/api.config'
+import { AUTH, POSTS, USERS } from '../../config/api.config'
+import Steps from './Steps'
 
 function SelectPost({ changePage, changeSelectedPost }) {
     const [posts, setPosts] = useState()
@@ -20,22 +21,32 @@ function SelectPost({ changePage, changeSelectedPost }) {
 
     useEffect(() => {
         const user = getCookie()
-        const isAuthenticatedResult = isAuthenticated()
-  
-        if(isAuthenticatedResult.success){
-            axios.get(POSTS + "?user_id=" + isAuthenticatedResult.data.user_id,
-                {
-                headers: {
-                    "x-access-token": user
-                },
-            })
-                .then((response) => {
-                    if(response.data.success){
-                        setPosts(response.data.data)
-                    } 
-                })
 
-        }        
+        async function auth(){
+          await isAuthenticated()
+            .then((response) => {
+              if(response.success){
+                axios.get(USERS + "?user_id=" + response.data.user_id).then((responseUser) => {
+                  if(responseUser.data.success){
+                    axios.get(POSTS + "?user_id=" + response.data.user_id,
+                        {
+                        headers: {
+                            "x-access-token": user
+                        },
+                    })
+                        .then((response) => {
+                            if(response.data.success){
+                                setPosts(response.data.data)
+                            } 
+                        })
+                  } 
+                })
+              }      
+            })       
+        }
+  
+        auth()         
+  
     }, [])
     
   return (
@@ -56,7 +67,9 @@ function SelectPost({ changePage, changeSelectedPost }) {
             <div />
         </div>
 
-        <div className="container mx-auto mt-6">
+        <div className="container mx-auto mt-6">            
+            <Steps step={1} />
+
             <p className="text-center font-medium text-xl">Choose a post.</p>
 
             <div className="my-5">
