@@ -128,6 +128,7 @@ function Normal(props) {
             "x-access-token": cookies
           },
         }).then((response) => {
+          console.log(response);
           if(response.data.success){
             console.log(user);
             const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, user_id: userId, username: user.username}
@@ -257,9 +258,9 @@ function Normal(props) {
     })
   }
 
-   function getUserInfo(){    
-    if(userId){
-      axios.get(USERS + "?user_id=" + userId).then((response) => {
+   function getUserInfo(userid){  
+    if(userid){
+      axios.get(USERS + "?user_id=" + userid).then((response) => {
         console.log(response);
         setUser(response.data.data)
       })
@@ -297,10 +298,9 @@ function Normal(props) {
     async function auth(){
       await isAuthenticated()
         .then((response) => {
-          if(response.success){
-            
+          if(response.success){            
             setUserId(response.data.user_id)
-            getUserInfo()
+            getUserInfo(response.data.user_id)
           }     
         })       
     }
@@ -450,8 +450,8 @@ function Normal(props) {
 
                   <div className="ml-2" id="comments">
                     <div className="flex flex-row mt-3 mb-3" style={styles.postComment}>
-                      <div className="h-full">
-                        <textarea className="h-full bg-white border border-gray-200 rounded-full px-4" type="reset" value={comment} aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }}></textarea>
+                      <div className="h-full w-1/4">
+                        <input className="h-full bg-white border border-gray-200 rounded-full px-4 w-full" type="text" value={comment} aria-label="With textarea" onChange={(e) => { setComment(e.target.value) }} />
                       </div>
 
                       <div className="h-full">
