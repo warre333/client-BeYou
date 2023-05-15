@@ -275,7 +275,7 @@ function Normal(props) {
                   <div>
                     <td>
                       {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
-                      <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + "NOT_FOUND.jpg"} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
+                      <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + "NOT_FOUND.png"} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
                     </td>
                     <td className='align-middle'>
                       <h4 className="text-sm align-middle h-full">USER NOT FOUND</h4>

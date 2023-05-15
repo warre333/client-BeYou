@@ -128,9 +128,7 @@ function Normal(props) {
             "x-access-token": cookies
           },
         }).then((response) => {
-          console.log(response);
           if(response.data.success){
-            console.log(user);
             const newComment = {comment: comment, comment_id: response.data.comment_id, post_id: props.post_id, profile_image: user.profile_image, user_id: userId, username: user.username}
             const newCommentSection = [newComment, ...comments]
 
@@ -261,7 +259,6 @@ function Normal(props) {
    function getUserInfo(userid){  
     if(userid){
       axios.get(USERS + "?user_id=" + userid).then((response) => {
-        console.log(response);
         setUser(response.data.data)
       })
     }
@@ -353,7 +350,7 @@ function Normal(props) {
             <div>
               <td>
                 {/* <ProfileImage url={PROFILE_IMAGE + poster.profile_image} /> */}
-                <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + "NOT_FOUND.jpg"} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
+                <div className='mt-1 ml-1'><img src={PROFILE_IMAGE + "NOT_FOUND.png"} alt="post" height="50" width="50" className="object-cover w-10 h-10 rounded-full" /></div>
               </td>
               <td className='align-middle'>
                 <h4 className="text-sm align-middle h-full">USER NOT FOUND</h4>
