@@ -16,6 +16,7 @@ function Homepage() {
   const [posts, setPosts] = useState()
   const [popup, setPopup] = useState("none")
   const [postsSeen, setPostsSeen] = useState(0)
+  const [addAd, setAddAd] = useState(false)
   const [requestingPosts, setRequestingPosts] = useState(false)
   
   const [error, setError] = useState()
@@ -58,21 +59,45 @@ function Homepage() {
 
         const cookies = getCookie()
 
-        axios.get(POSTS + "feed", {
-          headers: {
-            "x-access-token": cookies
-          },
-        })
-          .then((response) => {
-            if(response.data.success){
-              for(let i = 0; i < response.data.data.length; i++){
-                setPosts(posts => [ ...posts, response.data.data[i] ]);
+        if(addAd){
+          axios.get(POSTS + "feed?ad=true", {
+            headers: {
+              "x-access-token": cookies
+            },
+          })
+            .then((response) => {
+              if(response.data.success){
+                for(let i = 0; i < response.data.data.length; i++){
+                  setPosts(posts => [ ...posts, response.data.data[i] ]);
+                }
+                  
+                setAddAd(false)
+              } else {
+                setError("An unkown error has occurred.")
               }
-            } else {
-              setError("An unkown error has occurred.")
-            }
-            setRequestingPosts(false)
-        })    
+              setRequestingPosts(false)
+          })
+        } else {
+          axios.get(POSTS + "feed", {
+            headers: {
+              "x-access-token": cookies
+            },
+          })
+            .then((response) => {
+              if(response.data.success){
+                for(let i = 0; i < response.data.data.length; i++){
+                  setPosts(posts => [ ...posts, response.data.data[i] ]);
+                }
+
+                if(response.data.data.length < 5){
+                  setAddAd(true)
+                }
+              } else {
+                setError("An unkown error has occurred.")
+              }
+              setRequestingPosts(false)
+          })    
+        }        
       }
     }
     
