@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { io } from 'socket.io-client'
 
 import Header from '../components/header'
@@ -15,6 +15,8 @@ import { API_URL } from '../config/api.config'
 
 function Chat() {
   const params = useParams()
+  const navigate = useNavigate()
+
   const chatroom = params.chatroom
   const socket = io(API_URL, { transports : ['websocket', 'polling', 'flashsocket'] });
   
@@ -60,7 +62,7 @@ function Chat() {
 
     socket.emit('join', { user_id: user, chatroom }, (error) => {
       if(error) {
-        console.log(error);
+        navigate('/messages')
       }
     });
 
@@ -75,7 +77,6 @@ function Chat() {
     socket.on("roomData", ({ users, messages }) => {
       setUsers(users);
       setMessages(messages)
-      console.log(messages);
     });
 
     // socket.on("users", (users) => {
