@@ -61,7 +61,7 @@ function Header() {
       }
 
       auth()
-    }, [user])
+    }, [])
 
     function handleLogin(){
       setPopup("login")
