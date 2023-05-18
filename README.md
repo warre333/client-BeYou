@@ -1,70 +1,29 @@
-# Getting Started with Create React App
+# Speakr
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## What is this
 
-## Available Scripts
+This is a social media platform made by Warre Bossaert as a finalproject at secondary school Busleyden Atheneum Zandpoort for the subject projectmanagement.
 
-In the project directory, you can run:
 
-### `npm start`
+## Concept
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+My idea for the website is that you can share memorable moments, and to communicate with others through sharing images and videos and/or chatting. That way those memories will live on forever and can others, who know you (or not) can see those as well. My idea was to make it with such interface so it’s as user friendly as possible, to make it accessible for the most people. On the website you can perform multiple actions, such as:
+-	Creating accounts through the register page.
+-	Log in with a previously or newly made account.
+-	See posts from your friends and those who you are following on the homepage.
+-	View popular posts from all users of the platform on the explore page.
+-	Like and comment on posts to boost those on the explore page.
+-	Share posts outside of the platform.
+-	Connect with friends by following them on their profile page.
+-	Message those friends, or others that you are following.
+-	Search for usernames of friends of yours.
+-	Visit your own profile page to see the number of followers, posts and likes and edit your profile.
+-	Creating a post through the menu when clicked on the profile icon.
+-	Edit this post after completion of the creation.
+-	Change your password and email address on the settings page.
+-	Boost your posts to more users with advertisements.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## How is it made
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The website was made in ReactJS with TailwindCSS, the website uses a selfmade API that is made in NodeJS with an Express server (github link: https://github.com/warre333/server-BeYou).
