@@ -75,11 +75,18 @@ function Ads() {
   }, []);
 
   useEffect(() => {
-    if (selectedPost !== 0 || searchParams.get("post_id")) {
+    if (searchParams.get("post_id")) {
+      setSelectedPost(searchParams.get("post_id"))
       setPage(2);
       setSearchParams({})
     }
-  }, [selectedPost, searchParams.get("post_id")]);
+  }, [searchParams.get("post_id")]);
+
+  useEffect(() => {
+    if (selectedPost !== 0) {
+      setPage(2);
+    }
+  }, [selectedPost]);
 
   const options = {
     clientSecret: paymentIntent,
