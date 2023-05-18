@@ -133,7 +133,7 @@ function Chat() {
                     if(text.user_id === user){
                       return(
                         <div class="flex justify-end mb-4" key={key}>
-                          <div class="py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white max-w-full text-ellipsis">
+                          <div class="py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white max-w-full text-ellipsis break-words">
                             {text.user}: {text.text}
                           </div>
                         </div>
@@ -141,7 +141,7 @@ function Chat() {
                     } else {
                       return(
                         <div class="flex justify-start mb-4" key={key}>
-                          <div class="py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white max-w-full text-ellipsis">
+                          <div class="py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white max-w-full text-ellipsis break-words">
                             {text.user}: {text.text}
                           </div>
                         </div>
