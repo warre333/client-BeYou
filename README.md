@@ -26,4 +26,4 @@ My idea for the website is that you can share memorable moments, and to communic
 
 ## How is it made
 
-The website was made in ReactJS with TailwindCSS, the website uses a selfmade API that is made in NodeJS with an Express server (github link: https://github.com/warre333/server-BeYou).
+The website was made in ReactJS with TailwindCSS, the website uses a selfmade API that is made in NodeJS with an Express server (github link: https://github.com/warre333/server-Speakr).
