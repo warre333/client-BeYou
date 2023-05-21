@@ -23,6 +23,22 @@ import Admin from './pages/Admin';
 import Ads from './pages/Ads';
 import AdsPaid from './pages/AdsPaid';
 
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAs7SRXYX3iB2-p6d7NiN6os7I5U4WU6kI",
+  authDomain: "speakr-25c5d.firebaseapp.com",
+  projectId: "speakr-25c5d",
+  storageBucket: "speakr-25c5d.appspot.com",
+  messagingSenderId: "559472586477",
+  appId: "1:559472586477:web:ff14ad254b92e689dee6e4",
+  measurementId: "G-TXR10MM6FF"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
