@@ -62,8 +62,7 @@ function Normal(props) {
   const isVisible = isOnScreen(ref)
 
   useEffect(() => {
-    // console.log(isVisible, viewed)
-    if(isVisible && !viewed){
+    if(isVisible){
       const cookies = getCookie()
 
       // Send viewed to API
@@ -73,12 +72,9 @@ function Normal(props) {
         headers: {
           "x-access-token": cookies
         },
-      },).then((response) => {
-        console.log(response)
-        setViewed(true)
       })
     }
-  })
+  }, isVisible)
 
   
   function getCookie(){
@@ -180,8 +176,6 @@ function Normal(props) {
     } 
   }
 
-  console.log(user, comments);
-
   async function deleteComment(e){
     const cookies = getCookie()
     
@@ -249,8 +243,7 @@ function Normal(props) {
     })
   }
 
-  async function getUserInfo(){
-    
+  async function getUserInfo(){    
     if(userId){
       axios.get(USERS + "?user_id=" + userId).then((response) => {
         setUser(response.data.data)
