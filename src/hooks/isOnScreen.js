@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 
 export default function useOnScreen(ref) {
-
   const [isIntersecting, setIntersecting] = useState(false)
 
+  // Observes changes in visibility of the target element (ref from the posts)
   const observer = new IntersectionObserver(
     ([entry]) => setIntersecting(entry.isIntersecting)
   )

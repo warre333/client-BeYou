@@ -1,77 +1,82 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-import Cookies from "universal-cookie"
 
 import Header from '../components/header'
 import PostList from '../components/posts/PostList'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 
-import { AUTH, POSTS } from '../config/api.config'
-
-const cookies = new Cookies();
+import { POSTS } from '../config/api.config'
+import { getCookie, isAuthenticated } from '../functions/Common'
 
 function Explore() {
-  const [user, setUser] = useState()
   const [posts, setPosts] = useState()
+  const [postsSeen, setPostsSeen] = useState(0)
+  const [requestingPosts, setRequestingPosts] = useState(false)
   const [popup, setPopup] = useState()
   
   const [error, setError] = useState()
   const [success, setSuccess] = useState()
   const [loading, setLoading] = useState()
 
-  function getCookie(){
-    if(cookies.get('user')){
-      return cookies.get('user')
+  useEffect(() => {    
+    const cookies = getCookie()
+
+    async function auth(){
+      await isAuthenticated()
+        .then((response) => {
+          if(response.success){
+            axios.get(POSTS + "trending", {
+              headers: {
+                "x-access-token": cookies
+              },
+            })
+              .then((response) => {
+                if(response.data.success){
+                  setPosts(response.data.data)
+                  // setPostsPage(postsPage + 1)
+                } else {
+                  setError("An unkown error has occurred.")
+                }
+            })   
+          } else {
+            setPopup("login");
+          }        
+        })       
     }
-  }  
+
+    auth()
+  }, [])
 
   useEffect(() => {
-    function isAuthenticated(){
-      const cookies = getCookie()
-  
-      if(cookies){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": cookies
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-            setUser(response.data.user_id)
+    if(posts){
+      if(postsSeen + 2 >= posts.length && !requestingPosts){
+        setRequestingPosts(true)
 
-            axios.get(POSTS + "trending", 
-              {
-                headers: {
-                  "x-access-token": cookies
-                },
-              },
-            ).then((response) => {
-              if(response.data.success){
-                setPosts(response.data.data)
-              } else {
-                setError("An unkown error has occurred.")
-              }              
-            })
-          } else {            
-            setUser(0)
-            setPopup("login")
-            cookies.remove('user', { path: '/' });
-          }          
+        const cookies = getCookie()
+
+        axios.get(POSTS + "trending", {
+          headers: {
+            "x-access-token": cookies
+          },
         })
-      } else { 
-        setUser(0)
-        setPopup("login")
+          .then((response) => {
+            if(response.data.success){
+              for(let i = 0; i < response.data.data.length; i++){
+                setPosts(posts => [ ...posts, response.data.data[i] ]);
+              }
+            } else {
+              setError("An unkown error has occurred.")
+            }
+            setRequestingPosts(false)
+        })    
       }
     }
-
-    isAuthenticated()
-  }, [])
+    
+  }, [postsSeen])
   
 
   return (
@@ -83,7 +88,7 @@ function Explore() {
         { success && ( <Success changeMessage={setSuccess} message={success} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <PostList posts={posts} />
+        <PostList posts={posts} setPostsSeen={setPostsSeen} postsSeen={postsSeen} />
 
 
         {/* Login & register popups */}

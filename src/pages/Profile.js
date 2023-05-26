@@ -1,36 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-import Cookies from "universal-cookie"
-import { Navigate, useNavigate, useParams } from "react-router-dom"
-
-import useWindowDimensions from '../hooks/useWindowDimensions'
+import { useNavigate, useParams } from "react-router-dom"
 
 import Header from "../components/header"
-
 import Error from '../components/states/Error'
 import Success from '../components/states/Success'
 import Loading from '../components/states/Loading'
 import Login from '../components/auth/Login'
 import Register from '../components/auth/Register'
-
-import { AUTH, CHAT, PROFILE_IMAGE, USERS } from '../config/api.config'
 import Edit from '../components/profile/Edit'
 import PreviewPost from '../components/posts/PreviewPost'
+import { getCookie, isAuthenticated } from '../functions/Common'
 
-const styles = {
-    profileImage: {
-        height: "25vw",
-        width: "25vw",
-        objectFit: "cover",
-    },
-    profileImageDesktop: {
-        height: "10vw",
-        width: "10vw",
-        objectFit: "cover",
-    },
-}
-
-const newCookies = new Cookies();
+import { AUTH, CHAT, PROFILE_IMAGE, USERS } from '../config/api.config'
 
 function Profile() {
   const navigate = useNavigate()
@@ -53,66 +35,39 @@ function Profile() {
     const params = useParams()
 
     const profileUsername = params.username
-
-    function getCookie(){
-      if(newCookies.get('user')){
-        return newCookies.get('user')
-      }
-    }  
   
-    useEffect(() => {
-      const cookies = getCookie()
-    
-      if(cookies){
-        axios.get(AUTH,
-          {
-            headers: {
-              "x-access-token": cookies
-            },
-          },
-        ).then((response) => {
-          if(response.data.success){
-           setUser(response.data.user_id)
-          } else {
-            newCookies.remove('user', { path: '/' });
-          }
-        })
-      } 
-    }, [user])
-
-    // Screen sizing
-    const { width, height } = useWindowDimensions();
-    const [isOnMobile, setIsOnMobile] = useState(false)
-
-    useEffect(() => {
-        if(width < 768){
-            setIsOnMobile(true)
-        } else {
-            setIsOnMobile(false)
-        }
-    })
+    useEffect(() => {   
+      async function auth(){
+        await isAuthenticated()
+          .then((response) => {
+            console.log(response);
+            if(response.success){
+              setUser(response.data.user_id)
+            } else {
+              setPopup("login");
+            }     
+          })       
+      }
+  
+      auth()
+    }, [])
 
     function getUserInfo(){
-      // Get user info from api with userid
-      // put in userinfo
-
-      // Info, profile_image, bio, total followers, total posts
       axios.get(USERS + "profile?username=" + profileUsername)
         .then((response) => {
-          console.log(response.data);
           if(response.data.success){
             setProfileInfo(response.data.data.user_info[0])
             setProfilePosts(response.data.data.posts)
             setProfileTotalFollowers(response.data.data.total_followers)
             setProfileTotalLikes(response.data.data.total_likes)
             setProfileTotalPosts(response.data.data.total_posts)
-            if(response.data.data.user_info[0].verified == 1){
+            amIFollowingThisUser(response.data.data.user_info[0].user_id)
+
+            if(response.data.data.user_info[0].verified === 1){
               setVerified(true)
             } else {
               setVerified(false)
             }
-
-            amIFollowingThisUser(response.data.data.user_info[0].user_id)
           } else {
             setError(response.data.message)
           }
@@ -188,10 +143,8 @@ function Profile() {
         },
       },)
         .then((response) => {
-          console.log(response);
           if(response.data.success){
-            navigate("/chat/" + response.data.chatroom_id)
-          } else {
+            navigate("/messages/" + response.data.chatroom_id)
           }
         })
       
@@ -215,20 +168,19 @@ function Profile() {
         { success && ( <Success message={success} changeMessage={setSuccess} /> )}
         { loading && ( <Loading changeMessage={setLoading} /> )}
 
-        <div className="container">
+        <div className="container mx-auto">
             {/* row met image daarnaast username, bio, edit profile button */}
             {/* Image + username */}
-            <div className="row">
-                <div className="col-4 col-md-auto text-end">
-                  {profileInfo && ( <img src={PROFILE_IMAGE + profileInfo.profile_image} alt="profile_image" style={isOnMobile ? styles.profileImage : styles.profileImageDesktop} className="rounded-circle" /> )}
+            <div className="flex flex-row pr-4">
+                <div className="text-right w-1/3 md:w-1/4 lg:w-1/5 flex justify-center align-middle">
+                  {profileInfo && ( <img src={PROFILE_IMAGE + profileInfo.profile_image} alt="profile_image" className="object-cover w-[15vw] h-[15vw] md:w-[10vw] md:h-[10vw] aspect-square rounded-full" /> )}
                 </div>
-
-                <div className="col ms-md-3">
-                    <table className="h-50">
+                <div className="ml-3 w-full">
+                    <table className="h-1/2">
                         <tbody>
                             <tr>
                                 <td className="align-middle">
-                                  {profileInfo && (<h2 className="text-start ml-10">{profileInfo.username}</h2>)}
+                                  {profileInfo && (<h2 className="text-start font-bold text-2xl">{profileInfo.username}</h2>)}
                                 </td>
                                 <td className="align-middle">                         
                                   {verified && (
@@ -242,16 +194,16 @@ function Profile() {
                             </tr>
                         </tbody>                        
                     </table>
-                      <div className="row h-25 text-center w-100">
-                        <div className="col align-middle">                                  
+                      <div className="flex flex-row h-1/4 justify-between text-center w-full">
+                        <div className="align-middle">                                  
                           <p className="">Followers</p>
                           {profileTotalFollowers && (<p className="">{profileTotalFollowers}</p>)}
                         </div>
-                        <div className="col align-middle">                                  
+                        <div className="align-middle">                                  
                           <p className="">Posts</p>
                           {profileTotalPosts && (<p className="">{profileTotalPosts}</p>)}
                         </div>
-                        <div className="col align-middle">                                  
+                        <div className="align-middle">                                  
                           <p className="">Likes</p>
                           {profileTotalLikes && (<p className="">{profileTotalLikes}</p>)}
                         </div>
@@ -259,53 +211,48 @@ function Profile() {
                 </div>
             </div>
 
-
             {/* bio + edit */}
-            <div className="m-2">
+            <div className="mx-2 my-8">
               {profileInfo && (<p>{profileInfo.bio}</p>) } 
             </div>
 
             <div className="m-2">
+              {console.log(user, profileInfo)}
                {user && profileInfo && user === profileInfo.user_id && ( 
                  <div className="">
-                   <button className="btn bg-light rounded-3 border w-100" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
+                   <button className="py-1 px-4 bg-gray-100 rounded-xl border w-full" onClick={(e) => { setPopup("edit_profile") }} >Edit profile</button>
                  </div>
                )}
                {user && profileInfo && user !== profileInfo.user_id && !isUserFollowing && ( 
                  <div className="">
-                   <button className="btn btn-primary rounded-3 border w-100" onClick={handleFollow} >Follow</button>
+                   <button className="py-1 px-4 bg-blue-500 text-white rounded-xl border w-full" onClick={handleFollow} >Follow</button>
                  </div> 
                )}
                {user && profileInfo && user !== profileInfo.user_id && isUserFollowing && ( 
-                 <div className="row">
-                   <button className="col me-2 btn btn-light rounded-3 border w-100" onClick={handleUnfollow} >Unfollow</button>
-                   <button className="col ms-2 btn btn-light rounded-3 border w-100" onClick={handleMessage} >Message</button>
+                 <div className="flex flex-row">
+                   <button className="mr-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleUnfollow} >Unfollow</button>
+                   <button className="ml-2 py-1 px-4 btn-light rounded-xl border w-full" onClick={handleMessage} >Message</button>
                  </div>
                )}
             </div>
 
-            {popup && popup == "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} changeProfile={setProfileInfo} />}
+            {popup && popup === "edit_profile" && <Edit profile={profileInfo} setPopup={setPopup} changeProfile={setProfileInfo} />}
 
-            <div className="border-bottom mt-4"></div>
-
-
+            <div className="border-b mt-4"></div>
 
             {/* Posts grid */}
-            <div className="container my-5">
-              <div className="row g-3">
-
+            <div className="my-5">
+              <div className="grid grid-cols-3 gap-4">
                 {profilePosts && profilePosts.length > 0 && (
                   profilePosts.map((post, key) => {
                     return <PreviewPost image={post.media_link} post_id={post.post_id} key={key} />
                   })
                 )}
 
-                {profilePosts && profilePosts.length == 0 && (
-                  <h4 className="w-100 text-center">No posts are found...</h4>
+                {profilePosts && profilePosts.length === 0 && (
+                  <h4 className="w-full text-center">No posts are found...</h4>
                 )}
-
-              </div>
-              
+              </div>              
             </div>
         </div>
         
@@ -317,8 +264,6 @@ function Profile() {
         { popup === "register" && (
           <Register setPopup={setPopup} setError={setError} setSuccess={setSuccess} setLoading={setLoading}  />
         )}
-        
-        
     </div>
   )
 }
