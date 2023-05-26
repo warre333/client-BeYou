@@ -273,7 +273,7 @@ function Normal(props) {
   }
 
   useEffect(() => {
-    if(isVisible && !viewed){
+    if(isVisible){
       props.setPostsSeen(props.postsSeen + 1)
 
       const cookies = getCookie()
@@ -289,7 +289,7 @@ function Normal(props) {
         setViewed(true)
       })
     }
-  })
+  }, [isVisible])
 
   useEffect(() => {
     async function auth(){

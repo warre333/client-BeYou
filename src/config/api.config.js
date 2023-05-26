@@ -1,19 +1,19 @@
 module.exports = {
-    API_URL: "http://10.43.36.26:4000/",
-    AUTH: "http://10.43.36.26:4000/auth/",
-    EMAIL: "http://10.43.36.26:4000/email/",
-    POSTS: "http://10.43.36.26:4000/posts/",
-    USERS: "http://10.43.36.26:4000/users/",
-    IMAGES: "http://10.43.36.26:4000/images/",
-    SEARCH: "http://10.43.36.26:4000/search/",
-    CHAT: "http://10.43.36.26:4000/chat/",
-    ADMIN: "http://10.43.36.26:4000/admin/",
-    ADS: "http://10.43.36.26:4000/advertisements/",
+    API_URL: "https://api.roshop.dev/",
+    AUTH: "https://api.roshop.dev/auth/",
+    EMAIL: "https://api.roshop.dev/email/",
+    POSTS: "https://api.roshop.dev/posts/",
+    USERS: "https://api.roshop.dev/users/",
+    IMAGES: "https://api.roshop.dev/images/",
+    SEARCH: "https://api.roshop.dev/search/",
+    CHAT: "https://api.roshop.dev/chat/",
+    ADMIN: "https://api.roshop.dev/admin/",
+    ADS: "https://api.roshop.dev/advertisements/",
 
-    PROFILE_IMAGE: "http://10.43.36.26:4000/images/profiles/",
-    POST_IMAGE: "http://10.43.36.26:4000/images/posts/",
+    PROFILE_IMAGE: "https://api.roshop.dev/images/profiles/",
+    POST_IMAGE: "https://api.roshop.dev/images/posts/",
 
-    WEBSITE_URL: "http://localhost:3000/",
+    WEBSITE_URL: "https://speakr-25c5d.web.app/",
 
     STRIPE: "pk_test_51MbMPvBVdpaK1AsGhgl5HaCkeHIC7x8gQzc9ODQ1BboTArVxGzCRcMmmzxU17xvut3PiybGcMdkZqYWgmbaUBHcP00mSnEIYgc"
 }
