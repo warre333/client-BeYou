@@ -8,25 +8,6 @@ import { CHAT, PROFILE_IMAGE } from '../../config/api.config'
 
 function Friend(props) {
     const navigate = useNavigate()
-
-    function handleMessage(){
-        const user = getCookie()
-  
-        axios.post(CHAT, {
-          user_id: props.user_id
-        }, {
-          headers: {
-            "x-access-token": user
-          },
-        },)
-          .then((response) => {
-            if(response.data.success){
-              navigate("/messages/" + response.data.chatroom_id)
-            }
-          })
-        
-      }
-
       
   return (
         <div className='my-1'>
@@ -48,18 +29,6 @@ function Friend(props) {
             
                             </table>
                         </a>
-                    </div>
-        
-                    <div className="">
-                        <table className="h-full mr-2">
-                            <tbody>
-                                <tr>
-                                    <td className='align-middle'>
-                                        <button className="bg-blue-500 py-1 px-4 text-white rounded-xl" onClick={handleMessage}>message</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
